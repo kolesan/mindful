@@ -3,9 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
-  devServer: {
-    contentBase: './dist'
-  },
   plugins: [new HtmlWebpackPlugin({
     template: './src/index.html'
   })],
@@ -16,6 +13,12 @@ module.exports = {
         use: [
           'style-loader',
           'css-loader'
+        ]
+      },
+      {
+        test: /\.mp3$/,
+        use: [
+          'file-loader'
         ]
       }
     ]
