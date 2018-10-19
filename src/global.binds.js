@@ -1,4 +1,4 @@
-import { start as start, pause as pause, unpause as unpause, fgong as fgong, sgong as sgong } from './index.js';
+import { start, pause, unpause, fgong, sgong } from './index.js';
 
 document.getElementById("start").addEventListener("click", start);
 document.getElementById("pause").addEventListener("click", pause);

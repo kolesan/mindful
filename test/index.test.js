@@ -1,5 +1,5 @@
 // const Timer = require('../src/index');
-import { Timer as Timer } from '../src/index';
+import { Timer } from '../src/index';
 
 test('sums up timer event duration during timer initialization', () => {
   expect((function(){
