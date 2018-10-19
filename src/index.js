@@ -17,7 +17,7 @@ function start() {
   let timerElem = document.getElementById("timerOutput");
 
   window.myKoLeTimer = Object.create(Timer);
-  myKoLeTimer.init(duration, [], timerElem, durationElem, sgong);
+  myKoLeTimer.init(timerElem, durationElem, sgong, [{duration: 1}, {duration: 2}]);
   myKoLeTimer.start();
 }
 
@@ -29,15 +29,31 @@ function unpause() {
   myKoLeTimer.unpause();
 }
 
+let TimerEvent = {
+  init: function initTimerEvent(name, duration, callback) {
+    this.name = name;
+    this.duration = duration;
+    this.callback = callback;
+  }
+};
+
 let Timer = {
-  init: function initTimer(duration, signals, timerElem, durationElem, callback) {
-    this.duration = duration || 0;
-    this.signals = signals || [];
+  init: function initTimer(timerElem, durationElem, callback, events) {
     this.timerElem = timerElem;
     this.durationElem = durationElem;
     this.initiated = true;
 
     this.callback = callback;
+
+    this.events = events || [];
+    this.duration = (function sumEvents(events) {
+      let reduced = events.reduce(function reducer(a, b) {
+        let da = a.duration || 0;
+        let db = b.duration || 0;
+        return {duration: da + db};
+      });
+      return reduced.duration;
+    })(this.events);
   },
   start: function startTimer() {
     if (!this.initiated) {
@@ -76,6 +92,9 @@ let Timer = {
   unpause: function unpauseTimer() {
     this.timerElem.innerHTML = this.timerStringValue;
     this.launch();
+  },
+  stop: function() {
+
   }
 };
 
@@ -115,8 +134,6 @@ function parseTime(timeString) {
   return h*1000*60*60 + m*1000*60 + s*1000;
 }
 
-document.getElementById("start").addEventListener("click", start);
-document.getElementById("pause").addEventListener("click", pause);
-document.getElementById("unpause").addEventListener("click", unpause);
-document.getElementById("fgongBtn").addEventListener("click", fgong);
-document.getElementById("sgongBtn").addEventListener("click", sgong);
+
+
+export { Timer, start, pause, unpause, fgong, sgong };
