@@ -1,6 +1,9 @@
 import './style.css';
 import loudGongFileName from '../resources/long-loud-gong.mp3';
 import fastGongFileName from '../resources/short-fast-gong.mp3';
+import {TimerEvent, Timer} from './Timer';
+
+let events = [];
 
 function sgong(){
   new Audio(loudGongFileName).play();
@@ -12,12 +15,11 @@ function fgong(){
 
 function start() {
   let duration = parseTime(document.getElementById("mainTimer").value);
-  let interval = document.getElementById("timerInput").value;
   let durationElem = document.getElementById("duration");
   let timerElem = document.getElementById("timerOutput");
 
   window.myKoLeTimer = Object.create(Timer);
-  myKoLeTimer.init(timerElem, durationElem, sgong, [{duration: 1}, {duration: 2}]);
+  myKoLeTimer.init(timerElem, durationElem, [{duration: 1}, {duration: 2}]);
   myKoLeTimer.start();
 }
 
@@ -29,74 +31,28 @@ function unpause() {
   myKoLeTimer.unpause();
 }
 
-let TimerEvent = {
-  init: function initTimerEvent(name, duration, callback) {
-    this.name = name;
-    this.duration = duration;
-    this.callback = callback;
-  }
-};
+function addEvent() {
+  let name = document.getElementById("eventName").value;
+  let durationString = document.getElementById("eventDuration").value;
+  let duration = parseTime(durationString);
+  let event = Object.create(TimerEvent).init(name, duration, fgong);
+  events.push(event);
 
-let Timer = {
-  init: function initTimer(timerElem, durationElem, callback, events) {
-    this.timerElem = timerElem;
-    this.durationElem = durationElem;
-    this.initiated = true;
+  let durationSpan = document.createElement("span");
+  durationSpan.classList.add("event-duration-span");
+  durationSpan.innerHTML = durationString;
+  let nameSpan = document.createElement("span");
+  nameSpan.classList.add("event-name-span");
+  nameSpan.innerHTML = name;
 
-    this.callback = callback;
+  let eventElement = document.createElement("div");
+  eventElement.classList.add("event");
+  eventElement.appendChild(durationSpan);
+  eventElement.appendChild(nameSpan);
 
-    this.events = events || [];
-    this.duration = (function sumEvents(events) {
-      let reduced = events.reduce(function reducer(a, b) {
-        let da = a.duration || 0;
-        let db = b.duration || 0;
-        return {duration: da + db};
-      });
-      return reduced.duration;
-    })(this.events);
-  },
-  start: function startTimer() {
-    if (!this.initiated) {
-      throw new Error("Timer has to be initiated prior to starting it");
-    }
-
-    this.currentTime = 0;
-
-    this.timerElem.innerHTML = formatTime(0);
-    this.durationElem.innerHTML = formatTime(this.duration);
-
-    if (this.duration > 0) {
-      this.launch();
-    } else {
-      this.callback();
-    }
-  },
-  launch: function launchTimer() {
-    this.intervalId = setInterval(this.tick.bind(this), 1000);
-  },
-  tick: function tickTimer() {
-    this.currentTime += 1000;
-
-    if (this.currentTime >= this.duration) {
-      this.callback();
-      clearInterval(this.intervalId);
-    }
-    this.timerElem.innerHTML = formatTime(this.currentTime);
-  },
-  pause: function pauseTimer() {
-    clearInterval(this.intervalId);
-
-    this.timerStringValue = this.timerElem.innerHTML;
-    this.timerElem.innerHTML += " PAUSED"
-  },
-  unpause: function unpauseTimer() {
-    this.timerElem.innerHTML = this.timerStringValue;
-    this.launch();
-  },
-  stop: function() {
-
-  }
-};
+  let eventsListElement = document.querySelector(".event-list");
+  eventsListElement.appendChild(eventElement)
+}
 
 function formatTime(timestamp) {
   const sd = 1000;
@@ -136,4 +92,4 @@ function parseTime(timeString) {
 
 
 
-export { Timer, start, pause, unpause, fgong, sgong };
+export { addEvent, start, pause, unpause, fgong, sgong };
