@@ -3,7 +3,20 @@ import loudGongFileName from '../resources/long-loud-gong.mp3';
 import fastGongFileName from '../resources/short-fast-gong.mp3';
 import {TimerEvent, Timer} from './Timer';
 
-let events = [];
+const EVENT_ELEM_CLASS = "event";
+const EVENT_LIST_CLASS = "event-list";
+const EVENT_NAME_CLASS = "event-name-span";
+const EVENT_DURATION_CLASS = "event-duration-span";
+
+let events = [
+  Object.create(TimerEvent).init("Timer1", 3000, fgong),
+  Object.create(TimerEvent).init("Timer2", 2000, fgong),
+  Object.create(TimerEvent).init("Timer3", 1000, sgong)
+];
+
+events.forEach(function(elem){
+  appendEventComponent(elem.name, formatTime(elem.duration));
+});
 
 function sgong(){
   new Audio(loudGongFileName).play();
@@ -14,44 +27,62 @@ function fgong(){
 }
 
 function start() {
-  let duration = parseTime(document.getElementById("mainTimer").value);
   let durationElem = document.getElementById("duration");
-  let timerElem = document.getElementById("timerOutput");
 
-  window.myKoLeTimer = Object.create(Timer);
-  myKoLeTimer.init(timerElem, durationElem, [{duration: 1}, {duration: 2}]);
-  myKoLeTimer.start();
+  window.customTimer = Object.create(Timer);
+  customTimer.init(updateCurrentTime, setPaused, removePaused, events);
+  customTimer.start();
+
+  durationElem.innerHTML = formatTime(customTimer.duration);
+}
+
+let timerElem = document.getElementById("currentTime");
+function updateCurrentTime() {
+  timerElem.innerHTML = formatTime(customTimer.currentTime);
+}
+
+function setPaused() {
+  timerElem.innerHTML += " PAUSED";
+}
+
+function removePaused() {
+  timerElem.innerHTML = timerElem.innerHTML.replace(" PAUSED", "");
 }
 
 function pause() {
-  myKoLeTimer.pause();
+  customTimer.pause();
 }
 
 function unpause() {
-  myKoLeTimer.unpause();
+  customTimer.unpause();
 }
 
 function addEvent() {
   let name = document.getElementById("eventName").value;
   let durationString = document.getElementById("eventDuration").value;
   let duration = parseTime(durationString);
+
   let event = Object.create(TimerEvent).init(name, duration, fgong);
   events.push(event);
 
+  appendEventComponent(name, durationString);
+}
+
+function appendEventComponent(name, durationString){
   let durationSpan = document.createElement("span");
-  durationSpan.classList.add("event-duration-span");
+  durationSpan.classList.add(EVENT_DURATION_CLASS);
   durationSpan.innerHTML = durationString;
   let nameSpan = document.createElement("span");
-  nameSpan.classList.add("event-name-span");
+  nameSpan.classList.add(EVENT_NAME_CLASS);
   nameSpan.innerHTML = name;
 
   let eventElement = document.createElement("div");
-  eventElement.classList.add("event");
+  eventElement.classList.add(EVENT_ELEM_CLASS);
   eventElement.appendChild(durationSpan);
   eventElement.appendChild(nameSpan);
 
-  let eventsListElement = document.querySelector(".event-list");
-  eventsListElement.appendChild(eventElement)
+  let eventsListElement = document.querySelector(`.${EVENT_LIST_CLASS}`);
+  eventsListElement.appendChild(eventElement);
 }
 
 function formatTime(timestamp) {

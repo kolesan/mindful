@@ -21,6 +21,12 @@ let Timer = {
 
     this.initiated = true;
 
+    this.duration = (function calculateDuration(events) {
+      return events.reduce(function reducer(a, b) {
+        return a + (b.duration || 0);
+      }, 0);
+    })(this.events);
+
     return this;
   },
   start: function startTimer() {
