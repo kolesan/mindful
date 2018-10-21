@@ -1,5 +1,10 @@
 html {
+    height: 100%;
     box-sizing: border-box;
+
+    --font-family: Share Tech Mono, serif;
+    --font-color: rgba(255, 255, 255, 0.9);
+
 }
 *, *::before, *::after {
     box-sizing: inherit;
@@ -7,23 +12,96 @@ html {
 
 body {
     margin: 0;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 5fr 1fr;
+
+    color: var(--font-color);
 }
 
-section {
-    width: 100vw;
-    height: 33.33333vh;
-    background: gray;
-    border: 10px solid #535252;
-}
-
-.event-list {
+.section {
     width: 100%;
-
-    display: flex;
-    flex-direction: column;
+    border-radius: 5px;
+    background-color: #333333;
 }
 
-.event {
+.title {
+    height: 100%;
+
     display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+
+    font: 3rem var(--font-family);
+}
+
+.controls {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    padding: 0 1rem;
+}
+
+.icon-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+
+    color: var(--font-color);
+    font-size: 3rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls__button__start {
+}
+
+/*.timer > * {*/
+    /*border: 1px solid white;*/
+/*}*/
+
+.timer {
+    padding: 1rem;
+
+    margin: 0.2rem 0;
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-rows: repeat(6, minmax(1rem, 2rem));
+    grid-gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    font: 1.5rem var(--font-family);
+}
+
+.timer__duration_display {
+    margin: auto;
+}
+
+.timer__current_time_display {
+    margin: auto;
+}
+
+.timer__bar {
+    height: 1.8rem;
+    transition: width 1s;
+}
+
+.timer__bar_l1 {
+    width: 66.66666%;
+    background: linear-gradient(to right, #89FF23, #EBFFDA);
+}
+
+.timer__bar_l2 {
+    width: 33.33333%;
+    background: linear-gradient(to right, #EE00FF, #FDDAFF);
+}
+
+.timer__bar_l3 {
+    width: 80%;
+    background: linear-gradient(to right, #FF7A00, #FFECDA);
 }

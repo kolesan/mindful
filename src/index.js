@@ -8,14 +8,25 @@ const EVENT_LIST_CLASS = "event-list";
 const EVENT_NAME_CLASS = "event-name-span";
 const EVENT_DURATION_CLASS = "event-duration-span";
 
-let events = [
-  Object.create(TimerEvent).init("Timer1", 3000, fgong),
-  Object.create(TimerEvent).init("Timer2", 2000, fgong),
-  Object.create(TimerEvent).init("Timer3", 1000, sgong)
-];
+// let events = [
+//   Object.create(TimerEvent).init("Timer1", 3000, fgong),
+//   Object.create(TimerEvent).init("Timer2", 2000, fgong),
+//   Object.create(TimerEvent).init("Timer3", 1000, sgong)
+// ];
+
+let events = (function generateEvents(count) {
+  let events = [];
+
+  for(let i = 0; i < count - 1; i++) {
+    events.push(Object.create(TimerEvent).init(`Timer${i+1}`, 70000, fgong));
+  }
+  events.push(Object.create(TimerEvent).init(`Timer${count}`, 70000, sgong));
+
+  return events;
+})(45);
 
 events.forEach(function(elem){
-  appendEventComponent(elem.name, formatTime(elem.duration));
+  // appendEventComponent(elem.name, formatTime(elem.duration));
 });
 
 function sgong(){

@@ -3,28 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Be mindful</title>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 </head>
 <body>
-    <section class="new-event-panel">
-        <label>
-            Event: <input id="eventDuration" value="00:00:00" type="time" step="1"/>
-        </label>
-        <label>
-            Name: <input id="eventName" value="Meditate" type="text"/>
-        </label>
-        <button id="addEventBtn">Add event</button>
+    <!--<section class="new-event-panel">-->
+        <!--<label>-->
+            <!--Event: <input id="eventDuration" value="00:00:00" type="time" step="1"/>-->
+        <!--</label>-->
+        <!--<label>-->
+            <!--Name: <input id="eventName" value="Meditate" type="text"/>-->
+        <!--</label>-->
+        <!--<button id="addEventBtn">Add event</button>-->
+    <!--</section>-->
+    <section class="title section">
+        Mindful
     </section>
-    <section class="event-display">
-        <h1 id="duration"></h1>
-        <div class="event-list"></div>
-        <h1 id="currentTime"></h1>
+    <section class="timer section">
+        <div class="timer__current_time_l1">00:00:40</div>
+        <div class="timer__bar timer__bar_l1"></div>
+        <div class="timer__duration timer_duration_l1 ">00:01:00</div>
+
+        <div class="timer__current_time_l2">00:00:10</div>
+        <div class="timer__bar timer__bar_l2"></div>
+        <div class="timer__duration timer_duration_l2 ">00:00:30</div>
+
+        <div class="timer__current_time_l3">00:00:12</div>
+        <div class="timer__bar timer__bar_l3"></div>
+        <div class="timer__duration timer_duration_l3 ">00:00:15</div>
     </section>
-    <section class="controls">
-        <button id="start">Start</button>
-        <button id="pause">Pause</button>
-        <button id="unpause">Unpause</button>
-        <button id="fgongBtn">Fgong!</button>
-        <button id="sgongBtn">Sgong!</button>
+    <section class="controls section">
+        <button class="controls__button__start icon-button" id="startBtn"><i class="fas fa-play"></i></button>
+        <button class="controls__button__pause icon-button" id="pauseBtn"><i class="fas fa-pause"></i></button>
+        <button class="controls__button__stop icon-button" id="stopBtn"><i class="fas fa-stop"></i></button>
     </section>
 </body>
 </html>
