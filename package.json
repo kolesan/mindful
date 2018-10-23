@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "dev": "webpack-dev-server --open --config webpack.dev.js",
+    "dev": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "test": "jest"
   },
   "author": "kolesan90@gmail.com",

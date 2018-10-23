@@ -1,55 +1,157 @@
 import './style.css';
-import loudGongFileName from '../resources/long-loud-gong.mp3';
+import slowGongFileName from '../resources/long-loud-gong.mp3';
 import fastGongFileName from '../resources/short-fast-gong.mp3';
-import {TimerEvent, Timer} from './Timer';
+import { newTimerEvent, newTimer } from './Timer';
 
-const EVENT_ELEM_CLASS = "event";
-const EVENT_LIST_CLASS = "event-list";
-const EVENT_NAME_CLASS = "event-name-span";
-const EVENT_DURATION_CLASS = "event-duration-span";
+// let mainEvent = (function generateEvents() {
+//   let l2events = [];
+//
+//   l2events.push(newTimerEvent(`l2_timer0`, 0, 30000, fsgong));
+//   for(let i = 0; i < 50; i++) {
+//     let startTime = i*70000+30000;
+//
+//     let l3events = [];
+//     l3events.push(newTimerEvent(`l3_timer${i+1}.1`, startTime, 30000, ffgong));
+//     l3events.push(newTimerEvent(`l3_timer${i+1}.2`, startTime+30000, 30000, ffgong));
+//
+//     l2events.push(newTimerEvent(`l2_timer${i+1}`, startTime, 70000, fgong, l3events));
+//   }
+//
+//   return newTimerEvent(`MainTimer`, 0, 3600000, sgong, l2events);
+// })();
 
-// let events = [
-//   Object.create(TimerEvent).init("Timer1", 3000, fgong),
-//   Object.create(TimerEvent).init("Timer2", 2000, fgong),
-//   Object.create(TimerEvent).init("Timer3", 1000, sgong)
-// ];
+// let mainEvent = (function generateEvents() {
+//   let l2events = [];
+//   l2events.push(newTimerEvent(`Prep`, 0, 30*1000, fsgong));
+//
+//   l2events.push(newTimerEvent(`Breathing`, 0.5*60*1000, 20*60*1000, fgong));
+//   l2events.push(newTimerEvent(`Body`,      20*60*1000,  15*60*1000, fgong));
+//   l2events.push(newTimerEvent(`Hearing`,   35*60*1000,  5*60*1000, fgong));
+//   l2events.push(newTimerEvent(`Thoughts`,  40*60*1000,  3*60*1000, fgong));
+//   l2events.push(newTimerEvent(`Ground`,    43*60*1000,  2*60*1000, fgong));
+//
+//   return newTimerEvent(`MainTimer`, 0, 45*60*1000, sgong, l2events);
+// })();
 
-let events = (function generateEvents(count) {
-  let events = [];
+let mainEvent = (function generateEvents() {
+  let l2events = [];
 
-  for(let i = 0; i < count - 1; i++) {
-    events.push(Object.create(TimerEvent).init(`Timer${i+1}`, 70000, fgong));
-  }
-  events.push(Object.create(TimerEvent).init(`Timer${count}`, 70000, sgong));
+  l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, fsgong));
 
-  return events;
-})(45);
+  let l3events = [];
+  l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, ffgong));
+  l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, ffgong));
 
-events.forEach(function(elem){
-  // appendEventComponent(elem.name, formatTime(elem.duration));
-});
+  l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, fgong, l3events));
+
+  return newTimerEvent(`MainTimer`, 0, 10000, sgong, l2events);
+})();
+
+console.log(mainEvent);
+
+function fsgong(){
+  playSound(slowGongFileName, 3);
+}
 
 function sgong(){
-  new Audio(loudGongFileName).play();
+  playSound(slowGongFileName);
 }
 
 function fgong(){
-  new Audio(fastGongFileName).play();
+  playSound(fastGongFileName);
 }
 
-function start() {
-  let durationElem = document.getElementById("duration");
+function ffgong(){
+  playSound(fastGongFileName, 3);
+}
 
-  window.customTimer = Object.create(Timer);
-  customTimer.init(updateCurrentTime, setPaused, removePaused, events);
+function playSound(filename, rate=1) {
+  let sound = new Audio(filename);
+  sound.playbackRate = rate;
+  sound.play();
+}
+
+let timerSection = document.querySelector(".timer");
+function start() {
+  window.customTimer = newTimer(updateCurrentTime, setPaused, removePaused, updateBars, mainEvent);
   customTimer.start();
 
-  durationElem.innerHTML = formatTime(customTimer.duration);
+  generateTimerBars(customTimer);
+}
+
+function generateTimerBars(timer) {
+  let eventStack = timer.eventStack;
+  for(let i = 0; i < eventStack.length(); i++) {
+    addBarComponent(i, eventStack.get(i).event);
+  }
+}
+
+function updateBars(stackDiff) {
+  stackDiff.forEach(function eachStackDiff(it) {
+    if (it.sign == "-") {
+      removeBarComponent(it.level)
+    }
+  });
+  stackDiff.forEach(function eachStackDiff(it) {
+    if (it.sign == "+") {
+      addBarComponent(it.level, it.elem.event);
+    }
+  });
+}
+
+function removeBarComponent(level) {
+  let time = document.querySelector(`.timer__current_time_l${level}`);
+  let bar = document.querySelector(`.timer__bar_l${level}`);
+  let duration = document.querySelector(`.timer_duration_l${level}`);
+  removeComponent(time);
+  removeComponent(bar);
+  removeComponent(duration);
+}
+
+function removeComponent(node) {
+  node.parentNode.removeChild(node);
+}
+
+function createComponent(tag, styles, content) {
+  let elem = document.createElement(tag);
+  styles.forEach(function(it) {
+    elem.classList.add(it);
+  });
+  elem.innerHTML = content;
+  return elem;
+}
+
+function addBarComponent(level, event) {
+  let time = createComponent("div", [`timer__current_time_l${level}`], formatTime(0));
+  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`], event.name);
+  let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
+
+  timerSection.appendChild(time);
+  timerSection.appendChild(bar);
+  timerSection.appendChild(duration);
+
+  bar.animate(
+    [
+      { width: 0 },
+      { width: "100%" }
+    ],
+    {
+      duration: event.duration
+    }
+  );
 }
 
 let timerElem = document.getElementById("currentTime");
-function updateCurrentTime() {
-  timerElem.innerHTML = formatTime(customTimer.currentTime);
+function updateCurrentTime(timer) {
+  for(let i = 0; i < timer.eventStack.length(); i++) {
+    updateTimerBar(i, timer.currentTime, timer.eventStack.get(i).event);
+  }
+}
+
+function updateTimerBar(level, currentTime, event) {
+  let timeElem = document.querySelector(`.timer__current_time_l${level}`);
+  let time = currentTime - event.startTime;
+  timeElem.innerHTML = formatTime(time);
 }
 
 function setPaused() {
@@ -64,36 +166,8 @@ function pause() {
   customTimer.pause();
 }
 
-function unpause() {
+function stop() {
   customTimer.unpause();
-}
-
-function addEvent() {
-  let name = document.getElementById("eventName").value;
-  let durationString = document.getElementById("eventDuration").value;
-  let duration = parseTime(durationString);
-
-  let event = Object.create(TimerEvent).init(name, duration, fgong);
-  events.push(event);
-
-  appendEventComponent(name, durationString);
-}
-
-function appendEventComponent(name, durationString){
-  let durationSpan = document.createElement("span");
-  durationSpan.classList.add(EVENT_DURATION_CLASS);
-  durationSpan.innerHTML = durationString;
-  let nameSpan = document.createElement("span");
-  nameSpan.classList.add(EVENT_NAME_CLASS);
-  nameSpan.innerHTML = name;
-
-  let eventElement = document.createElement("div");
-  eventElement.classList.add(EVENT_ELEM_CLASS);
-  eventElement.appendChild(durationSpan);
-  eventElement.appendChild(nameSpan);
-
-  let eventsListElement = document.querySelector(`.${EVENT_LIST_CLASS}`);
-  eventsListElement.appendChild(eventElement);
 }
 
 function formatTime(timestamp) {
@@ -134,4 +208,4 @@ function parseTime(timeString) {
 
 
 
-export { addEvent, start, pause, unpause, fgong, sgong };
+export { start, pause, stop };
