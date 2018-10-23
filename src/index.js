@@ -47,8 +47,6 @@ let mainEvent = (function generateEvents() {
   return newTimerEvent(`MainTimer`, 0, 10000, sgong, l2events);
 })();
 
-console.log(mainEvent);
-
 function fsgong(){
   playSound(slowGongFileName, 3);
 }
@@ -65,10 +63,34 @@ function ffgong(){
   playSound(fastGongFileName, 3);
 }
 
+let volume = 0;
+toggleVolumeIcon();
+
 function playSound(filename, rate=1) {
   let sound = new Audio(filename);
   sound.playbackRate = rate;
+  sound.volume = volume;
   sound.play();
+}
+
+function toggleMute() {
+  volume = toggleVolume(volume);
+  toggleVolumeIcon();
+}
+
+function toggleVolume(volume) {
+  return Number(!volume);
+}
+
+function toggleVolumeIcon() {
+  let icon = document.querySelector(".controls__button__volume").querySelector(".fas");
+  if (volume) {
+    icon.classList.remove("fa-volume-mute");
+    icon.classList.add("fa-volume-up");
+  } else {
+    icon.classList.remove("fa-volume-up");
+    icon.classList.add("fa-volume-mute");
+  }
 }
 
 let timerSection = document.querySelector(".timer");
@@ -117,19 +139,24 @@ function createComponent(tag, styles, content) {
   styles.forEach(function(it) {
     elem.classList.add(it);
   });
-  elem.innerHTML = content;
+  if (content) {
+    elem.innerHTML = content;
+  }
   return elem;
 }
 
 function addBarComponent(level, event) {
   let time = createComponent("div", [`timer__current_time_l${level}`], formatTime(0));
-  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`], event.name);
+  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
   let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
 
   timerSection.appendChild(time);
   timerSection.appendChild(bar);
   timerSection.appendChild(duration);
 
+  bar.style.transform = "translate3d(0,0,0)";
+  bar.style.willChange = "width";
+  bar.style.border = "1px solid transparent";
   bar.animate(
     [
       { width: 0 },
@@ -208,4 +235,4 @@ function parseTime(timeString) {
 
 
 
-export { start, pause, stop };
+export { start, pause, stop, toggleMute, toggleVolume };

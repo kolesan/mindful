@@ -79,16 +79,26 @@ body {
     align-items: center;
 }
 
+/*.timer__bar_l0 {*/
+    /*background: linear-gradient(to right, #89FF23, #EBFFDA);*/
+/*}*/
+
+/*.timer__bar_l1 {*/
+    /*background: linear-gradient(to right, #EE00FF, #FDDAFF);*/
+/*}*/
+
+/*.timer__bar_l2 {*/
+    /*background: linear-gradient(to right, #FF7A00, #FFECDA);*/
+/*}*/
+
 .timer__bar_l0 {
-    background: linear-gradient(to right, #89FF23, #EBFFDA);
+    background: red;
 }
-
 .timer__bar_l1 {
-    background: linear-gradient(to right, #EE00FF, #FDDAFF);
+    background: green;
 }
-
 .timer__bar_l2 {
-    background: linear-gradient(to right, #FF7A00, #FFECDA);
+    background: orange;
 }
 
 .controls {
@@ -109,4 +119,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.icon-button-disabled {
+    color: rgba(205, 205, 205, 0.4);
+}
+
+.controls__button__volume {
+    border-left: 2px solid var(--font-color);
+    padding: 0 2rem;
+    flex: 0 0 25%;
 }
