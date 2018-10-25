@@ -1,97 +1,52 @@
 import './style.css';
-import slowGongFileName from '../resources/long-loud-gong.mp3';
-import fastGongFileName from '../resources/short-fast-gong.mp3';
 import { newTimerEvent, newTimer } from './Timer';
+import * as audio from './Audio';
+import * as log from './Logging';
 
-// let mainEvent = (function generateEvents() {
+// let mainEvent = (function yoga() {
 //   let l2events = [];
 //
-//   l2events.push(newTimerEvent(`l2_timer0`, 0, 30000, fsgong));
+//   l2events.push(newTimerEvent(`l2_timer0`, 0, 30000, audio.fsgong));
 //   for(let i = 0; i < 50; i++) {
 //     let startTime = i*70000+30000;
 //
 //     let l3events = [];
-//     l3events.push(newTimerEvent(`l3_timer${i+1}.1`, startTime, 30000, ffgong));
-//     l3events.push(newTimerEvent(`l3_timer${i+1}.2`, startTime+30000, 30000, ffgong));
+//     l3events.push(newTimerEvent(`l3_timer${i+1}.1`, startTime, 30000, audio.ffgong));
+//     l3events.push(newTimerEvent(`l3_timer${i+1}.2`, startTime+30000, 30000, audio.ffgong));
 //
-//     l2events.push(newTimerEvent(`l2_timer${i+1}`, startTime, 70000, fgong, l3events));
+//     l2events.push(newTimerEvent(`l2_timer${i+1}`, startTime, 70000, audio.fgong, l3events));
 //   }
 //
-//   return newTimerEvent(`MainTimer`, 0, 3600000, sgong, l2events);
+//   return newTimerEvent(`MainTimer`, 0, 3600000, audio.sgong, l2events);
 // })();
 
-// let mainEvent = (function generateEvents() {
+// let mainEvent = (function meditation() {
 //   let l2events = [];
-//   l2events.push(newTimerEvent(`Prep`, 0, 30*1000, fsgong));
+//   l2events.push(newTimerEvent(`Prep`, 0, 30*1000, audio.fsgong));
 //
-//   l2events.push(newTimerEvent(`Breathing`, 0.5*60*1000, 20*60*1000, fgong));
-//   l2events.push(newTimerEvent(`Body`,      20*60*1000,  15*60*1000, fgong));
-//   l2events.push(newTimerEvent(`Hearing`,   35*60*1000,  5*60*1000, fgong));
-//   l2events.push(newTimerEvent(`Thoughts`,  40*60*1000,  3*60*1000, fgong));
-//   l2events.push(newTimerEvent(`Ground`,    43*60*1000,  2*60*1000, fgong));
+//   l2events.push(newTimerEvent(`Breathing`, 0.5*60*1000, 20*60*1000, audio.fgong));
+//   l2events.push(newTimerEvent(`Body`,      20*60*1000,  15*60*1000, audio.fgong));
+//   l2events.push(newTimerEvent(`Hearing`,   35*60*1000,  5*60*1000, audio.fgong));
+//   l2events.push(newTimerEvent(`Thoughts`,  40*60*1000,  3*60*1000, audio.fgong));
+//   l2events.push(newTimerEvent(`Ground`,    43*60*1000,  2*60*1000, audio.fgong));
 //
-//   return newTimerEvent(`MainTimer`, 0, 45*60*1000, sgong, l2events);
+//   return newTimerEvent(`MainTimer`, 0, 46*60*1000, audio.sgong, l2events);
 // })();
 
-let mainEvent = (function generateEvents() {
+let mainEvent = (function test() {
   let l2events = [];
 
-  l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, fsgong));
+  l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, audio.fsgong));
 
   let l3events = [];
-  l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, ffgong));
-  l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, ffgong));
+  l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, audio.ffgong));
+  l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, audio.ffgong));
 
-  l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, fgong, l3events));
+  l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, audio.fgong, l3events));
 
-  return newTimerEvent(`MainTimer`, 0, 10000, sgong, l2events);
+  return newTimerEvent(`MainTimer`, 0, 10000, audio.sgong, l2events);
 })();
 
-function fsgong(){
-  playSound(slowGongFileName, 3);
-}
-
-function sgong(){
-  playSound(slowGongFileName);
-}
-
-function fgong(){
-  playSound(fastGongFileName);
-}
-
-function ffgong(){
-  playSound(fastGongFileName, 3);
-}
-
-let volume = 0;
-toggleVolumeIcon();
-
-function playSound(filename, rate=1) {
-  let sound = new Audio(filename);
-  sound.playbackRate = rate;
-  sound.volume = volume;
-  sound.play();
-}
-
-function toggleMute() {
-  volume = toggleVolume(volume);
-  toggleVolumeIcon();
-}
-
-function toggleVolume(volume) {
-  return Number(!volume);
-}
-
-function toggleVolumeIcon() {
-  let icon = document.querySelector(".controls__button__volume").querySelector(".fas");
-  if (volume) {
-    icon.classList.remove("fa-volume-mute");
-    icon.classList.add("fa-volume-up");
-  } else {
-    icon.classList.remove("fa-volume-up");
-    icon.classList.add("fa-volume-mute");
-  }
-}
 
 let timerSection = document.querySelector(".timer");
 function start() {
@@ -156,7 +111,6 @@ function addBarComponent(level, event) {
 
   bar.style.transform = "translate3d(0,0,0)";
   bar.style.willChange = "width";
-  bar.style.border = "1px solid transparent";
   bar.animate(
     [
       { width: 0 },
@@ -235,4 +189,4 @@ function parseTime(timeString) {
 
 
 
-export { start, pause, stop, toggleMute, toggleVolume };
+export { start, pause, stop };

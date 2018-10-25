@@ -79,27 +79,25 @@ body {
     align-items: center;
 }
 
-/*.timer__bar_l0 {*/
-    /*background: linear-gradient(to right, #89FF23, #EBFFDA);*/
-/*}*/
-
-/*.timer__bar_l1 {*/
-    /*background: linear-gradient(to right, #EE00FF, #FDDAFF);*/
-/*}*/
-
-/*.timer__bar_l2 {*/
-    /*background: linear-gradient(to right, #FF7A00, #FFECDA);*/
-/*}*/
-
 .timer__bar_l0 {
-    background: red;
+    background: linear-gradient(to right, #89FF23 65%, #EBFFDA);
 }
 .timer__bar_l1 {
-    background: green;
+    background: linear-gradient(to right, #EE00FF 65%, #FDDAFF);
 }
 .timer__bar_l2 {
-    background: orange;
+    background: linear-gradient(to right, #FF7A00 65%, #FFECDA);
 }
+
+/*.timer__bar_l0 {*/
+    /*background: red;*/
+/*}*/
+/*.timer__bar_l1 {*/
+    /*background: green;*/
+/*}*/
+/*.timer__bar_l2 {*/
+    /*background: orange;*/
+/*}*/
 
 .controls {
     display: flex;
@@ -129,4 +127,25 @@ body {
     border-left: 2px solid var(--font-color);
     padding: 0 2rem;
     flex: 0 0 25%;
+
+    /*position: relative;*/
+}
+
+.controls__volume__slider {
+    /*visibility: hidden;*/
+
+    /*height: 250%;*/
+    /*padding: 100% 50%;*/
+    /*position: absolute;*/
+    /*background: red;*/
+    /*border: 2px solid white;*/
+
+    /*left: -100%;*/
+    /*top: -260%; !*Investigate transform origin point to fix this*!*/
+
+    /*transform: rotateZ(-90deg);*/
+}
+
+.controls__button__volume:hover > .controls__volume__slider {
+    /*visibility: visible;*/
 }
