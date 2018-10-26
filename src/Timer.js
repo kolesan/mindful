@@ -17,25 +17,18 @@ function newTimerEvent(name, startTime, duration, callback, childEvents) {
 }
 
 let Timer = {
-  init: function initTimer(onTick, onPause, onUnpause, onStackUpdate, mainEvent) {
+  init: function initTimer(onTick, onEventCompletion, mainEvent) {
     this.onTick = onTick;
-    this.onPause = onPause;
-    this.onUnpause = onUnpause;
-    this.onStackUpdate = onStackUpdate;
-
-    this.currentTime = 0;
+    this.onEventCompletion = onEventCompletion;
+    this.mainEvent = mainEvent;
     this.duration = mainEvent.duration;
 
+    this.currentTime = 0;
     this.eventStack = newEventStack(mainEvent);
-
-    this.initiated = true;
 
     return this;
   },
   start: function startTimer() {
-    if (!this.initiated) {
-      throw new Error("Timer has to be initiated prior to starting it");
-    }
     this.launch();
   },
   launch: function launchTimer() {
@@ -43,7 +36,7 @@ let Timer = {
   },
   tick: function tickTimer() {
     this.currentTime += 1000;
-    this.onTick(this);
+    this.onTick(this.currentTime);
 
     if (this.currentTime >= this.eventStack.head().event.endTime) {
       this.eventStack.head().event.callback();
@@ -56,23 +49,26 @@ let Timer = {
         clearInterval(this.intervalId);
       }
 
-      this.onStackUpdate(calculateStackDiff(stackBefore, stackAfter));
+      this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
     }
   },
   pause: function pauseTimer() {
-    this.onPause();
     clearInterval(this.intervalId);
   },
-  unpause: function unpauseTimer() {
-    this.onUnpause();
+  resume: function resumeTimer() {
     this.launch();
   },
-  finished: function isTimerFinished() {
-    return this.stack.empty();
+  stop: function stopTimer() {
+    clearInterval(this.intervalId);
+    this.currentTime = 0;
+    this.eventStack = newEventStack(this.mainEvent);
+  },
+  currentEvents: function getCurrentEvents() {
+    return this.eventStack.snapshot().map((it) => { return it.event });
   }
 };
-function newTimer(onTick, onPause, onUnpause, onStackUpdate, mainEvent) {
-  return Object.create(Timer).init(onTick, onPause, onUnpause, onStackUpdate, mainEvent);
+function newTimer(onTick, onEventCompletion, mainEvent) {
+  return Object.create(Timer).init(onTick, onEventCompletion, mainEvent);
 }
 
 function calculateStackDiff(before, after) {

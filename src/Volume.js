@@ -2,6 +2,8 @@ import * as VolumeModel from './VolumeModel';
 import * as log from './Logging';
 
 const volumeObj = VolumeModel.newInstance();
+setVolumeIcon();
+setVolumeSliderValue();
 
 function getVolume() {
   return volumeObj.volume;
