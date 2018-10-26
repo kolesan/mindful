@@ -1,7 +1,7 @@
 import { newEventStack } from "./Stack";
 import { instance as eventBus } from './EventBus';
 
-const FINISH_EVENT_TYPE = "TIMER_FINISHED";
+const TIMER_FINISHED = "TIMER_FINISHED";
 
 let TimerEvent = {
   init: function initTimerEvent(name, startTime, duration, callback, children=[]) {
@@ -48,12 +48,12 @@ let Timer = {
       this.eventStack.next();
       let stackAfter = this.eventStack.snapshot();
 
+      this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
+
       if (this.eventStack.empty()) {
         this.stop();
-        eventBus.fire(FINISH_EVENT_TYPE);
+        eventBus.fire(TIMER_FINISHED);
       }
-
-      this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
     }
   },
   pause: function pauseTimer() {
@@ -97,4 +97,4 @@ function diffElem(sign, elem, level) {
   return {sign: sign, elem: elem, level: level};
 }
 
-export { newTimerEvent, newTimer, FINISH_EVENT_TYPE };
+export { newTimerEvent, newTimer, TIMER_FINISHED };
