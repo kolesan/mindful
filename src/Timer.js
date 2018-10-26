@@ -1,5 +1,6 @@
 import { newEventStack } from "./Stack";
 import { instance as eventBus } from './EventBus';
+import * as log from './Logging';
 
 const TIMER_FINISHED = "TIMER_FINISHED";
 
@@ -32,6 +33,7 @@ let Timer = {
     return this;
   },
   start: function startTimer() {
+    this.startTime = Date.now();
     this.launch();
   },
   launch: function launchTimer() {
@@ -57,10 +59,15 @@ let Timer = {
     }
   },
   pause: function pauseTimer() {
+    this.msLeftoversOnPause = 1000 - (Date.now() - this.startTime) % 1000;
     clearInterval(this.intervalId);
+    log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   resume: function resumeTimer() {
-    this.launch();
+    setTimeout(() => {
+      this.tick();
+      this.launch();
+    }, this.msLeftoversOnPause);
   },
   stop: function stopTimer() {
     clearInterval(this.intervalId);
