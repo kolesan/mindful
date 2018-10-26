@@ -2,6 +2,8 @@ import { timerModule } from './index';
 import { toggleMuted, setVolume } from './Volume';
 import * as log from './Logging';
 import * as constants from './Constants';
+import * as eventBus from './EventBus';
+import { FINISH_EVENT_TYPE } from './Timer';
 
 let playBtn = document.getElementById("playBtn");
 let pauseBtn = document.getElementById("pauseBtn");
@@ -11,6 +13,8 @@ let volumeSlider = document.getElementById("volumeSlider");
 
 let started = false;
 let paused = false;
+
+eventBus.instance.bindListener(eventBus.listener(FINISH_EVENT_TYPE, stop));
 
 function disable(btn) {
   btn.setAttribute("disabled", true);

@@ -1,4 +1,7 @@
 import { newEventStack } from "./Stack";
+import { instance as eventBus } from './EventBus';
+
+const FINISH_EVENT_TYPE = "TIMER_FINISHED";
 
 let TimerEvent = {
   init: function initTimerEvent(name, startTime, duration, callback, children=[]) {
@@ -17,10 +20,9 @@ function newTimerEvent(name, startTime, duration, callback, childEvents) {
 }
 
 let Timer = {
-  init: function initTimer(onTick, onEventCompletion, onFinish, mainEvent) {
+  init: function initTimer(onTick, onEventCompletion, mainEvent) {
     this.onTick = onTick;
     this.onEventCompletion = onEventCompletion;
-    this.onFinish = onFinish;
     this.mainEvent = mainEvent;
     this.duration = mainEvent.duration;
 
@@ -48,7 +50,7 @@ let Timer = {
 
       if (this.eventStack.empty()) {
         this.stop();
-        this.onFinish();
+        eventBus.fire(FINISH_EVENT_TYPE);
       }
 
       this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
@@ -69,8 +71,8 @@ let Timer = {
     return this.eventStack.snapshot().map((it) => { return it.event });
   }
 };
-function newTimer(onTick, onEventCompletion, onFinish, mainEvent) {
-  return Object.create(Timer).init(onTick, onEventCompletion, onFinish, mainEvent);
+function newTimer(onTick, onEventCompletion, mainEvent) {
+  return Object.create(Timer).init(onTick, onEventCompletion, mainEvent);
 }
 
 function calculateStackDiff(before, after) {
@@ -95,4 +97,4 @@ function diffElem(sign, elem, level) {
   return {sign: sign, elem: elem, level: level};
 }
 
-export { newTimerEvent, newTimer };
+export { newTimerEvent, newTimer, FINISH_EVENT_TYPE };

@@ -22,7 +22,7 @@ function stop(timer, display) {
 }
 
 function newInstance(mainEvent, timerComponentContainer) {
-  let timer = newTimer(onTimerTick, onEventCompletion, onFinish, mainEvent);
+  let timer = newTimer(onTimerTick, onEventCompletion, mainEvent);
   let display = newTimerDisplay(timer, timerComponentContainer);
 
   return Object.freeze({
@@ -38,10 +38,6 @@ function newInstance(mainEvent, timerComponentContainer) {
 
   function onEventCompletion(eventUpdates) {
     display.updateBars(eventUpdates);
-  }
-
-  function onFinish() {
-    display.stop();
   }
 }
 
