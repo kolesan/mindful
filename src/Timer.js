@@ -17,9 +17,10 @@ function newTimerEvent(name, startTime, duration, callback, childEvents) {
 }
 
 let Timer = {
-  init: function initTimer(onTick, onEventCompletion, mainEvent) {
+  init: function initTimer(onTick, onEventCompletion, onFinish, mainEvent) {
     this.onTick = onTick;
     this.onEventCompletion = onEventCompletion;
+    this.onFinish = onFinish;
     this.mainEvent = mainEvent;
     this.duration = mainEvent.duration;
 
@@ -46,7 +47,8 @@ let Timer = {
       let stackAfter = this.eventStack.snapshot();
 
       if (this.eventStack.empty()) {
-        clearInterval(this.intervalId);
+        this.stop();
+        this.onFinish();
       }
 
       this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
@@ -67,8 +69,8 @@ let Timer = {
     return this.eventStack.snapshot().map((it) => { return it.event });
   }
 };
-function newTimer(onTick, onEventCompletion, mainEvent) {
-  return Object.create(Timer).init(onTick, onEventCompletion, mainEvent);
+function newTimer(onTick, onEventCompletion, onFinish, mainEvent) {
+  return Object.create(Timer).init(onTick, onEventCompletion, onFinish, mainEvent);
 }
 
 function calculateStackDiff(before, after) {

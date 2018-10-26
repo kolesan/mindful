@@ -143,7 +143,10 @@ function newInstance(timer, container){
     start: function () { animations = start(bars, timer.currentEvents()) },
     pause: function() { pause(animations) },
     resume: function() { resume(animations) },
-    stop: function() { stop(animations, container) },
+    stop: function() {
+      stop(animations, container);
+      bars = generateBars(timer.currentEvents(), container);
+    },
     updateCurrentTime: function() { updateTime(timer.currentTime, timer.currentEvents(), container) },
     updateBars: function(updates) { updateBars(updates, animations, container) }
   });

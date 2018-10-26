@@ -1,22 +1,61 @@
 import { timerModule } from './index';
 import { toggleMuted, setVolume } from './Volume';
 import * as log from './Logging';
+import * as constants from './Constants';
+
+let playBtn = document.getElementById("playBtn");
+let pauseBtn = document.getElementById("pauseBtn");
+let stopBtn = document.getElementById("stopBtn");
+let volumeBtn = document.getElementById("volumeBtn");
+let volumeSlider = document.getElementById("volumeSlider");
+
+let started = false;
+let paused = false;
+
+function disable(btn) {
+  btn.setAttribute("disabled", true);
+}
+
+function enable(btn) {
+  btn.removeAttribute("disabled");
+}
 
 function start() {
-  log.trace(timerModule);
-  timerModule.start();
+  if (!started) {
+    timerModule.start();
+  } else {
+    timerModule.resume();
+  }
+  started = true;
+  paused = false;
+  enable(pauseBtn);
+  enable(stopBtn);
+  disable(playBtn)
 }
 
 function pause() {
-  timerModule.pause();
+  if (!paused) {
+    timerModule.pause();
+  }
+  started = true;
+  paused = true;
+  disable(pauseBtn);
+  enable(playBtn)
 }
 
 function stop() {
-  timerModule.stop();
+  if (started) {
+    timerModule.stop();
+  }
+  started = false;
+  paused = false;
+  disable(pauseBtn);
+  disable(stopBtn);
+  enable(playBtn)
 }
 
-document.getElementById("startBtn").addEventListener("click", start);
-document.getElementById("pauseBtn").addEventListener("click", pause);
-document.getElementById("stopBtn").addEventListener("click", stop);
-document.getElementById("volumeBtn").addEventListener("click", toggleMuted);
-document.getElementById("volumeSlider").addEventListener("input", setVolume);
+playBtn.addEventListener("click", start);
+pauseBtn.addEventListener("click", pause);
+stopBtn.addEventListener("click", stop);
+volumeBtn.addEventListener("click", toggleMuted);
+volumeSlider.addEventListener("input", setVolume);
