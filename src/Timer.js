@@ -61,7 +61,7 @@ let Timer = {
   pause: function pauseTimer() {
     this.msLeftoversOnPause = 1000 - (Date.now() - this.startTime) % 1000;
     clearInterval(this.intervalId);
-    log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
+    // log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   resume: function resumeTimer() {
     setTimeout(() => {
@@ -101,7 +101,7 @@ function calculateStackDiff(before, after) {
   return diff;
 }
 function diffElem(sign, elem, level) {
-  return {sign: sign, elem: elem, level: level};
+  return {sign, elem, level};
 }
 
 export { newTimerEvent, newTimer, TIMER_FINISHED };

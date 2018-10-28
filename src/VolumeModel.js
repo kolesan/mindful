@@ -11,7 +11,7 @@ function normalizeVolume(val = UNMUTE_VOLUME) {
   return minmaxVolume(val);
 }
 
-function newInstance(muted = false, volume = MAX_VOLUME) {
+function newInstance(muted = false, volume = UNMUTE_VOLUME) {
   let _muted = muted;
   let _volume = volume;
 

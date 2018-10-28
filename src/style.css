@@ -3,7 +3,7 @@ html {
     box-sizing: border-box;
 
     --font-family: Share Tech Mono, serif;
-    --font-color: rgba(235, 235, 235, 0.9);
+    --font-color: rgba(255, 255, 255, 0.85);
 
 }
 *, *::before, *::after {
@@ -14,42 +14,60 @@ body {
     margin: 0;
     height: 100%;
 
+    color: var(--font-color);
+    font: 2rem var(--font-family);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #242626;
+}
+
+.main_screen {
+    width: 84vw;
+    height: 87vh;
+
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 2fr 3fr 1fr;
+    grid-template-rows: 4rem auto 2fr auto 3fr auto 4rem;
 
-    color: var(--font-color);
-    font: 3rem var(--font-family);
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 0 15px black;
+    background-color: #3E4040;
 }
 
 .section {
     width: 100%;
-    border-radius: 5px;
-    background-color: #333333;
+    padding: 0 1rem;
 }
 
 .title {
-    height: 100%;
-
     display: flex;
-    margin: auto;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
-    font: 3rem var(--font-family);
+    font: 4rem var(--font-family);
+}
+
+.section_separator {
+    width: 98%;
+    border-bottom: 1px solid #6F7373;
+    justify-self: center;
 }
 
 .description {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 0.2rem;
 }
 
 .timer {
     padding: 1rem;
 
-    margin: 0.2rem 0;
     display: grid;
     grid-template-columns: 1fr 10fr 1fr;
     grid-template-rows: repeat(6, minmax(1rem, 2rem));
@@ -57,6 +75,8 @@ body {
     align-items: center;
     justify-content: center;
     font: 1.5rem var(--font-family);
+
+    align-self: start;
 }
 
 .timer__duration_display {
@@ -74,36 +94,34 @@ body {
             -1px  0px 1px gray,
              0px -1px 1px gray,
              1px  1px 1px gray;
-    padding-left: 0.5rem;
     display: flex;
     align-items: center;
 }
 
-.timer__bar_l0 {
-    background: linear-gradient(to right, #89FF23 65%, #EBFFDA);
-}
-.timer__bar_l1 {
-    background: linear-gradient(to right, #EE00FF 65%, #FDDAFF);
-}
-.timer__bar_l2 {
-    background: linear-gradient(to right, #FF7A00 65%, #FFECDA);
-}
-
 /*.timer__bar_l0 {*/
-    /*background: red;*/
+    /*background: linear-gradient(to right, #89FF23 65%, #EBFFDA);*/
 /*}*/
 /*.timer__bar_l1 {*/
-    /*background: green;*/
+    /*background: linear-gradient(to right, #EE00FF 65%, #FDDAFF);*/
 /*}*/
 /*.timer__bar_l2 {*/
-    /*background: orange;*/
+    /*background: linear-gradient(to right, #FF7A00 65%, #FFECDA);*/
 /*}*/
+
+.timer__bar_l0 {
+    background: #89FF23;
+}
+.timer__bar_l1 {
+    background: #EE00FF;
+}
+.timer__bar_l2 {
+    background: #FF7A00;
+}
 
 .controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1rem;
 }
 
 .icon-button {
@@ -112,11 +130,13 @@ body {
     background: transparent;
 
     color: var(--font-color);
-    font-size: 3rem;
+    font-size: 2rem;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    cursor: pointer;
 }
 
 .icon-button:disabled {

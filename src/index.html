@@ -7,35 +7,42 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 </head>
 <body>
-    <section class="title section">
-        Mindful Yoga
-    </section>
-    <section class="description section">
-        30s prep<br/>
-        70s poses x 50<br/>
-        01h total
-    </section>
-    <section class="timer section">
-        <!--<div class="timer__current_time_l2">00:00:12</div>-->
-        <!--<div class="timer__bar timer__bar_l2"></div>-->
-        <!--<div class="timer__duration timer_duration_l2">00:00:15</div>-->
+    <section class="main_screen">
+        <section class="title section">
+            <button class="controls__button__play icon-button" id="menuBtn"><i class="fas fa-bars"></i></button>
+            <span>Mindful Yoga</span>
+            <button class="controls__button__play icon-button" id="editBtn"><i class="fas fa-edit"></i></button>
+        </section>
+        <div class="section_separator"></div>
+        <section class="description section">
+            30s prep<br/>
+            70s poses x 50<br/>
+            01h total
+        </section>
+        <div class="section_separator"></div>
+        <section class="timer section">
+            <!--<div class="timer__current_time_l2">00:00:12</div>-->
+            <!--<div class="timer__bar timer__bar_l2"></div>-->
+            <!--<div class="timer__duration timer_duration_l2">00:00:15</div>-->
 
-        <!--<div class="timer__current_time_l1">00:00:10</div>-->
-        <!--<div class="timer__bar timer__bar_l1"></div>-->
-        <!--<div class="timer__duration timer_duration_l1">00:00:30</div>-->
+            <!--<div class="timer__current_time_l1">00:00:10</div>-->
+            <!--<div class="timer__bar timer__bar_l1"></div>-->
+            <!--<div class="timer__duration timer_duration_l1">00:00:30</div>-->
 
-        <!--<div class="timer__current_time_l0">00:00:40</div>-->
-        <!--<div class="timer__bar timer__bar_l0"></div>-->
-        <!--<div class="timer__duration timer_duration_l0">00:01:00</div>-->
-    </section>
-    <section class="controls section">
-        <button class="controls__button__play icon-button" id="playBtn"><i class="fas fa-play"></i></button>
-        <button class="controls__button__pause icon-button" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
-        <button class="controls__button__stop icon-button" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
-        <button class="controls__button__volume icon-button" id="volumeBtn">
-            <i class="fas fa-volume-up"></i>
-        </button>
-        <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
+            <!--<div class="timer__current_time_l0">00:00:40</div>-->
+            <!--<div class="timer__bar timer__bar_l0"></div>-->
+            <!--<div class="timer__duration timer_duration_l0">00:01:00</div>-->
+        </section>
+        <div class="section_separator"></div>
+        <section class="controls section">
+            <button class="controls__button__play icon-button" id="playBtn"><i class="fas fa-play"></i></button>
+            <button class="controls__button__pause icon-button" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
+            <button class="controls__button__stop icon-button" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
+            <button class="controls__button__volume icon-button" id="volumeBtn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
+        </section>
     </section>
 </body>
 </html>
