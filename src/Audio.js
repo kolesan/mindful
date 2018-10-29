@@ -25,4 +25,10 @@ function playSound(filename, rate=1) {
   sound.play();
 }
 
+(function preloadAudio() {
+  new Audio(slowGongFileName);
+  new Audio(fastGongFileName);
+})();
+
+
 export { sgong, fsgong, fgong, ffgong };
