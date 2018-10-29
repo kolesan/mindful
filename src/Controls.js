@@ -1,4 +1,4 @@
-import { timerModule } from './index';
+import { timerModule } from './TestDataPreload';
 import { toggleMuted, setVolume } from './Volume';
 import * as log from './Logging';
 import * as constants from './Constants';
@@ -51,3 +51,5 @@ pauseBtn.addEventListener("click", pause);
 stopBtn.addEventListener("click", stop);
 volumeBtn.addEventListener("click", toggleMuted);
 volumeSlider.addEventListener("input", setVolume);
+
+export { disable, enable };

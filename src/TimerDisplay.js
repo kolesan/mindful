@@ -110,6 +110,7 @@ function clearScreen(container) {
 
 function newInstance(timer, container){
   let animations = [];
+  clearScreen(container);
   let bars = generateBars(timer.currentEvents(), container);
   return Object.freeze({
     start: function () { animations = startAnimations(bars, timer.currentEvents()) },
