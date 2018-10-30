@@ -70,6 +70,69 @@ let meditationProgram = {
   mainEvent: meditation(),
 };
 
+let absAthleanXProgram = {
+  title: "AthleanXABS",
+  // description: `
+  //    60s Seated Ab Circles L
+  //    3s preparation
+  //    60s Seated Ab Circles R
+  //    3s preparation
+  //    60s Drunken Mountain Climber
+  //    30s REST
+  //    60s Marching Planks
+  //    3s preparation
+  //    60s Scissors
+  //    3s preparation
+  //    30s Starfish Crunch
+  //    30s REST
+  //    30s Russian 'V' Tuck Twist
+  // `,
+  description: `AthleanX ABS`,
+  mainEvent: (function() {
+    return EventBuilder()
+      .add(`Preparation`, s(10), audio.fsgong)
+      .add(`Seated Ab Circles L`, s(60), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Seated Ab Circles R`, s(60), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Drunken Mountain Climber`, s(60), audio.fgong)
+      .add(`REST`, s(30), audio.fsgong)
+      .add(`Marching Planks`, s(60), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Scissors`, s(60), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Starfish Crunch`, s(30), audio.fgong)
+      .add(`REST`, s(30), audio.fsgong)
+      .add(`Russian 'V' Tuck Twist`, s(30), audio.fsgong)
+      .build(`MainTimer`, audio.sgong);
+  })()
+};
+
+function s(c) {
+  return c*1000;
+}
+function m(c) {
+  return s(c)*60;
+}
+function h(c) {
+  return m(c)*60;
+}
+
+function EventBuilder() {
+  let totalTime = 0;
+  let children = [];
+  return Object.freeze({
+    add(name, duration, callback, grandChildren) {
+      children.push(newTimerEvent(name, totalTime, duration, callback, grandChildren));
+      totalTime += duration;
+      return this;
+    },
+    build(name, callback) {
+      return newTimerEvent(name, 0, totalTime + 1000, callback, children);
+    }
+  });
+}
+
 let testProgram = {
   title: "Test",
   description: `
@@ -80,6 +143,7 @@ let testProgram = {
 
 
 let yogaBtn = document.getElementById("yogaBtn");
+let absBtn = document.getElementById("absBtn");
 let meditationBtn = document.getElementById("meditationBtn");
 let testBtn = document.getElementById("testBtn");
 
@@ -90,28 +154,35 @@ function loadProgarm(program) {
 
   timerModule = TimerModule.newInstance(program.mainEvent, document.querySelector(".timer"));
 }
+
 function loadTestProgram() {
   loadProgarm(testProgram);
-  controls.disable(testBtn);
-  controls.enable(yogaBtn);
-  controls.enable(meditationBtn);
+  disableOneEnableOthers(testBtn);
 }
 function loadYogaProgram() {
   loadProgarm(yogaProgram);
-  controls.disable(yogaBtn);
-  controls.enable(testBtn);
-  controls.enable(meditationBtn)
+  disableOneEnableOthers(yogaBtn);
+}
+function loadAbsProgram() {
+  loadProgarm(absAthleanXProgram);
+  disableOneEnableOthers(absBtn);
 }
 function loadMeditationProgram() {
   loadProgarm(meditationProgram);
-  controls.disable(meditationBtn);
-  controls.enable(yogaBtn);
-  controls.enable(testBtn)
+  disableOneEnableOthers(meditationBtn);
+}
+function disableOneEnableOthers(btn) {
+  enableAllButtons();
+  controls.disable(btn);
+}
+function enableAllButtons() {
+  let buttons = Array.from(document.querySelector(".description_program_controls").children);
+  buttons.forEach(it => controls.enable(it));
 }
 
 loadTestProgram();
-
 yogaBtn.addEventListener("click", loadYogaProgram);
+absBtn.addEventListener("click", loadAbsProgram);
 meditationBtn.addEventListener("click", loadMeditationProgram);
 testBtn.addEventListener("click", loadTestProgram);
 
