@@ -58,7 +58,7 @@ function addBarComponent(level, event, container) {
   let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
   let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
 
-  bar.style.width = 0;
+  bar.style.backgroundSize = "0% 100%";
 
   container.appendChild(time);
   container.appendChild(bar);
@@ -75,11 +75,10 @@ function updateBarTime(level, time, container) {
 function animateBar(bar, duration) {
   // log.trace({bar, duration});
   bar.style.transform = "translate3d(0,0,0)";
-  bar.style.willChange = "width";
   return bar.animate(
     [
-      { width: 0 },
-      { width: "100%" }
+      { backgroundSize: "0" },
+      { backgroundSize: "100%" }
     ],
     { duration: duration }
   );

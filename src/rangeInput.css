@@ -62,8 +62,8 @@ input[type=range]::-webkit-slider-runnable-track {
     height: 8.4px;
     cursor: pointer;
     box-shadow: inset 1px 1px 1px 0px #121a20;
-    border-radius: 2px;
-    border: 0.2px solid #202228;
+    border-radius: 3px;
+    border: 0.3px solid #202228;
 
     background: linear-gradient(to right, var(--font-color) 70%, gray) #313233;
     background-size: 40% 100%;
@@ -74,8 +74,8 @@ input[type=range]::-moz-range-track {
     height: 8.4px;
     cursor: pointer;
     box-shadow: inset 1px 1px 1px 0px #121a20;
-    border-radius: 2px;
-    border: 0.2px solid #202228;
+    border-radius: 3px;
+    border: 0.3px solid #202228;
 
     background: linear-gradient(to right, var(--font-color) 70%, gray) #313233;
     background-size: 40% 100%;

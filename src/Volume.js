@@ -13,6 +13,8 @@ setVolumeSliderValue(volumeObj.volume);
 initSliderStyleSheet(volumeObj.volume);
 setSliderBackground(volumeObj.volume);
 
+
+
 function getVolume() {
   return volumeObj.volume;
 }
