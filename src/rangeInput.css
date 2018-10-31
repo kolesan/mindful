@@ -81,3 +81,21 @@ input[type=range]::-moz-range-track {
     background-size: 40% 100%;
     background-repeat: no-repeat;
 }
+
+@media(max-width: 1000px) and (min-resolution: 200dpi){
+    input[type=range]::-webkit-slider-thumb {
+        height: 36px;
+        width: 36px;
+        margin-top: -9px;
+    }
+    input[type=range]::-moz-range-thumb {
+        height: 28px;
+        width: 28px;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+        height: 16px;
+    }
+    input[type=range]::-moz-range-track {
+        height: 16px;
+    }
+}
