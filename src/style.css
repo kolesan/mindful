@@ -4,6 +4,7 @@ html {
 
     --font-family: Share Tech Mono, serif;
     --font-color: rgba(255, 255, 255, 0.85);
+    --font-size: 2rem;
 
 }
 *, *::before, *::after {
@@ -15,7 +16,8 @@ body {
     height: 100%;
 
     color: var(--font-color);
-    font: 2rem var(--font-family);
+    font-size: var(--font-size);
+    font-family: var(--font-family);
 
     display: flex;
     justify-content: center;
@@ -52,18 +54,20 @@ body {
 
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 4rem auto 2fr auto 3fr auto 4rem;
+    grid-template-rows: calc(var(--font-size) + 2rem) 3px auto 3px auto 3px calc(var(--font-size) + 2rem);
 
     justify-content: center;
     /*align-items: center;*/
 
-    box-shadow: 0 0 15px black;
+    box-shadow: 0 0 15px 1px black;
     background-color: #3E4040;
+    border-radius: 2px;
 }
 
 .section {
     width: 100%;
     padding: 0 1rem;
+    overflow: hidden;
 }
 
 .title {
@@ -71,7 +75,8 @@ body {
     justify-content: space-between;
     align-items: center;
 
-    font: 2rem var(--font-family);
+    font-size: var(--font-size);
+    font-family: var(--font-family);
 }
 
 .section_separator {
@@ -99,17 +104,13 @@ body {
 
     display: grid;
     grid-template-columns: 1fr 10fr 1fr;
-    grid-template-rows: repeat(6, minmax(1rem, 2rem));
+    grid-template-rows: repeat(6, var(--font-size));
     grid-gap: 1rem;
     align-items: center;
     justify-content: center;
-    font: 1.5rem var(--font-family);
+    font-size: calc(var(--font-size) - 0.5rem);
 
     align-self: start;
-}
-
-.timer__duration_display {
-    margin: auto;
 }
 
 .timer__current_time_display {
@@ -118,7 +119,7 @@ body {
 
 .timer__bar {
     width: 100%;
-    height: 2rem;
+    height: var(--font-size);
     text-shadow:
             -1px -1px 1px gray,
             -1px  0px 1px gray,
@@ -126,19 +127,10 @@ body {
              1px  1px 1px gray;
     display: flex;
     align-items: center;
+    justify-content: center;
     box-shadow: inset 1px 1px 2px 1px black;
     border-radius: 2px;
 }
-
-/*.timer__bar_l0 {*/
-    /*background: linear-gradient(to right, #89FF23 65%, #EBFFDA);*/
-/*}*/
-/*.timer__bar_l1 {*/
-    /*background: linear-gradient(to right, #EE00FF 65%, #FDDAFF);*/
-/*}*/
-/*.timer__bar_l2 {*/
-    /*background: linear-gradient(to right, #FF7A00 65%, #FFECDA);*/
-/*}*/
 
 .timer__bar_l0 {
     background: linear-gradient(to right, #89FF23, #89FF23) #313233;
@@ -159,13 +151,32 @@ body {
     justify-content: space-between;
 }
 
+.controls__volume {
+    display: flex;
+    flex: 0 0 25%;
+    border-left: 2px solid var(--font-color);
+    padding-left: 2rem;
+}
+
+.controls__button__volume {
+    margin-right: 1rem;
+}
+
+.controls__playback {
+    display: flex;
+    justify-content: space-between;
+    flex: 0 0 25%;
+    border-right: 2px solid var(--font-color);
+    padding-right: 2rem;
+}
+
 .icon-button {
     border: 0;
     padding: 0;
     background: transparent;
 
     color: var(--font-color);
-    font-size: 2rem;
+    font-size: var(--font-size);
 
     display: flex;
     align-items: center;
@@ -178,29 +189,39 @@ body {
     color: rgba(205, 205, 205, 0.4);
 }
 
-.controls__button__volume {
-    border-left: 2px solid var(--font-color);
-    padding: 0 2rem;
-    flex: 0 0 25%;
+@media(min-resolution: 200dpi) {
+    html {
+        --font-size: 4rem;
+    }
 
-    /*position: relative;*/
+    .timer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .timer__duration {
+        display: none;
+    }
+
+    .timer__current_time {
+        display: none;
+    }
 }
-
-.controls__volume__slider {
-    /*visibility: hidden;*/
-
-    /*height: 250%;*/
-    /*padding: 100% 50%;*/
-    /*position: absolute;*/
-    /*background: red;*/
-    /*border: 2px solid white;*/
-
-    /*left: -100%;*/
-    /*top: -260%; !*Investigate transform origin point to fix this*!*/
-
-    /*transform: rotateZ(-90deg);*/
-}
-
-.controls__button__volume:hover > .controls__volume__slider {
-    /*visibility: visible;*/
+@media(max-width: 1000px){
+    .main_screen {
+        grid-template-rows: calc(var(--font-size) + 2rem) 3px auto 3px auto 3px calc(var(--font-size) * 2 + 4rem);
+    }
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-evenly;
+    }
+    .controls__playback {
+        border-right: none;
+        padding-right: 0;
+    }
+    .controls__volume {
+        border-left: none;
+        padding: 0 2rem;
+    }
 }

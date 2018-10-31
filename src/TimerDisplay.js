@@ -54,8 +54,8 @@ function createComponent(tag, styles, content) {
 }
 
 function addBarComponent(level, event, container) {
-  let time = createComponent("div", [`timer__current_time_l${level}`], formatTime(0));
-  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
+  let time = createComponent("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));
+  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`], event.name);
   let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
 
   bar.style.backgroundSize = "0% 100%";
