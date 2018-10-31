@@ -1,9 +1,17 @@
 import * as VolumeModel from './VolumeModel';
 import * as log from './Logging';
 
+const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
+
+let icon = document.querySelector(".controls__button__volume").querySelector(".fas");
+let slider = document.querySelector(".controls__volume__slider");
+
 const volumeObj = VolumeModel.newInstance();
+
 setVolumeIcon();
-setVolumeSliderValue();
+setVolumeSliderValue(volumeObj.volume);
+initSliderStyleSheet(volumeObj.volume);
+setSliderBackground(volumeObj.volume);
 
 function getVolume() {
   return volumeObj.volume;
@@ -14,21 +22,29 @@ function isMuted() {
 }
 
 function setVolume(event) {
-  volumeObj.volume = event.target.value;
+  let val = event.target.value;
+  volumeObj.volume = val;
 
   setVolumeIcon();
-  setVolumeSliderValue();
+  setSliderBackground(val);
+}
+
+function setSliderBackground(val) {
+  let style = document.getElementById(SLIDER_STYLESHEET_ID);
+  setSliderStyles(style, val);
 }
 
 function toggleMuted(event) {
   volumeObj.muted = !volumeObj.muted;
 
+  let volume = volumeObj.muted ? 0 : volumeObj.volume;
+
   setVolumeIcon();
-  setVolumeSliderValue();
+  setVolumeSliderValue(volume);
+  setSliderBackground(volume);
 }
 
 function setVolumeIcon() {
-  let icon = document.querySelector(".controls__button__volume").querySelector(".fas");
   if (volumeObj.muted || volumeObj.volume == 0) {
     icon.classList.remove("fa-volume-up");
     icon.classList.add("fa-volume-mute");
@@ -38,8 +54,28 @@ function setVolumeIcon() {
   }
 }
 
-function setVolumeSliderValue() {
-  document.querySelector(".controls__volume__slider").value = volumeObj.muted ? 0 : volumeObj.volume;
+function setVolumeSliderValue(val) {
+  slider.value = val;
+}
+
+function initSliderStyleSheet(val) {
+  let style = document.createElement("style");
+  style.setAttribute("type", "text/css");
+  style.setAttribute("id", SLIDER_STYLESHEET_ID);
+  setSliderStyles(style, val);
+  document.querySelector("head").appendChild(style);
+}
+
+function setSliderStyles(styleSheet, val) {
+  styleSheet.innerHTML = `
+    input[type=range]::-webkit-slider-runnable-track {
+        background-size: ${val}% 100%;
+    }
+    
+    input[type=range]::-moz-range-track {
+        background-size: ${val}% 100%;
+    }
+  `;
 }
 
 export { getVolume, isMuted, setVolume, toggleMuted };

@@ -1,0 +1,83 @@
+/*
+
+    Basic browser style overrides
+
+*/
+input[type=range] {
+    -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+    width: 100%; /* Specific width is required for Firefox. */
+    background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+/*
+
+    Styles
+
+ */
+html {
+    --thumb-color: #dbdbdb;
+}
+
+/*
+
+    Thumb
+
+*/
+input[type=range]::-webkit-slider-thumb {
+    border: 1px solid var(--thumb-color);
+    height: 18px;
+    width: 18px;
+    border-radius: 25%;
+    background: var(--thumb-color);
+    cursor: pointer;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+
+    margin-top: -5px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+input[type=range]::-moz-range-thumb {
+    border: 1px solid var(--thumb-color);
+    height: 18px;
+    width: 18px;
+    border-radius: 25%;
+    background: var(--thumb-color);
+    cursor: pointer;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+
+/*
+
+    Track
+
+ */
+input[type=range]::-webkit-slider-runnable-track {
+    height: 8.4px;
+    cursor: pointer;
+    box-shadow: inset 1px 1px 1px 0px #121a20;
+    border-radius: 2px;
+    border: 0.2px solid #202228;
+
+    background: linear-gradient(to right, var(--font-color) 70%, gray) #313233;
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+}
+
+input[type=range]::-moz-range-track {
+    height: 8.4px;
+    cursor: pointer;
+    box-shadow: inset 1px 1px 1px 0px #121a20;
+    border-radius: 2px;
+    border: 0.2px solid #202228;
+
+    background: linear-gradient(to right, var(--font-color) 70%, gray) #313233;
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+}
