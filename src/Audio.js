@@ -3,7 +3,7 @@ import fastGongFileName from '../resources/short-fast-gong.mp3';
 import { getVolume, isMuted } from './Volume';
 
 function fsgong(){
-  playSound(slowGongFileName, 5);
+  playSound(slowGongFileName, 4);
 }
 
 function sgong(){
@@ -15,11 +15,12 @@ function fgong(){
 }
 
 function ffgong(){
-  playSound(fastGongFileName, 5);
+  playSound(fastGongFileName, 4);
 }
 
 function playSound(filename, rate=1) {
   let sound = new Audio(filename);
+  sound.load();
   sound.playbackRate = rate;
   sound.volume = isMuted() ? 0 : getVolume() / 100;
   sound.play();
