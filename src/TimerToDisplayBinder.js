@@ -65,7 +65,9 @@ function newInstance(mainEvent, timerComponentContainer) {
     );
     eventBus.instance.bindListener(
       eventBus.listener(SETTING_CHANGED_EVENT, ([setting])=>{
-        display.showNames(setting.selected);
+        if (setting.name == SHOW_TIMER_NAMES_SETTING) {
+          display.showNames(setting.selected);
+        }
         log.trace(setting);
       })
     );

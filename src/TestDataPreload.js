@@ -133,6 +133,19 @@ function EventBuilder() {
   });
 }
 
+let cardioProgram = {
+  title: "Cardio",
+  description: `Simple HIIT 1min action/1min rest`,
+  mainEvent: (function() {
+    let builder = EventBuilder();
+    builder.add(`Preparation`, s(10), audio.fsgong);
+    for(let i = 0; i < 30; i++) {
+      builder.add(`Action`, m(1), audio.fgong).add(`Rest`, m(1), audio.fsgong)
+    }
+    return builder.build(`1h HIIT`, audio.sgong);
+  })()
+};
+
 let testProgram = {
   title: "Test",
   description: `
@@ -145,31 +158,33 @@ let testProgram = {
 let yogaBtn = document.getElementById("yogaBtn");
 let absBtn = document.getElementById("absBtn");
 let meditationBtn = document.getElementById("meditationBtn");
+let cardioBtn = document.getElementById("cardioBtn");
 let testBtn = document.getElementById("testBtn");
 
 let timerModule;
-function loadProgarm(program) {
+function loadProgarm(program, btn) {
   document.querySelector("#titleText").innerHTML = program.title;
   document.querySelector("#descriptionText").innerHTML = program.description;
 
   timerModule = TimerModule.newInstance(program.mainEvent, document.querySelector(".timer"));
+
+  deselectAllSelectOne(btn);
 }
 
-function loadTestProgram() {
-  loadProgarm(testProgram);
-  deselectAllSelectOne(testBtn);
-}
 function loadYogaProgram() {
-  loadProgarm(yogaProgram);
-  deselectAllSelectOne(yogaBtn);
+  loadProgarm(yogaProgram, yogaBtn);
 }
 function loadAbsProgram() {
-  loadProgarm(absAthleanXProgram);
-  deselectAllSelectOne(absBtn);
+  loadProgarm(absAthleanXProgram, absBtn);
 }
 function loadMeditationProgram() {
-  loadProgarm(meditationProgram);
-  deselectAllSelectOne(meditationBtn);
+  loadProgarm(meditationProgram, meditationBtn);
+}
+function loadCardioProgram() {
+  loadProgarm(cardioProgram, cardioBtn);
+}
+function loadTestProgram() {
+  loadProgarm(testProgram, testBtn);
 }
 const ITEM_SELECTED_CLASS = "drawer_menu__item_selected";
 function selectItem(item) {
@@ -179,7 +194,7 @@ function deselectItem(item) {
   item.classList.remove(ITEM_SELECTED_CLASS);
 }
 function deselectAllItems() {
-  [yogaBtn, meditationBtn, absBtn, testBtn].forEach(deselectItem);
+  [yogaBtn, absBtn, meditationBtn, cardioBtn, testBtn].forEach(deselectItem);
 }
 function deselectAllSelectOne(item) {
   deselectAllItems();
@@ -200,6 +215,7 @@ loadTestProgram();
 yogaBtn.addEventListener("click", loadYogaProgram);
 absBtn.addEventListener("click", loadAbsProgram);
 meditationBtn.addEventListener("click", loadMeditationProgram);
+cardioBtn.addEventListener("click", loadCardioProgram);
 testBtn.addEventListener("click", loadTestProgram);
 
 

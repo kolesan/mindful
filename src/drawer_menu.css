@@ -4,8 +4,6 @@
     height: 100%;
     width: 15%;
     opacity: 1;
-    /*transition: opacity ease-out 50ms, margin-left ease-out 50ms;*/
-    transition: opacity ease-out 50ms, width ease-out 100ms;
     overflow: hidden;
 
     display: flex;
@@ -22,11 +20,9 @@
     font-family: var(--font-family);
 
     width: 100%;
-    /*height: var(--font-size);*/
     padding: 0.25rem;
     display: flex;
     align-items: center;
-    /*justify-content: center;*/
 
     cursor: pointer;
     outline: none;
@@ -90,8 +86,15 @@
         left: -100%;
         opacity: 0;
     }
+    .drawer_menu__close_btn {
+        display: none;
+    }
 }
-/* and (min-resolution: 200dpi)*/
+@media(min-resolution: 200dpi) {
+    .drawer_menu__item {
+        font-size: calc(var(--font-size) - 1rem);
+    }
+}
 @media(max-width: 1000px){
     .drawer_menu {
         position: absolute;
