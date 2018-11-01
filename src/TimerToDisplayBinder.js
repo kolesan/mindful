@@ -1,6 +1,8 @@
 import { newTimer, TIMER_FINISHED } from './Timer';
+import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from './Settings';
 import { newInstance as newTimerDisplay } from './TimerDisplay';
 import * as eventBus from './EventBus';
+import * as log from './Logging';
 
 function newInstance(mainEvent, timerComponentContainer) {
   let timer = newTimer(onTimerTick, onEventCompletion, mainEvent);
@@ -8,7 +10,7 @@ function newInstance(mainEvent, timerComponentContainer) {
   let started = false;
   let paused = false;
 
-  bindTimerFinishListener();
+  bindEventListeners();
 
   return Object.freeze({
     start,
@@ -53,12 +55,18 @@ function newInstance(mainEvent, timerComponentContainer) {
     display.updateBars(eventUpdates);
   }
 
-  function bindTimerFinishListener() {
+  function bindEventListeners() {
     eventBus.instance.bindListener(
       eventBus.listener(TIMER_FINISHED, ()=>{
         display.stop();
         started = false;
         paused = false;
+      })
+    );
+    eventBus.instance.bindListener(
+      eventBus.listener(SETTING_CHANGED_EVENT, ([setting])=>{
+        display.showNames(setting.selected);
+        log.trace(setting);
       })
     );
   }

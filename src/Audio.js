@@ -1,6 +1,7 @@
 import slowGongFileName from '../resources/long-loud-gong.mp3';
 import fastGongFileName from '../resources/short-fast-gong.mp3';
 import { getVolume, isMuted } from './Volume';
+import * as log from './Logging';
 
 function fsgong(){
   playSound(slowGongFileName, 4);

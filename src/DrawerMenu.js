@@ -1,4 +1,5 @@
 import './drawer_menu.css';
+import './Settings';
 
 const HIDDEN_DRAWER_CLASS = "drawer_menu__hidden";
 
@@ -7,8 +8,10 @@ let drawerBtn = document.getElementById("menuBtn");
 drawerBtn.addEventListener("click", toggleDrawerState);
 let drawerOverlay = document.querySelector(".drawer_menu_overlay");
 drawerOverlay.addEventListener("click", toggleDrawerState);
-
-let shown = window.innerWidth > 1000;
+let closeDrawerBtn = document.querySelector("#closeDrawerBtn");
+closeDrawerBtn.addEventListener("click", toggleDrawerState);
+// let shown = window.innerWidth > 1000;
+let shown = true;
 toggleDrawer();
 
 function toggleDrawerState(event) {
@@ -30,3 +33,4 @@ function hideDrawer() {
   drawer.classList.add(HIDDEN_DRAWER_CLASS);
   drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
 }
+

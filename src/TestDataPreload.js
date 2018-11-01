@@ -157,27 +157,43 @@ function loadProgarm(program) {
 
 function loadTestProgram() {
   loadProgarm(testProgram);
-  disableOneEnableOthers(testBtn);
+  deselectAllSelectOne(testBtn);
 }
 function loadYogaProgram() {
   loadProgarm(yogaProgram);
-  disableOneEnableOthers(yogaBtn);
+  deselectAllSelectOne(yogaBtn);
 }
 function loadAbsProgram() {
   loadProgarm(absAthleanXProgram);
-  disableOneEnableOthers(absBtn);
+  deselectAllSelectOne(absBtn);
 }
 function loadMeditationProgram() {
   loadProgarm(meditationProgram);
-  disableOneEnableOthers(meditationBtn);
+  deselectAllSelectOne(meditationBtn);
 }
+const ITEM_SELECTED_CLASS = "drawer_menu__item_selected";
+function selectItem(item) {
+  item.classList.add(ITEM_SELECTED_CLASS);
+}
+function deselectItem(item) {
+  item.classList.remove(ITEM_SELECTED_CLASS);
+}
+function deselectAllItems() {
+  [yogaBtn, meditationBtn, absBtn, testBtn].forEach(deselectItem);
+}
+function deselectAllSelectOne(item) {
+  deselectAllItems();
+  selectItem(item);
+}
+
 function disableOneEnableOthers(btn) {
   enableAllButtons();
   controls.disable(btn);
 }
 function enableAllButtons() {
-  let buttons = Array.from(document.querySelector(".description_program_controls").children);
-  buttons.forEach(it => controls.enable(it));
+  [yogaBtn, meditationBtn, absBtn, testBtn].forEach(it => {
+    controls.enable(it)
+  });
 }
 
 loadTestProgram();

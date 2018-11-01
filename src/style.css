@@ -124,6 +124,9 @@ body {
     background: linear-gradient(to right, #FF7A00, #FF7A00) #313233;
     background-repeat: no-repeat;
 }
+.timer__duration {
+    text-align: right;
+}
 
 .controls {
     display: flex;
@@ -158,6 +161,7 @@ body {
 
     color: var(--font-color);
     font-size: var(--font-size);
+    font-family: var(--font-family);
 
     display: flex;
     align-items: center;
