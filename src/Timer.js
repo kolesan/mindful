@@ -59,12 +59,15 @@ let Timer = {
     }
   },
   pause: function pauseTimer() {
-    this.msLeftoversOnPause = 1000 - (Date.now() - this.startTime) % 1000;
+    this.pauseTime = Date.now();
+    this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
+    clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
-    // log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
+    log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   resume: function resumeTimer() {
-    setTimeout(() => {
+    this.startTime += Date.now() - this.pauseTime;
+    this.msLeftoverOnPauseTimeoutId = setTimeout(() => {
       this.tick();
       this.launch();
     }, this.msLeftoversOnPause);
