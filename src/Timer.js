@@ -73,6 +73,7 @@ let Timer = {
     }, this.msLeftoversOnPause);
   },
   stop: function stopTimer() {
+    clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
     this.currentTime = 0;
     this.eventStack = newEventStack(this.mainEvent);
