@@ -146,6 +146,29 @@ let cardioProgram = {
   })()
 };
 
+let chestProgram = {
+  title: "AthleanX Chest",
+  description: `Sore in 6`,
+  mainEvent: (function() {
+    return EventBuilder()
+      .add(`Preparation`, s(15), audio.fsgong)
+      .add(`Dumbbell press`, m(1), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Dumbbell pullover`, m(1), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Dumbbell press fast`, s(30), audio.fgong)
+      .add(`Rest`, s(30), audio.fsgong)
+      .add(`Dumbbell pullover`, m(1), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Dumbbell press`, m(1), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Dumbbell press fast`, s(30), audio.fgong)
+      .add(`Preparation`, s(3), audio.fsgong)
+      .add(`Spiderman pushups`, s(30), audio.fgong)
+      .build(`Sore in 6 AthleanX Chest`, audio.sgong);
+  })()
+};
+
 let testProgram = {
   title: "Test",
   description: `
@@ -159,6 +182,7 @@ let yogaBtn = document.getElementById("yogaBtn");
 let absBtn = document.getElementById("absBtn");
 let meditationBtn = document.getElementById("meditationBtn");
 let cardioBtn = document.getElementById("cardioBtn");
+let chestBtn = document.getElementById("chestBtn");
 let testBtn = document.getElementById("testBtn");
 
 let timerModule;
@@ -182,6 +206,9 @@ function loadMeditationProgram() {
 }
 function loadCardioProgram() {
   loadProgarm(cardioProgram, cardioBtn);
+}
+function loadChestProgram() {
+  loadProgarm(chestProgram, chestBtn);
 }
 function loadTestProgram() {
   loadProgarm(testProgram, testBtn);
@@ -216,6 +243,7 @@ yogaBtn.addEventListener("click", loadYogaProgram);
 absBtn.addEventListener("click", loadAbsProgram);
 meditationBtn.addEventListener("click", loadMeditationProgram);
 cardioBtn.addEventListener("click", loadCardioProgram);
+chestBtn.addEventListener("click", loadChestProgram);
 testBtn.addEventListener("click", loadTestProgram);
 
 
