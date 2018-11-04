@@ -1,5 +1,11 @@
 import * as log from './Logging';
 import { formatTime } from './Utils';
+import * as eventBus from './EventBus';
+import './TimerDisplay.css';
+import * as utils from './Utils';
+import { seekingLocked } from './TimerDisplayControls';
+
+const TIMER_BAR_CLICKED_EVENT = "timerBarClicked";
 
 function updateTime(time, events, container) {
   for(let i = 0; i < events.length; i++) {
@@ -57,16 +63,40 @@ function addBarComponent(level, event, container) {
   let time = createComponent("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));
   let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
   let barName = createComponent("span", [`timer_bar__name`], event.name);
+  let seekingIndicator = createComponent("div", [`timer__bar__seeking_indicator`]);
   let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
 
   bar.style.backgroundSize = "0% 100%";
   bar.appendChild(barName);
+  bar.appendChild(seekingIndicator);
+  seekingIndicator.addEventListener("mousemove", showSeekingIndicator);
+  // seekingIndicator.addEventListener("mouseout", hideSeekingIndicators);
+  seekingIndicator.addEventListener("click", event =>
+    eventBus.instance.fire(TIMER_BAR_CLICKED_EVENT, event)
+  );
 
   container.appendChild(time);
   container.appendChild(bar);
   container.appendChild(duration);
 
   return bar;
+}
+
+function hideSeekingIndicator() {
+
+}
+
+function showSeekingIndicator(event) {
+  if (seekingLocked) {
+    return;
+  }
+
+  let seekingIndicator = event.target;
+  let barWidth = event.target.getBoundingClientRect().width;
+  let x = event.offsetX;
+  let indicatorWidth = (x / barWidth) * 100;
+
+  seekingIndicator.style.backgroundSize = utils.minmax(0, 100)(indicatorWidth) + '% 100%';
 }
 
 function updateBarTime(level, time, container) {
@@ -135,4 +165,4 @@ function newInstance(timer, container){
   });
 }
 
-export { newInstance };
+export { newInstance, TIMER_BAR_CLICKED_EVENT };

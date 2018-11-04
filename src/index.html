@@ -32,9 +32,9 @@
     </nav>
     <section class="main_screen">
         <section class="title section">
-            <button class="icon-button" id="menuBtn"><i class="fas fa-bars"></i></button>
+            <button class="icon-button" title="Menu" id="menuBtn"><i class="fas fa-bars"></i></button>
             <span id="titleText">Mindful</span>
-            <button class="icon-button" id="editBtn"><i class="fas fa-edit"></i></button>
+            <button class="icon-button" title="Edit program" id="editBtn"><i class="fas fa-edit"></i></button>
         </section>
         <div class="section_separator"></div>
         <section class="description section">
@@ -48,27 +48,30 @@
         </section>
         <div class="section_separator"></div>
         <section class="timer section">
-            <!--<div class="timer__current_time_l2">00:00:12</div>-->
-            <!--<div class="timer__bar timer__bar_l2"></div>-->
-            <!--<div class="timer__duration timer_duration_l2">00:00:15</div>-->
+            <div class="timer__display">
+                <!--<div class="timer__current_time_l2">00:00:12</div>-->
+                <!--<div class="timer__bar timer__bar_l2"></div>-->
+                <!--<div class="timer__duration timer_duration_l2">00:00:15</div>-->
 
-            <!--<div class="timer__current_time_l1">00:00:10</div>-->
-            <!--<div class="timer__bar timer__bar_l1"></div>-->
-            <!--<div class="timer__duration timer_duration_l1">00:00:30</div>-->
+                <!--<div class="timer__current_time_l1">00:00:10</div>-->
+                <!--<div class="timer__bar timer__bar_l1"></div>-->
+                <!--<div class="timer__duration timer_duration_l1">00:00:30</div>-->
 
-            <!--<div class="timer__current_time_l0">00:00:40</div>-->
-            <!--<div class="timer__bar timer__bar_l0"></div>-->
-            <!--<div class="timer__duration timer_duration_l0">00:01:00</div>-->
+                <!--<div class="timer__current_time_l0">00:00:40</div>-->
+                <!--<div class="timer__bar timer__bar_l0"></div>-->
+                <!--<div class="timer__duration timer_duration_l0">00:01:00</div>-->
+            </div>
+            <button class="icon-button" title="Toggle seeking lock" id="lockSeekingBtn"><i class="fas fa-lock"></i></button>
         </section>
         <div class="section_separator"></div>
         <section class="controls section">
             <div class="controls__playback">
-                <button class="controls__button__play icon-button" id="playBtn"><i class="fas fa-play"></i></button>
-                <button class="controls__button__pause icon-button" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
-                <button class="controls__button__stop icon-button" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
+                <button class="controls__button__play icon-button" title="Run program" id="playBtn"><i class="fas fa-play"></i></button>
+                <button class="controls__button__pause icon-button" title="Pause program" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
+                <button class="controls__button__stop icon-button" title="Stop program" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
             </div>
             <div class="controls__volume">
-                <button class="controls__button__volume icon-button" id="volumeBtn">
+                <button class="controls__button__volume icon-button" title="Toggle mute" id="volumeBtn">
                     <i class="fas fa-volume-up"></i>
                 </button>
                 <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>

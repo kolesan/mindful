@@ -11,7 +11,7 @@ drawerOverlay.addEventListener("click", toggleDrawerState);
 let closeDrawerBtn = document.querySelector("#closeDrawerBtn");
 closeDrawerBtn.addEventListener("click", toggleDrawerState);
 // let shown = window.innerWidth > 1000;
-let shown = true;
+let shown = false;
 toggleDrawer();
 
 function toggleDrawerState(event) {

@@ -190,7 +190,7 @@ function loadProgarm(program, btn) {
   document.querySelector("#titleText").innerHTML = program.title;
   document.querySelector("#descriptionText").innerHTML = program.description;
 
-  timerModule = TimerModule.newInstance(program.mainEvent, document.querySelector(".timer"));
+  timerModule = TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display"));
 
   deselectAllSelectOne(btn);
 }
