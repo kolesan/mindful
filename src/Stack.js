@@ -64,13 +64,14 @@ let EventStack = {
     }
   },
   seek: function seekANode(predicate) {
-    // console.log(JSON.stringify(this.entryPointElem, undefined, "    "));
-    let tempStack = newEventStack(this.entryPointElem.event);
-    while(tempStack.head() && !predicate(tempStack.head().event)) {
-      tempStack.next();
+    while(this.head() && !predicate(this.head())) {
+      this.next();
     }
-    this.stack = tempStack.stack;
-    return !!tempStack.head();
+
+    return this.head();
+  },
+  reset: function resetStack() {
+    this.init(newEventStackElement(this.entryPointElem.event));
   },
   snapshot: function stackSnapshot() {
     return this.stack.slice(0);

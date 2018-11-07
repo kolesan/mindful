@@ -70,7 +70,7 @@ function addBarComponent(level, event, container) {
   bar.appendChild(barName);
   bar.appendChild(seekingIndicator);
   seekingIndicator.addEventListener("mousemove", showSeekingIndicator);
-  // seekingIndicator.addEventListener("mouseout", hideSeekingIndicators);
+  seekingIndicator.addEventListener("mouseout", hideSeekingIndicator);
   seekingIndicator.addEventListener("click", event =>
     eventBus.instance.fire(TIMER_BAR_CLICKED_EVENT, event)
   );
@@ -82,8 +82,11 @@ function addBarComponent(level, event, container) {
   return bar;
 }
 
-function hideSeekingIndicator() {
-
+function hideSeekingIndicator(event) {
+  if (seekingLocked) {
+    return;
+  }
+  event.target.style.backgroundSize = '0% 100%';
 }
 
 function showSeekingIndicator(event) {

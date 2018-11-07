@@ -5,7 +5,9 @@ import * as log from './Logging';
 const TIMER_FINISHED = "TIMER_FINISHED";
 
 let TimerEvent = {
+  idCounter: 0,
   init: function initTimerEvent(name, startTime, duration, callback, children=[]) {
+    this.id = Object.getPrototypeOf(this).idCounter++;
     this.name = name;
     this.duration = duration;
     this.startTime = startTime;
@@ -58,6 +60,20 @@ let Timer = {
       }
     }
   },
+  seek: function seekTimer(time) {
+    this.currentTime = time;
+    this.eventStack.reset();
+
+    let matchingElements = [];
+    while(this.eventStack.seek(it => it.event.startTime <= time && it.event.endTime > time)) {
+      matchingElements.push(this.eventStack.head());
+      this.eventStack.next();
+    }
+    let closestMatch = matchingElements.reduce((a, b) => time - a.event.startTime > time - b.event.startTime ? b : a);
+
+    this.eventStack.reset();
+    this.eventStack.seek(it => it.event.id == closestMatch.event.id);
+  },
   pause: function pauseTimer() {
     this.pauseTime = Date.now();
     this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
@@ -77,6 +93,9 @@ let Timer = {
     clearInterval(this.intervalId);
     this.currentTime = 0;
     this.eventStack = newEventStack(this.mainEvent);
+  },
+  getCurrentTime: function getCurrentTime() {
+    return this.currentTime;
   },
   currentEvents: function getCurrentEvents() {
     return this.eventStack.snapshot().map((it) => { return it.event });
