@@ -1,27 +1,28 @@
 import { newEventStack } from '../src/Stack';
 
+let entryPoint = {
+  name: 1,
+  children: [
+    { name: 1.1, children: [] },
+    { name: 2,
+      children: [
+        { name: 3,
+          children: [
+            { name: 4, children: [ { name: 5, children: [] }]},
+            { name: 6, children: []},
+            { name: 7, children: [
+              { name: 8, children: [ {name: 9, children: []} ] },
+              { name: 10, children: [] }
+            ]}
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 test('walks a tree', () => {
   let result = [];
-  let entryPoint = {
-    name: 1,
-    children: [
-      { name: 1.1, children: [] },
-      { name: 2,
-        children: [
-          { name: 3,
-            children: [
-              { name: 4, children: [ { name: 5, children: [] }]},
-              { name: 6, children: []},
-              { name: 7, children: [
-                { name: 8, children: [ {name: 9, children: []} ] },
-                { name: 10, children: [] }
-              ]}
-            ]
-          }
-        ]
-      }
-    ]
-  };
 
   let stack = newEventStack(entryPoint);
   do {
@@ -29,4 +30,60 @@ test('walks a tree', () => {
   } while(stack.next());
 
   expect(result).toEqual([1.1, 5, 4, 6, 9, 8, 10, 7, 3, 2, 1]);
+});
+
+test("new stack head is first leaf to the left", () => {
+  let stack = newEventStack(entryPoint);
+  expect(stack.get(0).event.name).toBe(1);
+  expect(stack.get(1).event.name).toBe(1.1);
+});
+
+test('returns its head', () => {
+  let stack = newEventStack(entryPoint);
+  expect(stack.head().event.name).toBe(1.1);
+});
+
+test('head is undefined if stack is empty', () => {
+  let stack = newEventStack(entryPoint);
+  while(stack.length() > 0) {
+    stack.next();
+  }
+  expect(stack.head()).toBe(undefined);
+});
+
+test("can reset so that 'head' passes a provided predicate", () => {
+  let stack = newEventStack(entryPoint);
+  stack.seek(it => it.name == 8);
+  expect(stack.get(0).event.name).toBe(1);
+  expect(stack.get(1).event.name).toBe(2);
+  expect(stack.get(2).event.name).toBe(3);
+  expect(stack.get(3).event.name).toBe(7);
+  expect(stack.get(4).event.name).toBe(8);
+});
+
+test("seeks from the first element, even if current head 'is after' the one we are looking for", () => {
+  let stack = newEventStack(entryPoint);
+  stack.seek(it => it.name == 8);
+  stack.seek(it => it.name == 5);
+  expect(stack.get(0).event.name).toBe(1);
+  expect(stack.get(1).event.name).toBe(2);
+  expect(stack.get(2).event.name).toBe(3);
+  expect(stack.get(3).event.name).toBe(4);
+  expect(stack.get(4).event.name).toBe(5);
+});
+
+test("returns true if seeking is successful", () => {
+  let stack = newEventStack(entryPoint);
+  expect(stack.seek(it => it.name == 8)).toBe(true);
+});
+
+test("returns false if seeking is unsuccessful", () => {
+  let stack = newEventStack(entryPoint);
+  expect(stack.seek(it => it.name == "DefinitelyNoSuchElementHere")).toBe(false);
+});
+
+test("stack is empty if seeking is unsuccessful (we searched till the end and found nothing)", () => {
+  let stack = newEventStack(entryPoint);
+  stack.seek(it => it.name == "DefinitelyNoSuchElementHere")
+  expect(stack.length()).toBe(0);
 });

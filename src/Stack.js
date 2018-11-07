@@ -18,6 +18,7 @@ function newEventStackElement(event) {
 
 let EventStack = {
   init: function initEventStack(entryPointElem) {
+    this.entryPointElem = entryPointElem;
     this.stack = [entryPointElem];
     this.next();
 
@@ -61,6 +62,15 @@ let EventStack = {
         return head;
       }
     }
+  },
+  seek: function seekANode(predicate) {
+    // console.log(JSON.stringify(this.entryPointElem, undefined, "    "));
+    let tempStack = newEventStack(this.entryPointElem.event);
+    while(tempStack.head() && !predicate(tempStack.head().event)) {
+      tempStack.next();
+    }
+    this.stack = tempStack.stack;
+    return !!tempStack.head();
   },
   snapshot: function stackSnapshot() {
     return this.stack.slice(0);
