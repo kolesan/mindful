@@ -39,3 +39,30 @@ export function formatTime(timestamp) {
 
   return `${format(h)}:${format(m)}:${format(s)}`;
 }
+
+export function makeSetIconByStateFunction(iconElem, iconTrue, iconFalse) {
+  return function(status) {
+    if (status) {
+      iconElem.classList.remove(iconFalse);
+      iconElem.classList.add(iconTrue);
+    } else {
+      iconElem.classList.remove(iconTrue);
+      iconElem.classList.add(iconFalse);
+    }
+  }
+}
+
+export function createComponent(tag, styles, content) {
+  let elem = document.createElement(tag);
+  styles.forEach(function(it) {
+    elem.classList.add(it);
+  });
+  if (content) {
+    elem.innerHTML = content;
+  }
+  return elem;
+}
+
+export function removeComponent(node) {
+  node.parentNode.removeChild(node);
+}

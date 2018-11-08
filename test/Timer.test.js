@@ -13,7 +13,7 @@ let mainEvent =
 test('seeking sets current time', () => {
   let timer = newTimer(noop, noop, newTimerEvent("a", 0, 10000, noop, []));
   timer.seek(5000);
-  expect(timer.getCurrentTime()).toBe(5000);
+  expect(timer.time()).toBe(5000);
 });
 
 test('seeking sets current event properly', () => {
