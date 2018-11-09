@@ -2,14 +2,13 @@ import * as log from './Logging';
 import * as eventBus from './EventBus';
 import './TimerDisplay.css';
 import * as utils from './Utils';
-import { seekingLocked } from './TimerDisplayControls';
-import { newBarComponent } from './TimerBar';
+import { newTimerBarComponent } from './TimerBar';
 
 const TIMER_BAR_CLICKED_EVENT = "timerBarClicked";
 
 function addBarComponent(level, event, container) {
-  let bar = newBarComponent(level, event);
-  bar.attachTo(container);
+  let bar = newTimerBarComponent(level, event);
+  bar.attach(container);
   return bar;
 }
 
