@@ -1,13 +1,11 @@
 import * as log from './Logging';
-import * as eventBus from './EventBus';
 import './TimerDisplay.css';
-import * as utils from './Utils';
-import { newTimerBarComponent } from './TimerBar';
+import { create } from './TimerBar';
 
 const TIMER_BAR_CLICKED_EVENT = "timerBarClicked";
 
 function addBarComponent(level, event, container) {
-  let bar = newTimerBarComponent(level, event);
+  let bar = create(level, event);
   bar.attach(container);
   return bar;
 }
@@ -23,19 +21,15 @@ function newInstance(timer, container){
       stopAnimations();
       generateBars();
     },
-    updateCurrentTime() { updateTime(timer.currentTime, timer.currentEvents()) },
+    seek() {
+
+    },
+    updateCurrentTime() { updateTime() },
     updateBars(updates) {
       updateBars(updates);
       startAnimations()
     },
-    showNames(show) {
-      let barNameComponents = Array.from(container.querySelectorAll(".timer_bar__name"));
-      if (show) {
-        barNameComponents.forEach(it => it.style.display = "")
-      } else {
-        barNameComponents.forEach(it => it.style.display = "none")
-      }
-    }
+    showNames(show) { showTimerBarNames(show) }
   });
 
   function startAnimations() {
@@ -76,9 +70,19 @@ function newInstance(timer, container){
     });
   }
 
-  function updateTime(time, events) {
+  function updateTime() {
+    let events = timer.currentEvents();
     for(let i = 0; i < events.length; i++) {
-      bars[i].setTime(time - events[i].startTime);
+      bars[i].setTime(timer.currentTime - events[i].startTime);
+    }
+  }
+
+  function showTimerBarNames(show) {
+    let barNameComponents = Array.from(container.querySelectorAll(".timer_bar__name"));
+    if (show) {
+      barNameComponents.forEach(it => it.style.display = "")
+    } else {
+      barNameComponents.forEach(it => it.style.display = "none")
     }
   }
 }

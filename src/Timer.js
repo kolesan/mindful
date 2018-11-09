@@ -22,7 +22,19 @@ function newTimerEvent(name, startTime, duration, callback, childEvents) {
   return Object.create(TimerEvent).init(name, startTime, duration, callback, childEvents);
 }
 
+const States = {
+  running: "running",
+  paused: "paused",
+  stopped: "stopped",
+};
+
 let Timer = {
+  get running() { return this.state == States.running},
+  get paused() { return this.state == States.paused},
+  get stopped() { return this.state == States.stopped},
+  markRunning() { this.state = States.running },
+  markPaused() { this.state = States.paused },
+  markStopped() { this.state = States.stopped },
   init: function initTimer(onTick, onEventCompletion, mainEvent) {
     this.onTick = onTick;
     this.onEventCompletion = onEventCompletion;
@@ -32,11 +44,21 @@ let Timer = {
     this.currentTime = 0;
     this.eventStack = newEventStack(mainEvent);
 
+    this.markStopped();
     return this;
   },
   start: function startTimer() {
-    this.startTime = Date.now();
-    this.launch();
+    if (this.stopped) {
+      this.startTime = Date.now();
+      this.launch();
+    } else if (this.paused) {
+      this.startTime += Date.now() - this.pauseTime;
+      this.msLeftoverOnPauseTimeoutId = setTimeout(() => {
+        this.tick();
+        this.launch();
+      }, this.msLeftoversOnPause);
+    }
+    this.markRunning();
   },
   launch: function launchTimer() {
     this.intervalId = setInterval(this.tick.bind(this), 1000);
@@ -61,46 +83,66 @@ let Timer = {
     }
   },
   seek: function seekTimer(time) {
-    this.currentTime = time;
-    this.eventStack.reset();
-
-    let matchingElements = [];
-    while(this.eventStack.seek(it => it.event.startTime <= time && it.event.endTime > time)) {
-      matchingElements.push(this.eventStack.head());
-      this.eventStack.next();
+    if (this.running) {
+      clearTimeout(this.msLeftoverOnPauseTimeoutId);
+      clearInterval(this.intervalId);
     }
-    let closestMatch = matchingElements.reduce((a, b) => time - a.event.startTime > time - b.event.startTime ? b : a);
-
-    this.eventStack.reset();
-    this.eventStack.seek(it => it.event.id == closestMatch.event.id);
+    seekEventStackByTime(this.eventStack, time);
+    //Relaunch timer
+    let msLeftovers = time % 1000;
+    this.currentTime = time - msLeftovers;
+    this.startTime = Date.now() - time;
+    this.pauseTime = Date.now();
+    this.msLeftoversOnPause = 1000 - msLeftovers;
+    if (this.running) {
+      this.msLeftoverOnPauseTimeoutId = setTimeout(() => {
+        this.tick();
+        this.launch();
+      }, this.msLeftoversOnPause);
+    } else if (this.stopped) {
+      this.markPaused();
+    }
   },
   pause: function pauseTimer() {
+    this.markPaused();
     this.pauseTime = Date.now();
     this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
-    log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
-  },
-  resume: function resumeTimer() {
-    this.startTime += Date.now() - this.pauseTime;
-    this.msLeftoverOnPauseTimeoutId = setTimeout(() => {
-      this.tick();
-      this.launch();
-    }, this.msLeftoversOnPause);
+    // log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   stop: function stopTimer() {
+    this.markStopped();
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
     this.currentTime = 0;
-    this.eventStack = newEventStack(this.mainEvent);
-  },
-  getCurrentTime: function getCurrentTime() {
-    return this.currentTime;
+    this.eventStack.reset();
   },
   currentEvents: function getCurrentEvents() {
     return this.eventStack.snapshot().map((it) => { return it.event });
+  },
+  time: function getCurrentTime() {
+    return this.currentTime;
   }
 };
+function seekEventStackByTime(stack, time) {
+  stack.reset();
+
+  let matchingElements = [];
+  while(stack.seek(it => it.event.startTime <= time && it.event.endTime > time)) {
+    matchingElements.push(stack.head());
+    stack.next();
+  }
+
+  if (matchingElements.length == 0) {
+    throw new Error(`Can not seek to '${time}', it is out of bounds`);
+  }
+
+  let closestMatch = matchingElements.reduce((a, b) => time - a.event.startTime > time - b.event.startTime ? b : a);
+
+  stack.reset();
+  stack.seek(it => it.event.id == closestMatch.event.id);
+}
 function newTimer(onTick, onEventCompletion, mainEvent) {
   return Object.create(Timer).init(onTick, onEventCompletion, mainEvent);
 }

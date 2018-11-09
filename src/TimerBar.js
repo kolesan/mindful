@@ -2,7 +2,7 @@ import { createComponent, formatTime } from './Utils';
 import * as SeekingIndicator from './TimerBarSeekingIndicator';
 import * as Component from './Component';
 
-function newTimerBarComponent(level, event) {
+function create(level, event) {
   let time = createComponent("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));
   let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
   let barName = createComponent("span", [`timer_bar__name`], event.name);
@@ -35,4 +35,4 @@ function animateBar(bar, duration) {
   return animation;
 }
 
-export { newTimerBarComponent };
+export { create };

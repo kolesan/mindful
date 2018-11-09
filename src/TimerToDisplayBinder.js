@@ -59,7 +59,9 @@ function newInstance(mainEvent, timerComponentContainer) {
     if (level == 0) {
       let time = Math.floor(timer.duration * seekToPercent / 100);
       log.trace({time});
+      display.pause();
       timer.seek(time);
+      display.seek();
     } else {
 
     }
