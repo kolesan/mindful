@@ -1,8 +1,6 @@
 import { newEventStack } from "./Stack";
-import { instance as eventBus } from './EventBus';
+import { instantiate as createEventBus, listener as eventListener } from './EventBus';
 import * as log from './Logging';
-
-const TIMER_FINISHED = "TIMER_FINISHED";
 
 let TimerEvent = {
   idCounter: 0,
@@ -29,24 +27,43 @@ const States = {
 };
 
 let Timer = {
+  Events: Object.freeze({
+    START: "TIMER_STARTED",
+    PAUSE: "TIMER_PAUSED",
+    STOP: "TIMER_STOPPED",
+    FINISH: "TIMER_FINISHED",
+    TICK: "TIMER_TICK",
+    LEVEL_UPDATE: "TIMER_LEVEL_UPDATE",
+    SEEK: "TIMER_SEEK_UPDATE",
+  }),
+
   get running() { return this.state == States.running},
   get paused() { return this.state == States.paused},
   get stopped() { return this.state == States.stopped},
   markRunning() { this.state = States.running },
   markPaused() { this.state = States.paused },
   markStopped() { this.state = States.stopped },
-  init: function initTimer(onTick, onEventCompletion, mainEvent) {
-    this.onTick = onTick;
-    this.onEventCompletion = onEventCompletion;
-    this.mainEvent = mainEvent;
-    this.duration = mainEvent.duration;
 
+  on(event, fn) { this.timerEventBus.bindListener(eventListener(event, fn)) },
+  onStart(fn) { this.on(this.Events.START, fn) },
+  onPause(fn) { this.on(this.Events.PAUSE, fn) },
+  onStop(fn) { this.on(this.Events.STOP, fn) },
+  onFinish(fn) { this.on(this.Events.FINISH, fn) },
+  onTick(fn) { this.on(this.Events.TICK, fn) },
+  onLevelUpdate(fn) { this.on(this.Events.LEVEL_UPDATE, fn) },
+  onSeek(fn) { this.on(this.Events.SEEK, fn) },
+
+  fire(event, ...args) { this.timerEventBus.fire(event, args) },
+
+  init: function initTimer(program) {
+    this.mainEvent = program;
     this.currentTime = 0;
-    this.eventStack = newEventStack(mainEvent);
-
+    this.eventStack = newEventStack(program);
+    this.timerEventBus = createEventBus();
     this.markStopped();
     return this;
   },
+
   start: function startTimer() {
     if (this.stopped) {
       this.startTime = Date.now();
@@ -59,13 +76,14 @@ let Timer = {
       }, this.msLeftoversOnPause);
     }
     this.markRunning();
+    this.fire(this.Events.START);
   },
   launch: function launchTimer() {
     this.intervalId = setInterval(this.tick.bind(this), 1000);
   },
   tick: function tickTimer() {
     this.currentTime += 1000;
-    this.onTick(this.currentTime);
+    this.fire(this.Events.TICK, this.currentTime);
 
     if (this.currentTime >= this.eventStack.head().event.endTime) {
       this.eventStack.head().event.callback();
@@ -74,11 +92,11 @@ let Timer = {
       this.eventStack.next();
       let stackAfter = this.eventStack.snapshot();
 
-      this.onEventCompletion(calculateStackDiff(stackBefore, stackAfter));
+      this.fire(this.Events.LEVEL_UPDATE, calculateStackDiff(stackBefore, stackAfter));
 
       if (this.eventStack.empty()) {
         this.stop();
-        eventBus.fire(TIMER_FINISHED);
+        this.fire(this.Events.FINISH);
       }
     }
   },
@@ -87,8 +105,9 @@ let Timer = {
       clearTimeout(this.msLeftoverOnPauseTimeoutId);
       clearInterval(this.intervalId);
     }
+
     seekEventStackByTime(this.eventStack, time);
-    //Relaunch timer
+
     let msLeftovers = time % 1000;
     this.currentTime = time - msLeftovers;
     this.startTime = Date.now() - time;
@@ -102,21 +121,25 @@ let Timer = {
     } else if (this.stopped) {
       this.markPaused();
     }
+
+    this.fire(this.Events.SEEK);
   },
   pause: function pauseTimer() {
-    this.markPaused();
     this.pauseTime = Date.now();
     this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
+    this.markPaused();
+    this.fire(this.Events.PAUSE);
     // log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   stop: function stopTimer() {
-    this.markStopped();
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
     this.currentTime = 0;
     this.eventStack.reset();
+    this.markStopped();
+    this.fire(this.Events.STOP);
   },
   currentEvents: function getCurrentEvents() {
     return this.eventStack.snapshot().map((it) => { return it.event });
@@ -125,6 +148,10 @@ let Timer = {
     return this.currentTime;
   }
 };
+function newTimer(mainEvent) {
+  return Object.create(Timer).init(mainEvent);
+}
+
 function seekEventStackByTime(stack, time) {
   stack.reset();
 
@@ -143,11 +170,12 @@ function seekEventStackByTime(stack, time) {
   stack.reset();
   stack.seek(it => it.event.id == closestMatch.event.id);
 }
-function newTimer(onTick, onEventCompletion, mainEvent) {
-  return Object.create(Timer).init(onTick, onEventCompletion, mainEvent);
-}
 
 function calculateStackDiff(before, after) {
+  function diffElem(sign, elem, level) {
+    return {sign, elem, level};
+  }
+
   let diff = [];
   after.forEach(function(afterElem, i) {
     let beforeElem = before[i];
@@ -165,8 +193,5 @@ function calculateStackDiff(before, after) {
   }
   return diff;
 }
-function diffElem(sign, elem, level) {
-  return {sign, elem, level};
-}
 
-export { newTimerEvent, newTimer, TIMER_FINISHED };
+export { newTimerEvent, newTimer };

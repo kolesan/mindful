@@ -30,7 +30,7 @@ function toggleSelected(setting) {
   setting.selected = !setting.selected;
   setIcon(setting);
   setting.item.blur();
-  eventBus.instance.fire(SETTING_CHANGED_EVENT, setting);
+  eventBus.globalInstance.fire(SETTING_CHANGED_EVENT, setting);
   // log.trace(setting);
 }
 function setIcon(setting) {

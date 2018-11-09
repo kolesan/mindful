@@ -48,6 +48,7 @@ function test() {
 }
 
 let yogaProgram = {
+  id: 1,
   title: "Mindful Yoga",
   description: `
     30s prep
@@ -58,6 +59,7 @@ let yogaProgram = {
 };
 
 let meditationProgram = {
+  id: 2,
   title: "Meditation",
   description: `
     20m Breathing
@@ -71,6 +73,7 @@ let meditationProgram = {
 };
 
 let absAthleanXProgram = {
+  id: 3,
   title: "AthleanXABS",
   // description: `
   //    60s Seated Ab Circles L
@@ -134,6 +137,7 @@ function EventBuilder() {
 }
 
 let cardioProgram = {
+  id: 4,
   title: "Cardio",
   description: `Simple HIIT 1min action/1min rest`,
   mainEvent: (function() {
@@ -147,6 +151,7 @@ let cardioProgram = {
 };
 
 let chestProgram = {
+  id: 5,
   title: "AthleanX Chest",
   description: `Sore in 6`,
   mainEvent: (function() {
@@ -170,6 +175,7 @@ let chestProgram = {
 };
 
 let testProgram = {
+  id: 6,
   title: "Test",
   description: `
      ¯\\_(ツ)_/¯
@@ -185,13 +191,25 @@ let cardioBtn = document.getElementById("cardioBtn");
 let chestBtn = document.getElementById("chestBtn");
 let testBtn = document.getElementById("testBtn");
 
-let timerModule;
+let timerModules = {
+  currentModuleId: undefined,
+  get current() { return this[this.currentModuleId] },
+  add(id, module) { this[id] = module; },
+  toggleCurrent(id) { this.currentModuleId = id }
+};
+
 function loadProgarm(program, btn) {
+  if (timerModules.current) {
+    timerModules.current.pause();
+  }
+  if (timerModules[program.id]) {
+    timerModules.toggleCurrent(program.id);
+  } else {
+    timerModules.add(TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display")));
+  }
+
   document.querySelector("#titleText").innerHTML = program.title;
   document.querySelector("#descriptionText").innerHTML = program.description;
-
-  timerModule = TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display"));
-
   deselectAllSelectOne(btn);
 }
 
@@ -221,21 +239,11 @@ function deselectItem(item) {
   item.classList.remove(ITEM_SELECTED_CLASS);
 }
 function deselectAllItems() {
-  [yogaBtn, absBtn, meditationBtn, cardioBtn, testBtn].forEach(deselectItem);
+  [yogaBtn, absBtn, meditationBtn, cardioBtn, chestBtn, testBtn].forEach(deselectItem);
 }
 function deselectAllSelectOne(item) {
   deselectAllItems();
   selectItem(item);
-}
-
-function disableOneEnableOthers(btn) {
-  enableAllButtons();
-  controls.disable(btn);
-}
-function enableAllButtons() {
-  [yogaBtn, meditationBtn, absBtn, testBtn].forEach(it => {
-    controls.enable(it)
-  });
 }
 
 loadTestProgram();
@@ -247,4 +255,4 @@ chestBtn.addEventListener("click", loadChestProgram);
 testBtn.addEventListener("click", loadTestProgram);
 
 
-export { timerModule };
+export { timerModules };

@@ -1,17 +1,18 @@
-import { timerModule } from './TestDataPreload';
 import { toggleMuted, setVolume } from './Volume';
 import * as log from './Logging';
-import * as constants from './Constants';
 import * as eventBus from './EventBus';
-import { TIMER_FINISHED } from './Timer';
+
+const Events = {
+  START_CLICKED: "START_CLICKED",
+  STOP_CLICKED: "STOP_CLICKED",
+  PAUSE_CLICKED: "PASUE_CLICKED"
+};
 
 let playBtn = document.getElementById("playBtn");
 let pauseBtn = document.getElementById("pauseBtn");
 let stopBtn = document.getElementById("stopBtn");
 let volumeBtn = document.getElementById("volumeBtn");
 let volumeSlider = document.getElementById("volumeSlider");
-
-eventBus.instance.bindListener(eventBus.listener(TIMER_FINISHED, resetButtons));
 resetButtons();
 
 function disable(btn) {
@@ -31,32 +32,34 @@ function show(btn) {
 }
 
 function start() {
-  timerModule.start();
   hide(playBtn);
+  disable(playBtn);
   show(pauseBtn);
   enable(pauseBtn);
   enable(stopBtn);
+  eventBus.globalInstance.fire(Events.START_CLICKED);
 }
 
 function pause() {
-  timerModule.pause();
   hide(pauseBtn);
+  disable(pauseBtn);
   show(playBtn);
   enable(playBtn);
   enable(stopBtn);
+  eventBus.globalInstance.fire(Events.PAUSE_CLICKED);
 }
 
 function stop() {
-  timerModule.stop();
-  resetButtons()
+  resetButtons();
+  eventBus.globalInstance.fire(Events.STOP_CLICKED);
 }
 
 function resetButtons() {
-  disable(stopBtn);
-  disable(pauseBtn);
-  hide(pauseBtn);
   show(playBtn);
-  enable(playBtn)
+  enable(playBtn);
+  hide(pauseBtn);
+  disable(pauseBtn);
+  disable(stopBtn);
 }
 
 playBtn.addEventListener("click", start);
@@ -65,4 +68,4 @@ stopBtn.addEventListener("click", stop);
 volumeBtn.addEventListener("click", toggleMuted);
 volumeSlider.addEventListener("input", setVolume);
 
-export { disable, enable };
+export { Events, resetButtons };

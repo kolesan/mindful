@@ -11,26 +11,33 @@ function addBarComponent(level, event, container) {
 }
 
 function newInstance(timer, container){
+  timer.onStart(startAnimations);
+  timer.onPause(pauseAnimations);
+  timer.onStop(stop);
+  timer.onFinish(stop);
+  timer.onSeek(seek);
+  timer.onTick(updateTime);
+  timer.onLevelUpdate(barUpdate);
+
   let bars = [];
   generateBars();
 
   return Object.freeze({
-    start() { startAnimations() },
-    pause() { pauseAnimations() },
-    stop() {
-      stopAnimations();
-      generateBars();
-    },
-    seek() {
-
-    },
-    updateCurrentTime() { updateTime() },
-    updateBars(updates) {
-      updateBars(updates);
-      startAnimations()
-    },
     showNames(show) { showTimerBarNames(show) }
   });
+
+  function stop() {
+    stopAnimations();
+    generateBars();
+  }
+  function seek() {
+
+  }
+  function barUpdate([[updates]]) {
+    log.log(updates);
+    updateBars(updates);
+    startAnimations()
+  }
 
   function startAnimations() {
     bars.forEach((it) => {it.animation.play()});

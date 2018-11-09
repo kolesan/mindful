@@ -55,7 +55,7 @@
     width: 100%;
     position: absolute;
     background: linear-gradient(to right, #6f7272, #a5a9a9) transparent;
-    background-size: 10%;
+    background-size: 0%;
     background-repeat: no-repeat;
     opacity: 0.3;
     border-radius: 3px;

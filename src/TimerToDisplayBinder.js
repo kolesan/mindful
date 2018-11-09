@@ -5,41 +5,13 @@ import { seekingLocked } from './TimerDisplayControls';
 import * as eventBus from './EventBus';
 import * as log from './Logging';
 import * as utils from './Utils';
+import * as Controls from './Controls';
 
-function newInstance(mainEvent, timerComponentContainer) {
-  let timer = newTimer(onTimerTick, onEventCompletion, mainEvent);
+function newInstance(program, timerComponentContainer) {
+  let timer = newTimer(program);
   let display = newTimerDisplay(timer, timerComponentContainer);
-
+  timer.onFinish(Controls.resetButtons);
   bindEventListeners();
-
-  return Object.freeze({
-    start,
-    pause,
-    stop
-  });
-
-  function start() {
-    timer.start();
-    display.start();
-  }
-
-  function pause() {
-    timer.pause();
-    display.pause();
-  }
-
-  function stop() {
-    timer.stop();
-    display.stop();
-  }
-
-  function onTimerTick() {
-    display.updateCurrentTime();
-  }
-
-  function onEventCompletion(eventUpdates) {
-    display.updateBars(eventUpdates);
-  }
 
   function seekTimer([barClickEvent]) {
     if (seekingLocked) {
@@ -69,19 +41,24 @@ function newInstance(mainEvent, timerComponentContainer) {
   }
 
   function bindEventListeners() {
-    eventBus.instance.bindListener(
-      eventBus.listener(TIMER_FINISHED, display.stop)
+    eventBus.globalInstance.bindListener(
+      eventBus.listener(Controls.Events.START_CLICKED, () => timer.start())
     );
-    eventBus.instance.bindListener(
+    eventBus.globalInstance.bindListener(
+      eventBus.listener(Controls.Events.PAUSE_CLICKED, () => timer.pause())
+    );
+    eventBus.globalInstance.bindListener(
+      eventBus.listener(Controls.Events.STOP_CLICKED, () => timer.stop())
+    );
+    eventBus.globalInstance.bindListener(
+      eventBus.listener(TIMER_BAR_CLICKED_EVENT, seekTimer)
+    );
+    eventBus.globalInstance.bindListener(
       eventBus.listener(SETTING_CHANGED_EVENT, ([setting])=>{
         if (setting.name == SHOW_TIMER_NAMES_SETTING) {
           display.showNames(setting.selected);
         }
-        log.trace(setting);
       })
-    );
-    eventBus.instance.bindListener(
-      eventBus.listener(TIMER_BAR_CLICKED_EVENT, seekTimer)
     );
   }
 }

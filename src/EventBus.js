@@ -1,4 +1,4 @@
-let instance = instantiate();
+let globalInstance = instantiate();
 
 function instantiate() {
   let listeners = [];
@@ -11,15 +11,22 @@ function instantiate() {
       })
     },
     bindListener: function(listener) {
-      if (!listener.evoke) {
-        throw Error("Provided listener object does not contain required 'evoke' function");
-      }
-      if (!listener.type) {
-        throw Error("Provided listener object does not contain required 'type' property");
-      }
+      validateListener(listener);
       listeners.push(listener);
     }
   });
+}
+
+function validateListener(listener) {
+  if (!listener) {
+    throw Error(`Trying to bind invalid listener object '${listener}'`);
+  }
+  if (!listener.evoke) {
+    throw Error("Provided listener object does not contain required 'evoke' function");
+  }
+  if (!listener.type) {
+    throw Error("Provided listener object does not contain required 'type' property");
+  }
 }
 
 function listener(type, callback) {
@@ -29,4 +36,4 @@ function listener(type, callback) {
   }
 }
 
-export { instance, listener };
+export { globalInstance, instantiate, listener };
