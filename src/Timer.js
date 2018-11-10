@@ -65,6 +65,8 @@ let Timer = {
   },
 
   start: function startTimer() {
+    if (this.running) return;
+
     if (this.stopped) {
       this.startTime = Date.now();
       this.launch();
@@ -125,6 +127,8 @@ let Timer = {
     this.fire(this.Events.SEEK);
   },
   pause: function pauseTimer() {
+    if (this.paused) return;
+
     this.pauseTime = Date.now();
     this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
@@ -134,6 +138,8 @@ let Timer = {
     // log.trace({msLeftoversOnPause: this.msLeftoversOnPause, currentTime: this.currentTime});
   },
   stop: function stopTimer() {
+    if (this.stopped) return;
+
     clearTimeout(this.msLeftoverOnPauseTimeoutId);
     clearInterval(this.intervalId);
     this.currentTime = 0;

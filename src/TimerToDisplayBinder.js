@@ -13,6 +13,16 @@ function newInstance(program, timerComponentContainer) {
   timer.onFinish(Controls.resetButtons);
   bindEventListeners();
 
+  return {
+    init: display.init,
+    start: timer.start.bind(timer),
+    pause: timer.pause.bind(timer),
+    stop: timer.stop.bind(timer),
+    get running() { return timer.running },
+    get paused() { return timer.paused },
+    get stopped() { return timer.stopped }
+  };
+
   function seekTimer([barClickEvent]) {
     if (seekingLocked) {
       return;
@@ -31,9 +41,7 @@ function newInstance(program, timerComponentContainer) {
     if (level == 0) {
       let time = Math.floor(timer.duration * seekToPercent / 100);
       log.trace({time});
-      display.pause();
       timer.seek(time);
-      display.seek();
     } else {
 
     }
@@ -41,15 +49,6 @@ function newInstance(program, timerComponentContainer) {
   }
 
   function bindEventListeners() {
-    eventBus.globalInstance.bindListener(
-      eventBus.listener(Controls.Events.START_CLICKED, () => timer.start())
-    );
-    eventBus.globalInstance.bindListener(
-      eventBus.listener(Controls.Events.PAUSE_CLICKED, () => timer.pause())
-    );
-    eventBus.globalInstance.bindListener(
-      eventBus.listener(Controls.Events.STOP_CLICKED, () => timer.stop())
-    );
     eventBus.globalInstance.bindListener(
       eventBus.listener(TIMER_BAR_CLICKED_EVENT, seekTimer)
     );

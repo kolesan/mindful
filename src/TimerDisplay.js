@@ -23,15 +23,26 @@ function newInstance(timer, container){
   generateBars();
 
   return Object.freeze({
+    init() {
+      clearScreen();
+      attachBars();
+    },
     showNames(show) { showTimerBarNames(show) }
   });
+
+  function attachBars() {
+    bars.forEach(it => it.attach(container))
+  }
 
   function stop() {
     stopAnimations();
     generateBars();
   }
   function seek() {
-
+    // pauseAnimations();
+    // generateBars();
+    // updateTime();
+    // seekAnimations();
   }
   function barUpdate([[updates]]) {
     log.log(updates);
@@ -40,15 +51,15 @@ function newInstance(timer, container){
   }
 
   function startAnimations() {
-    bars.forEach((it) => {it.animation.play()});
+    bars.forEach(it => it.animation.play());
   }
 
   function pauseAnimations() {
-    bars.forEach((it) => {it.animation.pause()});
+    bars.forEach(it => it.animation.pause());
   }
 
   function stopAnimations() {
-    bars.forEach((it) => {it.animation.cancel()});
+    bars.forEach(it => it.animation.cancel());
   }
 
   function generateBars() {
@@ -75,6 +86,13 @@ function newInstance(timer, container){
         bars.push(addBarComponent(it.level, it.elem.event, container));
       }
     });
+  }
+
+  function seekAnimations() {
+    let events = timer.currentEvents();
+    for(let i = 0; i < events.length; i++) {
+      bars[i].animation.currentTime = timer.currentTime - events[i].startTime;
+    }
   }
 
   function updateTime() {

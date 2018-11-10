@@ -193,25 +193,45 @@ let testBtn = document.getElementById("testBtn");
 
 let timerModules = {
   currentModuleId: undefined,
-  get current() { return this[this.currentModuleId] },
-  add(id, module) { this[id] = module; },
+  get current() { return this[String(this.currentModuleId)] },
+  get(id) { return this[String(id)] },
+  add(id, module) { this[String(id)] = module; },
   toggleCurrent(id) { this.currentModuleId = id }
 };
 
 function loadProgarm(program, btn) {
-  if (timerModules.current) {
+  if (timerModules.current && timerModules.current.running) {
     timerModules.current.pause();
   }
-  if (timerModules[program.id]) {
-    timerModules.toggleCurrent(program.id);
+  timerModules.toggleCurrent(program.id);
+  if (timerModules.current) {
+    timerModules.current.init();
   } else {
-    timerModules.add(TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display")));
+    timerModules.add(program.id, TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display")));
+  }
+
+  if (timerModules.current.paused) {
+    Controls.setButtonToAfterPauseState();
+  } else if (timerModules.current.stopped) {
+    Controls.resetButtons();
   }
 
   document.querySelector("#titleText").innerHTML = program.title;
   document.querySelector("#descriptionText").innerHTML = program.description;
   deselectAllSelectOne(btn);
 }
+
+import * as eventBus from './EventBus';
+import * as Controls from './Controls';
+eventBus.globalInstance.bindListener(
+  eventBus.listener(Controls.Events.START_CLICKED, () => timerModules.current.start())
+);
+eventBus.globalInstance.bindListener(
+  eventBus.listener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause())
+);
+eventBus.globalInstance.bindListener(
+  eventBus.listener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop())
+);
 
 function loadYogaProgram() {
   loadProgarm(yogaProgram, yogaBtn);
