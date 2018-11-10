@@ -1,14 +1,6 @@
 import * as log from './Logging';
 import './TimerDisplay.css';
-import { create } from './TimerBar';
-
-const TIMER_BAR_CLICKED_EVENT = "timerBarClicked";
-
-function addBarComponent(level, event, container) {
-  let bar = create(level, event);
-  bar.attach(container);
-  return bar;
-}
+import * as TimerBar from './TimerBar';
 
 function newInstance(timer, container){
   timer.onStart(startAnimations);
@@ -20,32 +12,34 @@ function newInstance(timer, container){
   timer.onLevelUpdate(barUpdate);
 
   let bars = [];
+  detatchBars();
   generateBars();
+  attachBars();
 
   return Object.freeze({
-    init() {
-      clearScreen();
-      attachBars();
-    },
+    attach() { attachBars(); },
+    detach() { detatchBars(); },
     showNames(show) { showTimerBarNames(show) }
   });
 
-  function attachBars() {
-    bars.forEach(it => it.attach(container))
-  }
-
   function stop() {
     stopAnimations();
+    detatchBars();
     generateBars();
+    attachBars();
   }
-  function seek() {
-    // pauseAnimations();
-    // generateBars();
-    // updateTime();
-    // seekAnimations();
+  function seek(time) {
+    stopAnimations();
+    detatchBars();
+    generateBars();
+    attachBars();
+    updateTime();
+    seekAnimations(time);
+    if (timer.running) {
+      startAnimations();
+    }
   }
-  function barUpdate([[updates]]) {
-    log.log(updates);
+  function barUpdate(updates) {
     updateBars(updates);
     startAnimations()
   }
@@ -64,15 +58,22 @@ function newInstance(timer, container){
 
   function generateBars() {
     let events = timer.currentEvents();
-    clearScreen();
     bars = [];
     for(let i = 0; i < events.length; i++) {
-      bars.push(addBarComponent(i, events[i], container));
+      bars.push(createTimerBar(i, events[i]));
     }
   }
 
-  function clearScreen() {
-    container.innerHTML = '';
+  function createTimerBar(level, event) {
+    return TimerBar.create(level, event);
+  }
+
+  function attachBars() {
+    bars.forEach(it => it.attach(container));
+  }
+
+  function detatchBars() {
+    bars.forEach(it => it.detach());
   }
 
   function updateBars(eventUpdates) {
@@ -83,16 +84,17 @@ function newInstance(timer, container){
     });
     eventUpdates.forEach(function(it) {
       if (it.sign == "+") {
-        bars.push(addBarComponent(it.level, it.elem.event, container));
+        let bar = createTimerBar(it.level, it.elem.event);
+        bar.attach(container);
+        bars.push(bar);
       }
     });
   }
 
-  function seekAnimations() {
-    let events = timer.currentEvents();
-    for(let i = 0; i < events.length; i++) {
-      bars[i].animation.currentTime = timer.currentTime - events[i].startTime;
-    }
+  function seekAnimations(time) {
+    timer.currentEvents().forEach(function(event, i) {
+      bars[i].animation.currentTime = time - event.startTime;
+    });
   }
 
   function updateTime() {
@@ -112,4 +114,4 @@ function newInstance(timer, container){
   }
 }
 
-export { newInstance, TIMER_BAR_CLICKED_EVENT };
+export { newInstance };

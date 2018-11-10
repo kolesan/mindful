@@ -11,7 +11,8 @@ function create(level, event) {
   bar.style.backgroundSize = "0% 100%";
   bar.appendChild(barName);
 
-  SeekingIndicator.create(level).attach(bar);
+  let seekingIndicator = SeekingIndicator.create(level);
+  seekingIndicator.attach(bar);
 
   return Component.create([time, bar, duration], {
       animation: animateBar(bar, event.duration),

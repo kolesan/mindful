@@ -65,3 +65,18 @@
 .cursor_pointer {
     cursor: pointer;
 }
+
+@media(min-resolution: 200dpi) {
+    .timer__display {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .timer__duration {
+        display: none;
+    }
+
+    .timer__current_time {
+        display: none;
+    }
+}

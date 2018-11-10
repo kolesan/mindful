@@ -200,8 +200,8 @@ let timerModules = {
 };
 
 function loadProgarm(program, btn) {
-  if (timerModules.current && timerModules.current.running) {
-    timerModules.current.pause();
+  if (timerModules.current) {
+    timerModules.current.shutDown();
   }
   timerModules.toggleCurrent(program.id);
   if (timerModules.current) {
@@ -231,6 +231,76 @@ eventBus.globalInstance.bindListener(
 );
 eventBus.globalInstance.bindListener(
   eventBus.listener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop())
+);
+
+
+import * as log from './Logging';
+import * as utils from './Utils';
+import { TimerStates } from './Timer';
+import { seekingLocked } from './TimerDisplayControls';
+import { MOUSE_OUT_ON_SEEKING_INDICATOR,
+  MOUSE_MOVE_ON_SEEKING_INDICATOR,
+  MOUSE_DOWN_ON_SEEKING_INDICATOR,
+  MOUSE_UP_ON_SEEKING_INDICATOR } from './TimerBarSeekingIndicator';
+let seeking = false;
+let timerStateBeforeSeeking;
+window.addEventListener("mouseup", e => {
+  if (seeking) {
+    seeking = false;
+    if (timerStateBeforeSeeking == TimerStates.running) {
+      timerModules.current.start();
+    }
+  }
+});
+function onMouseOut(e) {
+  // console.log(e);
+}
+function onMouseMove(e) {
+  if (seekingLocked) return;
+
+  if (seeking) {
+    seekTimer(e);
+  }
+}
+function onMouseDown(e) {
+  if (seekingLocked) return;
+
+  timerStateBeforeSeeking = timerModules.current.state;
+  if (timerModules.current.running) {
+    timerModules.current.pause();
+  }
+  seeking = true;
+  seekTimer(e);
+}
+function onMouseUp(e) {
+  if (seekingLocked) return;
+
+  seeking = false;
+  if (timerStateBeforeSeeking == TimerStates.running) {
+    timerModules.current.start();
+  }
+  seekTimer(e);
+}
+function seekTimer(e) {
+  let seekingIndicator = e.target;
+
+  let barWidth = seekingIndicator.getBoundingClientRect().width;
+  let indicatorWidth = (e.offsetX / barWidth) * 100;
+  let seekToPercent = utils.minmax(0, 100)(indicatorWidth);
+
+  timerModules.current.seek(seekingIndicator.dataset.level, seekToPercent);
+}
+eventBus.globalInstance.bindListener(
+  eventBus.listener(MOUSE_OUT_ON_SEEKING_INDICATOR, onMouseOut)
+);
+eventBus.globalInstance.bindListener(
+  eventBus.listener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove)
+);
+eventBus.globalInstance.bindListener(
+  eventBus.listener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown)
+);
+eventBus.globalInstance.bindListener(
+  eventBus.listener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp)
 );
 
 function loadYogaProgram() {

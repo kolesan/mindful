@@ -6,7 +6,7 @@ function instantiate() {
     fire: function(eventType, ...args) {
       listeners.forEach((listener) => {
         if (listener.type == eventType) {
-          listener.evoke(args);
+          listener.evoke(...args);
         }
       })
     },

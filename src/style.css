@@ -129,19 +129,6 @@ body {
     html {
         --font-size: 4rem;
     }
-
-    .timer {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .timer__duration {
-        display: none;
-    }
-
-    .timer__current_time {
-        display: none;
-    }
 }
 @media(max-width: 1000px){
     .main_screen {

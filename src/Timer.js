@@ -53,7 +53,7 @@ let Timer = {
   onLevelUpdate(fn) { this.on(this.Events.LEVEL_UPDATE, fn) },
   onSeek(fn) { this.on(this.Events.SEEK, fn) },
 
-  fire(event, ...args) { this.timerEventBus.fire(event, args) },
+  fire(event, ...args) { this.timerEventBus.fire(event, ...args) },
 
   init: function initTimer(program) {
     this.mainEvent = program;
@@ -74,7 +74,9 @@ let Timer = {
       this.startTime += Date.now() - this.pauseTime;
       this.msLeftoverOnPauseTimeoutId = setTimeout(() => {
         this.tick();
-        this.launch();
+        if (!this.stopped) {
+          this.launch();
+        }
       }, this.msLeftoversOnPause);
     }
     this.markRunning();
@@ -124,7 +126,7 @@ let Timer = {
       this.markPaused();
     }
 
-    this.fire(this.Events.SEEK);
+    this.fire(this.Events.SEEK, time);
   },
   pause: function pauseTimer() {
     if (this.paused) return;
@@ -200,4 +202,4 @@ function calculateStackDiff(before, after) {
   return diff;
 }
 
-export { newTimerEvent, newTimer };
+export { newTimerEvent, newTimer, States as TimerStates };
