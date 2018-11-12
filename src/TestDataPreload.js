@@ -223,16 +223,9 @@ function loadProgarm(program, btn) {
 
 import * as eventBus from './EventBus';
 import * as Controls from './Controls';
-eventBus.globalInstance.bindListener(
-  eventBus.listener(Controls.Events.START_CLICKED, () => timerModules.current.start())
-);
-eventBus.globalInstance.bindListener(
-  eventBus.listener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause())
-);
-eventBus.globalInstance.bindListener(
-  eventBus.listener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop())
-);
-
+eventBus.globalInstance.bindListener(Controls.Events.START_CLICKED, () => timerModules.current.start());
+eventBus.globalInstance.bindListener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause());
+eventBus.globalInstance.bindListener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop());
 
 import * as log from './Logging';
 import * as utils from './Utils';
@@ -290,18 +283,10 @@ function seekTimer(e) {
 
   timerModules.current.seek(seekingIndicator.dataset.level, seekToPercent);
 }
-eventBus.globalInstance.bindListener(
-  eventBus.listener(MOUSE_OUT_ON_SEEKING_INDICATOR, onMouseOut)
-);
-eventBus.globalInstance.bindListener(
-  eventBus.listener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove)
-);
-eventBus.globalInstance.bindListener(
-  eventBus.listener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown)
-);
-eventBus.globalInstance.bindListener(
-  eventBus.listener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp)
-);
+eventBus.globalInstance.bindListener(MOUSE_OUT_ON_SEEKING_INDICATOR, onMouseOut);
+eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove);
+eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown);
+eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp);
 
 function loadYogaProgram() {
   loadProgarm(yogaProgram, yogaBtn);

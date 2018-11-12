@@ -1,5 +1,5 @@
 import { newEventStack } from "./Stack";
-import { instantiate as createEventBus, listener as eventListener } from './EventBus';
+import { instantiate as createEventBus } from './EventBus';
 import * as log from './Logging';
 
 let TimerEvent = {
@@ -44,7 +44,7 @@ let Timer = {
   markPaused() { this.state = States.paused },
   markStopped() { this.state = States.stopped },
 
-  on(event, fn) { this.timerEventBus.bindListener(eventListener(event, fn)) },
+  on(event, fn) { this.timerEventBus.bindListener(event, fn) },
   onStart(fn) { this.on(this.Events.START, fn) },
   onPause(fn) { this.on(this.Events.PAUSE, fn) },
   onStop(fn) { this.on(this.Events.STOP, fn) },

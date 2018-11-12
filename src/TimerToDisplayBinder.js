@@ -36,13 +36,11 @@ function newInstance(program, timerComponentContainer) {
   };
 
   function bindEventListeners() {
-    eventBus.globalInstance.bindListener(
-      eventBus.listener(SETTING_CHANGED_EVENT, setting =>{
+    eventBus.globalInstance.bindListener(SETTING_CHANGED_EVENT, setting => {
         if (setting.name == SHOW_TIMER_NAMES_SETTING) {
           display.showNames(setting.selected);
         }
-      })
-    );
+    });
   }
 }
 
