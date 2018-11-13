@@ -90,6 +90,7 @@ let Timer = {
     this.fire(this.Events.TICK, this.currentTime);
 
     if (this.currentTime >= this.eventStack.head().event.endTime) {
+      log.log(this.eventStack.head().event);
       this.eventStack.head().event.callback();
 
       let stackBefore = this.eventStack.snapshot();

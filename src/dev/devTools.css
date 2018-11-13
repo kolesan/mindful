@@ -1,0 +1,39 @@
+.dev_tools_panel {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 9999;
+    opacity: 0.0;
+    background-color: rgba(230, 230, 230, 0.6);
+
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    transition: width ease-out 150ms, height ease-out 150ms, opacity ease-out 250ms;
+
+    width: 200px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.dev_tools_panel:hover,
+.dev_tools_panel:active {
+    opacity: 1;
+    width: 200px;
+    height: 200px;
+}
+
+.dtbtn {
+    width: 100px;
+    height: 35px;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1px black;
+}
+.dtbtn:hover {
+    box-shadow: 1px 1px 3px 1px black;
+}

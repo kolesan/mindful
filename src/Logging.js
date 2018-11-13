@@ -2,7 +2,6 @@ let logging = true;
 let logTrace = false;
 
 function log(...args) {
-  console.log(args);
   if (logging) {
     if (logTrace) {
       console.log(...args, new Error().stack.replace("Error", ""));
