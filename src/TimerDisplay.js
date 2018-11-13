@@ -28,11 +28,9 @@ function newInstance(timer, container){
     generateBars();
     attachBars();
   }
-  function seek(time) {
+  function seek(time, updates) {
     stopAnimations();
-    detatchBars();
-    generateBars();
-    attachBars();
+    updateBars(updates);
     updateTime();
     seekAnimations(time);
     if (timer.running) {

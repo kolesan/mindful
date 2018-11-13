@@ -159,7 +159,6 @@ let testProgram = {
 
     l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, audio.fgong, l3events));
 
-    console.log(l2events);
     return newTimerEvent(`MainTimer`, 0, 10000, audio.sgong, l2events);
   }()
 };

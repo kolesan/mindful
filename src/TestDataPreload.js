@@ -132,13 +132,9 @@ function loadProgramsFromLocalStorage() {
 import { callbackDictionary } from './EventCallbacks';
 function deserializePrograms(serializedPrograms) {
   let programs = JSON.parse(serializedPrograms);
-  console.log(programs);
-  setTimeout(
   programs.forEach(program => {
-    console.log(program);
-    TreeUtils.walkATree(program.mainEvent, eventNode => eventNode.callback = callbackDictionary[eventNode.callback]);
-    console.log(program);
-  }), 1000);
+    TreeUtils.visit(program.mainEvent, eventNode => eventNode.callback = callbackDictionary[eventNode.callback]);
+  });
   return programs;
 }
 function loadDefaultProgram(programWrappers) {

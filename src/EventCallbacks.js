@@ -7,5 +7,4 @@ let callbackDictionary = {
   fsgong: audio.fsgong
 };
 
-console.log(callbackDictionary);
 export { callbackDictionary }

@@ -1,9 +1,9 @@
 let logging = true;
-let logTrace = false;
+let tracing = true;
 
 function log(...args) {
   if (logging) {
-    if (logTrace) {
+    if (tracing) {
       console.log(...args, new Error().stack.replace("Error", ""));
     } else {
       console.log(...args);
@@ -11,10 +11,10 @@ function log(...args) {
   }
 }
 
-function trace(...args) {
-  if (logging) {
-    console.trace(...args);
-  }
+function toggleLogging() {
+  logging = !logging;
 }
-
-export { log, trace };
+function toggleTracing() {
+  tracing = !tracing;
+}
+export { toggleLogging, toggleTracing, log };

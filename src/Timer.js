@@ -90,7 +90,6 @@ let Timer = {
     this.fire(this.Events.TICK, this.currentTime);
 
     if (this.currentTime >= this.eventStack.head().event.endTime) {
-      log.log(this.eventStack.head().event);
       this.eventStack.head().event.callback();
 
       let stackBefore = this.eventStack.snapshot();
@@ -110,8 +109,8 @@ let Timer = {
       clearTimeout(this.msLeftoverOnPauseTimeoutId);
       clearInterval(this.intervalId);
     }
-
-    seekEventStackByTime(this.eventStack, time);
+    let stackBeforeSeeking = this.eventStack.snapshot();
+    seekEventStackByTime(this.eventStack, time, this.mainEvent);
 
     let msLeftovers = time % 1000;
     this.currentTime = time - msLeftovers;
@@ -127,7 +126,7 @@ let Timer = {
       this.markPaused();
     }
 
-    this.fire(this.Events.SEEK, time);
+    this.fire(this.Events.SEEK, time, calculateStackDiff(stackBeforeSeeking, this.eventStack.snapshot()));
   },
   pause: function pauseTimer() {
     if (this.paused) return;
@@ -161,23 +160,15 @@ function newTimer(mainEvent) {
   return Object.create(Timer).init(mainEvent);
 }
 
-function seekEventStackByTime(stack, time) {
-  stack.reset();
-
-  let matchingElements = [];
-  while(stack.seek(it => it.event.startTime <= time && it.event.endTime > time)) {
-    matchingElements.push(stack.head());
-    stack.next();
-  }
-
+import * as TreeUtils from './TreeUtils';
+function seekEventStackByTime(stack, time, mainEvent) {
+  let matchingElements = TreeUtils.flatten(mainEvent).filter(event => event.startTime <= time && event.endTime > time);
   if (matchingElements.length == 0) {
-    throw new Error(`Can not seek to '${time}', it is out of bounds`);
+      throw new Error(`Can not seek to '${time}', it is out of bounds`);
   }
-
-  let closestMatch = matchingElements.reduce((a, b) => time - a.event.startTime > time - b.event.startTime ? b : a);
-
+  let closestMatch = matchingElements.reduce((a, b) => time - a.startTime > time - b.startTime ? b : a);
   stack.reset();
-  stack.seek(it => it.event.id == closestMatch.event.id);
+  stack.seek(it => it.event.id == closestMatch.id);
 }
 
 function calculateStackDiff(before, after) {

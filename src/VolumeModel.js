@@ -25,7 +25,7 @@ function newInstance(muted = false, volume = UNMUTE_VOLUME) {
         _volume = UNMUTE_VOLUME;
       }
 
-      log.trace({_muted, _volume});
+      log.log({_muted, _volume});
     },
 
     get volume() {
@@ -35,7 +35,7 @@ function newInstance(muted = false, volume = UNMUTE_VOLUME) {
       _volume = normalizeVolume(volume);
       _muted = _volume == ZERO_VOLUME;
 
-      log.trace({_muted, _volume});
+      log.log({_muted, _volume});
     }
   });
 }

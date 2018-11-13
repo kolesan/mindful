@@ -2,17 +2,24 @@ import './devTools.css';
 import * as utils from '../Utils';
 import { programs } from './TestData';
 import * as TreeUtils from '../TreeUtils';
+import { toggleLogging, toggleTracing } from '../Logging';
 
 initDevTools();
 
 function initDevTools() {
   let panel = utils.createComponent("div", ["dev_tools_panel"]);
-  let loadStorageBtn = utils.createComponent("button", ["dtbtn"], "LoadStorage");
+  let loadStorageBtn = utils.createComponent("button", ["dtbtn"], "Load storage");
   loadStorageBtn.addEventListener("click", loadTestProgramsToStorage);
-  let clearStorageBtn = utils.createComponent("button", ["dtbtn"], "ClearStorage");
+  let clearStorageBtn = utils.createComponent("button", ["dtbtn"], "Clear storage");
   clearStorageBtn.addEventListener("click", clearTestProgramsFromStorage);
+  let toggleLoggingBtn = utils.createComponent("button", ["dtbtn"], "Toggle logging");
+  toggleLoggingBtn.addEventListener("click", toggleLogging);
+  let toggleTracingBtn = utils.createComponent("button", ["dtbtn"], "Toggle tracing");
+  toggleTracingBtn.addEventListener("click", toggleTracing);
   panel.appendChild(loadStorageBtn);
   panel.appendChild(clearStorageBtn);
+  panel.appendChild(toggleLoggingBtn);
+  panel.appendChild(toggleTracingBtn);
   document.querySelector("body").appendChild(panel)
 }
 
@@ -26,7 +33,7 @@ function loadTestProgramsToStorage() {
 function replaceCallbackFunctionsWithTheirNames(program) {
   let clone = Object.assign({}, program);
   console.log(clone);
-  TreeUtils.walkATree(clone.mainEvent, event => event.callback = event.callback.name);
+  TreeUtils.visit(clone.mainEvent, event => event.callback = event.callback.name);
   return clone;
 }
 
