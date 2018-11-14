@@ -11,10 +11,14 @@ import * as log from './Logging';
 import * as utils from './Utils';
 import { TimerStates } from './Timer';
 import { seekingLocked } from './TimerDisplayControls';
-import { MOUSE_OUT_ON_SEEKING_INDICATOR,
+import {
+  TOUCH_START_ON_SEEKING_INDICATOR,
+  TOUCH_MOVE_ON_SEEKING_INDICATOR,
+  TOUCH_END_ON_SEEKING_INDICATOR,
   MOUSE_MOVE_ON_SEEKING_INDICATOR,
   MOUSE_DOWN_ON_SEEKING_INDICATOR,
-  MOUSE_UP_ON_SEEKING_INDICATOR } from './TimerBarSeekingIndicator';
+  MOUSE_UP_ON_SEEKING_INDICATOR
+} from './TimerBarSeekingIndicator';
 let seeking = false;
 let timerStateBeforeSeeking;
 window.addEventListener("mouseup", e => {
@@ -25,17 +29,17 @@ window.addEventListener("mouseup", e => {
     }
   }
 });
-function onMouseOut(e) {
+function onMouseOut(level, seekToPercent) {
   // console.log(e);
 }
-function onMouseMove(e) {
+function onMouseMove(level, seekToPercent) {
   if (seekingLocked) return;
 
   if (seeking) {
-    seekTimer(e);
+    seekTimer(level, seekToPercent);
   }
 }
-function onMouseDown(e) {
+function onMouseDown(level, seekToPercent) {
   if (seekingLocked) return;
 
   timerStateBeforeSeeking = timerModules.current.state;
@@ -43,27 +47,44 @@ function onMouseDown(e) {
     timerModules.current.pause();
   }
   seeking = true;
-  seekTimer(e);
+  seekTimer(level, seekToPercent);
 }
-function onMouseUp(e) {
+function onMouseUp(level, seekToPercent) {
   if (seekingLocked) return;
 
   seeking = false;
   if (timerStateBeforeSeeking == TimerStates.running) {
     timerModules.current.start();
   }
-  seekTimer(e);
+  seekTimer(level, seekToPercent);
 }
-function seekTimer(e) {
-  let seekingIndicator = e.target;
-
-  let barWidth = seekingIndicator.getBoundingClientRect().width;
-  let indicatorWidth = (e.offsetX / barWidth) * 100;
-  let seekToPercent = utils.minmax(0, 100)(indicatorWidth);
-
-  timerModules.current.seek(seekingIndicator.dataset.level, seekToPercent);
+function seekTimer(level, seekToPercent) {
+  timerModules.current.seek(level, seekToPercent);
 }
-eventBus.globalInstance.bindListener(MOUSE_OUT_ON_SEEKING_INDICATOR, onMouseOut);
+function onTouchStart(level, seekToPercent) {
+  if (seekingLocked) return;
+
+  timerStateBeforeSeeking = timerModules.current.state;
+  if (timerModules.current.running) {
+    timerModules.current.pause();
+  }
+  seekTimer(level, seekToPercent);
+}
+function onTouchMove(level, seekToPercent) {
+  if (seekingLocked) return;
+
+  seekTimer(level, seekToPercent);
+}
+function onTouchEnd() {
+  if (seekingLocked) return;
+
+  if (timerStateBeforeSeeking == TimerStates.running) {
+    timerModules.current.start();
+  }
+}
+eventBus.globalInstance.bindListener(TOUCH_START_ON_SEEKING_INDICATOR, onTouchStart);
+eventBus.globalInstance.bindListener(TOUCH_MOVE_ON_SEEKING_INDICATOR, onTouchMove);
+eventBus.globalInstance.bindListener(TOUCH_END_ON_SEEKING_INDICATOR, onTouchEnd);
 eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove);
 eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown);
 eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp);
@@ -131,9 +152,11 @@ function loadProgramsFromLocalStorage() {
 }
 import { callbackDictionary } from './EventCallbacks';
 function deserializePrograms(serializedPrograms) {
+  console.log(callbackDictionary);
   let programs = JSON.parse(serializedPrograms);
+  console.log(programs);
   programs.forEach(program => {
-    TreeUtils.visit(program.mainEvent, eventNode => eventNode.callback = callbackDictionary[eventNode.callback]);
+    TreeUtils.visit(program.mainEvent, eventNode => eventNode.callback = callbackDictionary.get(eventNode.callback));
   });
   return programs;
 }

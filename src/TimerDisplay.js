@@ -29,7 +29,7 @@ function newInstance(timer, container){
     attachBars();
   }
   function seek(time, updates) {
-    stopAnimations();
+    pauseAnimations();
     updateBars(updates);
     updateTime();
     seekAnimations(time);

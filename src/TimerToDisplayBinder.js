@@ -26,7 +26,9 @@ function newInstance(program, timerComponentContainer) {
     seek: (level, percent) => {
       let event = timer.currentEvents()[level];
       let time = event.startTime + Math.floor(event.duration * percent / 100);
-
+      if (percent == 100) {
+        time -= 10;
+      }
       timer.seek(time);
     },
     get state() { return timer.state },

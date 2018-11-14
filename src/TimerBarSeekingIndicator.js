@@ -4,29 +4,60 @@ import * as Component from './Component';
 import { seekingLocked } from './TimerDisplayControls';
 import * as eventBus from './EventBus';
 
+const TOUCH_START_ON_SEEKING_INDICATOR = "TOUCH_START_ON_SEEKING_INDICATOR";
+const TOUCH_MOVE_ON_SEEKING_INDICATOR = "TOUCH_MOVE_ON_SEEKING_INDICATOR";
+const TOUCH_END_ON_SEEKING_INDICATOR = "TOUCH_END_ON_SEEKING_INDICATOR";
 const MOUSE_OUT_ON_SEEKING_INDICATOR = "MOUSE_OUT_ON_SEEKING_INDICATOR";
 const MOUSE_MOVE_ON_SEEKING_INDICATOR = "MOUSE_MOVE_ON_SEEKING_INDICATOR";
 const MOUSE_DOWN_ON_SEEKING_INDICATOR = "MOUSE_DOWN_ON_SEEKING_INDICATOR";
 const MOUSE_UP_ON_SEEKING_INDICATOR = "MOUSE_UP_ON_SEEKING_INDICATOR";
 
+function touchWidthPercentage(event, width, left) {
+  return calculateWidthPercentage(width, event.touches[0].clientX - left);
+}
+
+function mouseWidthPercentage(event) {
+  return calculateWidthPercentage(event.target.clientWidth, event.offsetX);
+}
+
+function calculateWidthPercentage(width, x) {
+  return minmax(0, 100)((x / width) * 100);
+}
+
 function create(level) {
   let cmp = createComponent("div", [`timer__bar__seeking_indicator`]);
-
   cmp.dataset.level = level;
+
+  cmp.addEventListener("touchstart", event => {
+    let rect = event.target.getBoundingClientRect();
+    eventBus.globalInstance.fire(TOUCH_START_ON_SEEKING_INDICATOR, level, touchWidthPercentage(event, rect.width, rect.left));
+    event.target.classList.add("timer__bar__seeking_indicator_active");
+  });
+  cmp.addEventListener("touchmove", event => {
+    let rect = event.target.getBoundingClientRect();
+    eventBus.globalInstance.fire(TOUCH_MOVE_ON_SEEKING_INDICATOR, level, touchWidthPercentage(event, rect.width, rect.left));
+  });
+  cmp.addEventListener("touchend", () => {
+    eventBus.globalInstance.fire(TOUCH_END_ON_SEEKING_INDICATOR);
+    event.target.classList.remove("timer__bar__seeking_indicator_active");
+  });
+
   cmp.addEventListener("mousemove", event => {
-    eventBus.globalInstance.fire(MOUSE_MOVE_ON_SEEKING_INDICATOR, event);
+    eventBus.globalInstance.fire(MOUSE_MOVE_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
     showSeekingIndicator(event);
   });
   cmp.addEventListener("mouseout", event => {
-    eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, event);
+    eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
     hideSeekingIndicator(event);
   });
   cmp.addEventListener("mousedown", event => {
-    eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, event)
+    eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
+    event.target.classList.add("timer__bar__seeking_indicator_active");
   });
-  cmp.addEventListener("mouseup", event =>
-    eventBus.globalInstance.fire(MOUSE_UP_ON_SEEKING_INDICATOR, event)
-  );
+  cmp.addEventListener("mouseup", event => {
+    eventBus.globalInstance.fire(MOUSE_UP_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
+    event.target.classList.remove("timer__bar__seeking_indicator_active");
+  });
 
   return Component.create([cmp]);
 }
@@ -43,15 +74,14 @@ function showSeekingIndicator(event) {
     return;
   }
 
-  let seekingIndicator = event.target;
-  let barWidth = event.target.getBoundingClientRect().width;
-  let x = event.offsetX;
-  let indicatorWidth = (x / barWidth) * 100;
-
-  seekingIndicator.style.backgroundSize = minmax(0, 100)(indicatorWidth) + '% 100%';
+  event.target.style.backgroundSize = mouseWidthPercentage(event) + '% 100%';
 }
 
-export { create,
+export {
+  create,
+  TOUCH_START_ON_SEEKING_INDICATOR,
+  TOUCH_MOVE_ON_SEEKING_INDICATOR,
+  TOUCH_END_ON_SEEKING_INDICATOR,
   MOUSE_OUT_ON_SEEKING_INDICATOR,
   MOUSE_MOVE_ON_SEEKING_INDICATOR,
   MOUSE_DOWN_ON_SEEKING_INDICATOR,

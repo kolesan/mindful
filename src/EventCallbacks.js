@@ -1,10 +1,11 @@
 import * as audio from './Audio';
+import * as Map from './Map';
 
-let callbackDictionary = {
-  fgong: audio.fgong,
-  ffgong: audio.ffgong,
-  sgong: audio.sgong,
-  fsgong: audio.fsgong
-};
+
+let callbackDictionary = Map.inst()
+  .put("fgong", audio.fgong)
+  .put("ffgong", audio.ffgong)
+  .put("sgong", audio.sgong)
+  .put("fsgong", audio.fsgong);
 
 export { callbackDictionary }

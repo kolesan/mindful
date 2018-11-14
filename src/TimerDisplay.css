@@ -60,23 +60,33 @@
     opacity: 0.3;
     border-radius: 3px;
     box-shadow: 0px 0px 2px 1px #6F7373;
+
+    user-select: none;
 }
 
 .cursor_pointer {
     cursor: pointer;
 }
 
+.timer__bar__seeking_indicator_active {
+    box-shadow: 0 0 3px 2px white;
+    opacity: 0.6;
+}
+
 @media(min-resolution: 200dpi) {
-    .timer__display {
-        display: flex;
-        flex-direction: column;
+    .timer__bar__seeking_indicator_active {
+        box-shadow: 0 0 3px 3px white;
     }
+    /*.timer__display {*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+    /*}*/
 
-    .timer__duration {
-        display: none;
-    }
+    /*.timer__duration {*/
+        /*display: none;*/
+    /*}*/
 
-    .timer__current_time {
-        display: none;
-    }
+    /*.timer__current_time {*/
+        /*display: none;*/
+    /*}*/
 }

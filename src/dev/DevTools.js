@@ -3,6 +3,7 @@ import * as utils from '../Utils';
 import { programs } from './TestData';
 import * as TreeUtils from '../TreeUtils';
 import { toggleLogging, toggleTracing } from '../Logging';
+import { callbackDictionary } from '../EventCallbacks';
 
 initDevTools();
 
@@ -33,8 +34,12 @@ function loadTestProgramsToStorage() {
 function replaceCallbackFunctionsWithTheirNames(program) {
   let clone = Object.assign({}, program);
   console.log(clone);
-  TreeUtils.visit(clone.mainEvent, event => event.callback = event.callback.name);
+  TreeUtils.visit(clone.mainEvent, event => event.callback = findCallbackName(event.callback));
   return clone;
+}
+
+function findCallbackName(callback) {
+  return callbackDictionary.entries().find(it => it.v == callback).k;
 }
 
 function clearTestProgramsFromStorage() {

@@ -181,7 +181,7 @@ function calculateStackDiff(before, after) {
     let beforeElem = before[i];
     if (!beforeElem) {
       diff.push(diffElem("+", afterElem, i));
-    } else if (afterElem.id != beforeElem.id) {
+    } else if (afterElem.event.id != beforeElem.event.id) {
       diff.push(diffElem("-", beforeElem, i));
       diff.push(diffElem("+", afterElem, i));
     }
