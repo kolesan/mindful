@@ -75,8 +75,14 @@
 }
 
 @media(min-resolution: 200dpi) {
+    .timer__bar {
+        border-radius: 4px;
+    }
     .timer__bar__seeking_indicator_active {
         box-shadow: 0 0 3px 3px white;
+    }
+    .timer__bar__seeking_indicator {
+        background: none;
     }
     /*.timer__display {*/
         /*display: flex;*/
