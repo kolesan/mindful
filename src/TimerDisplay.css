@@ -12,6 +12,7 @@
     align-self: start;
 
     user-select: none;
+    -moz-user-select: none;
 }
 
 .timer__current_time_display {
