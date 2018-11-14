@@ -10,6 +10,8 @@
     font-size: calc(var(--font-size) - 0.5rem);
 
     align-self: start;
+
+    user-select: none;
 }
 
 .timer__current_time_display {
@@ -60,8 +62,6 @@
     opacity: 0.3;
     border-radius: 3px;
     box-shadow: 0px 0px 2px 1px #6F7373;
-
-    user-select: none;
 }
 
 .cursor_pointer {

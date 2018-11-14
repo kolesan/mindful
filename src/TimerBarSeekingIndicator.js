@@ -43,16 +43,19 @@ function create(level) {
   });
 
   cmp.addEventListener("mousemove", event => {
-    eventBus.globalInstance.fire(MOUSE_MOVE_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
-    showSeekingIndicator(event);
+    let width = mouseWidthPercentage(event);
+    eventBus.globalInstance.fire(MOUSE_MOVE_ON_SEEKING_INDICATOR, level, width);
+    showSeekingIndicator(event, width);
   });
   cmp.addEventListener("mouseout", event => {
-    eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
+    eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, level, event.target);
     hideSeekingIndicator(event);
   });
   cmp.addEventListener("mousedown", event => {
     eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
-    event.target.classList.add("timer__bar__seeking_indicator_active");
+    if (!seekingLocked) {
+      event.target.classList.add("timer__bar__seeking_indicator_active");
+    }
   });
   cmp.addEventListener("mouseup", event => {
     eventBus.globalInstance.fire(MOUSE_UP_ON_SEEKING_INDICATOR, level, mouseWidthPercentage(event));
@@ -69,12 +72,12 @@ function hideSeekingIndicator(event) {
   event.target.style.backgroundSize = '0% 100%';
 }
 
-function showSeekingIndicator(event) {
+function showSeekingIndicator(event, width) {
   if (seekingLocked) {
     return;
   }
 
-  event.target.style.backgroundSize = mouseWidthPercentage(event) + '% 100%';
+  event.target.style.backgroundSize = width + '% 100%';
 }
 
 export {

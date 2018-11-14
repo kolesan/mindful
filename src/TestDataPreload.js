@@ -17,53 +17,58 @@ import {
   TOUCH_END_ON_SEEKING_INDICATOR,
   MOUSE_MOVE_ON_SEEKING_INDICATOR,
   MOUSE_DOWN_ON_SEEKING_INDICATOR,
-  MOUSE_UP_ON_SEEKING_INDICATOR
+  MOUSE_UP_ON_SEEKING_INDICATOR,
+  MOUSE_OUT_ON_SEEKING_INDICATOR
 } from './TimerBarSeekingIndicator';
 let seeking = false;
+let mouseOut = false;
 let timerStateBeforeSeeking;
-window.addEventListener("mouseup", e => {
-  if (seeking) {
+window.addEventListener("mouseup", ifNotLocked(function() {
+  if (seeking && mouseOut) {
     seeking = false;
     if (timerStateBeforeSeeking == TimerStates.running) {
       timerModules.current.start();
     }
   }
-});
-function onMouseOut(level, seekToPercent) {
-  // console.log(e);
+}));
+let seekingIndicator;
+let currentSeekingIndicatorLevel;
+window.addEventListener("mousemove", ifNotLocked(function(event) {
+  if (seeking && mouseOut) {
+    let rect = seekingIndicator.getBoundingClientRect();
+    seekTimer(currentSeekingIndicatorLevel, utils.minmax(0, 100)(((event.clientX - rect.left) / rect.width) * 100));
+  }
+}));
+function onMouseOut(level, target) {
+  if (level == currentSeekingIndicatorLevel) {
+    mouseOut = true;
+    seekingIndicator = target;
+  }
 }
 function onMouseMove(level, seekToPercent) {
-  if (seekingLocked) return;
-
   if (seeking) {
-    seekTimer(level, seekToPercent);
+    seekTimer(currentSeekingIndicatorLevel, seekToPercent);
+  }
+  if (level == currentSeekingIndicatorLevel) {
+    mouseOut = false;
   }
 }
 function onMouseDown(level, seekToPercent) {
-  if (seekingLocked) return;
-
   timerStateBeforeSeeking = timerModules.current.state;
   if (timerModules.current.running) {
     timerModules.current.pause();
   }
   seeking = true;
+  currentSeekingIndicatorLevel = level;
   seekTimer(level, seekToPercent);
 }
-function onMouseUp(level, seekToPercent) {
-  if (seekingLocked) return;
-
+function onMouseUp() {
   seeking = false;
   if (timerStateBeforeSeeking == TimerStates.running) {
     timerModules.current.start();
   }
-  seekTimer(level, seekToPercent);
-}
-function seekTimer(level, seekToPercent) {
-  timerModules.current.seek(level, seekToPercent);
 }
 function onTouchStart(level, seekToPercent) {
-  if (seekingLocked) return;
-
   timerStateBeforeSeeking = timerModules.current.state;
   if (timerModules.current.running) {
     timerModules.current.pause();
@@ -71,23 +76,30 @@ function onTouchStart(level, seekToPercent) {
   seekTimer(level, seekToPercent);
 }
 function onTouchMove(level, seekToPercent) {
-  if (seekingLocked) return;
-
   seekTimer(level, seekToPercent);
 }
 function onTouchEnd() {
-  if (seekingLocked) return;
-
   if (timerStateBeforeSeeking == TimerStates.running) {
     timerModules.current.start();
   }
 }
-eventBus.globalInstance.bindListener(TOUCH_START_ON_SEEKING_INDICATOR, onTouchStart);
-eventBus.globalInstance.bindListener(TOUCH_MOVE_ON_SEEKING_INDICATOR, onTouchMove);
-eventBus.globalInstance.bindListener(TOUCH_END_ON_SEEKING_INDICATOR, onTouchEnd);
-eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove);
-eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown);
-eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp);
+function seekTimer(level, seekToPercent) {
+  timerModules.current.seek(level, seekToPercent);
+}
+function ifNotLocked(fn) {
+  return function(...args) {
+    if (!seekingLocked) {
+      fn(...args);
+    }
+  }
+}
+eventBus.globalInstance.bindListener(TOUCH_START_ON_SEEKING_INDICATOR, ifNotLocked(onTouchStart));
+eventBus.globalInstance.bindListener(TOUCH_MOVE_ON_SEEKING_INDICATOR, ifNotLocked(onTouchMove));
+eventBus.globalInstance.bindListener(TOUCH_END_ON_SEEKING_INDICATOR, ifNotLocked(onTouchEnd));
+eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, ifNotLocked(onMouseMove));
+eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, ifNotLocked(onMouseDown));
+eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, ifNotLocked(onMouseUp));
+eventBus.globalInstance.bindListener(MOUSE_OUT_ON_SEEKING_INDICATOR, ifNotLocked(onMouseOut));
 
 
 
@@ -152,9 +164,7 @@ function loadProgramsFromLocalStorage() {
 }
 import { callbackDictionary } from './EventCallbacks';
 function deserializePrograms(serializedPrograms) {
-  console.log(callbackDictionary);
   let programs = JSON.parse(serializedPrograms);
-  console.log(programs);
   programs.forEach(program => {
     TreeUtils.visit(program.mainEvent, eventNode => eventNode.callback = callbackDictionary.get(eventNode.callback));
   });
