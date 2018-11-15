@@ -39,7 +39,7 @@ body {
 
 .section {
     width: 100%;
-    padding: 0 1rem;
+    padding: 1rem;
     overflow: hidden;
 }
 
@@ -76,4 +76,19 @@ body {
 
 .icon-button:disabled {
     color: rgba(205, 205, 205, 0.4);
+}
+
+
+
+@media(min-resolution: 200dpi) {
+    html {
+        --font-size: 4rem;
+    }
+}
+@media(max-width: 1000px) {
+    .main_screen {
+        margin: 0;
+        height: 90vh;
+        width: 98vw;
+    }
 }

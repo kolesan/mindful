@@ -1,0 +1,35 @@
+.controls__playback {
+    display: flex;
+    flex: 0 0 25%;
+    border-right: 2px solid var(--font-color);
+}
+
+.controls__button__play {
+    position: relative;
+    left: calc(50% - 4rem);
+    font-size: 8rem;
+    align-self: center;
+}
+.controls__button__pause {
+    position: relative;
+    left: calc(50% - 4rem);
+    font-size: 8rem;
+    align-self: center;
+}
+.controls__button__stop {
+    margin-left: auto;
+    font-size: 6rem;
+    align-self: flex-end;
+}
+
+@media(max-width: 1000px){
+    .controls__button__play {
+        font-size: 12rem;
+    }
+    .controls__button__pause {
+        font-size: 12rem;
+    }
+    .controls__playback {
+        border-right: none;
+    }
+}
