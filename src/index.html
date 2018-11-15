@@ -25,34 +25,43 @@
             <i class="drawer_menu__close_btn__icon fas fa-times"></i> <span>Close</span>
         </button>
     </nav>
-    <section class="main_screen">
-        <section class="title section">
-            <button class="icon-button" title="Menu" id="menuBtn"><i class="fas fa-bars"></i></button>
-            <span id="titleText">Mindful</span>
-            <button class="icon-button" title="Edit program" id="editBtn"><i class="fas fa-edit"></i></button>
+    <section class="main_screen"><!-- style="display: none"-->
+        <section class="timer_screen">
+            <section class="title section">
+                <button class="icon-button" title="Menu" id="menuBtn"><i class="fas fa-bars"></i></button>
+                <span id="titleText">Mindful</span>
+                <button class="icon-button" title="Edit program" id="editBtn"><i class="fas fa-edit"></i></button>
+            </section>
+            <div class="section_separator"></div>
+            <section class="description section">
+                <span id="descriptionText"></span>
+            </section>
+            <div class="section_separator"></div>
+            <section class="timer section">
+                <div class="timer__display"></div>
+                <button class="icon-button" title="Toggle seeking lock" id="lockSeekingBtn"><i class="fas fa-lock"></i></button>
+            </section>
+            <div class="section_separator"></div>
+            <section class="controls section">
+                <div class="controls__playback">
+                    <button class="controls__button__play icon-button" title="Run program" id="playBtn"><i class="fas fa-play"></i></button>
+                    <button class="controls__button__pause icon-button" title="Pause program" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
+                    <button class="controls__button__stop icon-button" title="Stop program" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
+                </div>
+                <div class="controls__volume">
+                    <button class="controls__button__volume icon-button" title="Toggle mute" id="volumeBtn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
+                </div>
+            </section>
         </section>
-        <div class="section_separator"></div>
-        <section class="description section">
-            <span id="descriptionText"></span>
-        </section>
-        <div class="section_separator"></div>
-        <section class="timer section">
-            <div class="timer__display"></div>
-            <button class="icon-button" title="Toggle seeking lock" id="lockSeekingBtn"><i class="fas fa-lock"></i></button>
-        </section>
-        <div class="section_separator"></div>
-        <section class="controls section">
-            <div class="controls__playback">
-                <button class="controls__button__play icon-button" title="Run program" id="playBtn"><i class="fas fa-play"></i></button>
-                <button class="controls__button__pause icon-button" title="Pause program" disabled id="pauseBtn"><i class="fas fa-pause"></i></button>
-                <button class="controls__button__stop icon-button" title="Stop program" disabled id="stopBtn"><i class="fas fa-stop"></i></button>
-            </div>
-            <div class="controls__volume">
-                <button class="controls__button__volume icon-button" title="Toggle mute" id="volumeBtn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
-            </div>
+        <section class="edit_screen" style="display: none">
+            <section class="title section">
+                <button class="icon-button" title="Menu" id="menuBtn"><i class="fas fa-bars"></i></button>
+                <span>Edit program</span>
+                <button class="icon-button" title="Save program" id="saveBtn"><i class="fas fa-save"></i></button>
+            </section>
         </section>
     </section>
 </body>

@@ -1,7 +1,7 @@
-import * as eventBus from './EventBus';
+import * as eventBus from '../utils/EventBus';
 import { TIMER_BAR_CLICKED_EVENT } from './TimerDisplay';
-import * as log from './Logging';
-import * as utils from './Utils';
+import * as log from '../utils/Logging';
+import * as utils from '../utils/Utils';
 
 const ICON_LOCKED = "fa-lock";
 const ICON_UNLOCKED = "fa-lock-open";

@@ -1,5 +1,5 @@
-import * as audio from '../Audio';
-import { newTimerEvent } from '../Timer';
+import * as audio from '../timer_screen/Audio';
+import { newTimerEvent } from '../timer_screen/Timer';
 
 function s(c) {
   return c*1000;

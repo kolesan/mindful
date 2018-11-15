@@ -1,6 +1,5 @@
-import * as audio from './Audio';
-import * as Map from './Map';
-
+import * as audio from './timer_screen/Audio';
+import * as Map from './utils/Map';
 
 let callbackDictionary = Map.inst()
   .put("fgong", audio.fgong)

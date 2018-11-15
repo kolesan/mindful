@@ -1,6 +1,6 @@
-import { newEventStack } from "./Stack";
-import { instantiate as createEventBus } from './EventBus';
-import * as log from './Logging';
+import { newEventStack } from "../utils/Stack";
+import { instantiate as createEventBus } from '../utils/EventBus';
+import * as log from '../utils/Logging';
 
 let TimerEvent = {
   idCounter: 0,
@@ -160,7 +160,7 @@ function newTimer(mainEvent) {
   return Object.create(Timer).init(mainEvent);
 }
 
-import * as TreeUtils from './TreeUtils';
+import * as TreeUtils from '../utils/TreeUtils';
 function seekEventStackByTime(stack, time, mainEvent) {
   let matchingElements = TreeUtils.flatten(mainEvent).filter(event => event.startTime <= time && event.endTime > time);
   if (matchingElements.length == 0) {

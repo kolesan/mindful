@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ['./src/index.js', './src/Controls.js', './src/TestDataPreload.js'],
+  entry: ['./src/index.js', './src/timer_screen/TimerControls.js', './src/TestDataPreload.js'],
   plugins: [new HtmlWebpackPlugin({
     template: './src/index.html'
   })],

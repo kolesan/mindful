@@ -1,5 +1,5 @@
 import './drawer_menu.css';
-import './Settings';
+import '../settings/Settings';
 
 const HIDDEN_DRAWER_CLASS = "drawer_menu__hidden";
 

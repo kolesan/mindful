@@ -1,5 +1,5 @@
-import * as log from './Logging';
-import './TimerDisplay.css';
+import * as log from '../utils/Logging';
+import './timer_display.css';
 import * as TimerBar from './TimerBar';
 
 function newInstance(timer, container){

@@ -1,6 +1,6 @@
-import { toggleMuted, setVolume } from './Volume';
-import * as log from './Logging';
-import * as eventBus from './EventBus';
+import { toggleMuted, setVolume } from './volume/Volume';
+import * as log from '../utils/Logging';
+import * as eventBus from '../utils/EventBus';
 
 const Events = {
   START_CLICKED: "START_CLICKED",

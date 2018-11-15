@@ -1,4 +1,4 @@
-import { removeComponent } from './Utils';
+import { removeComponent } from './HtmlUtils';
 
 function create(components, customPropertiesObj) {
   return Object.assign(Object.create(Component), {components, ...customPropertiesObj});

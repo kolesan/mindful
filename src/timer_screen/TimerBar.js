@@ -1,6 +1,7 @@
-import { createComponent, formatTime } from './Utils';
+import { createComponent } from '../utils/HtmlUtils';
+import { formatTime } from '../utils/TimeUtils';
 import * as SeekingIndicator from './TimerBarSeekingIndicator';
-import * as Component from './Component';
+import * as Component from '../utils/Component';
 
 function create(level, event) {
   let time = createComponent("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));

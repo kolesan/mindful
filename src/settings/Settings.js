@@ -1,5 +1,5 @@
-import * as log from './Logging';
-import * as eventBus from './EventBus';
+import * as log from '../utils/Logging';
+import * as eventBus from '../utils/EventBus';
 
 const SETTING_CHANGED_EVENT = "SETTING_CHANGED";
 const SHOW_TIMER_NAMES_SETTING = "showTimerNames";

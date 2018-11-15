@@ -1,7 +1,7 @@
-import * as log from '../Logging';
-import { minmax } from '../Utils';
+import * as log from '../../utils/Logging';
+import { minmax } from '../../utils/Utils';
 import { seekingLocked } from '../TimerDisplayControls';
-import { currentTimer } from '../TestDataPreload';
+import { currentTimer } from '../../TestDataPreload';
 import { TimerStates } from '../Timer';
 
 const INDICATOR_ACTIVE_CLASS = "timer__bar__seeking_indicator_active";

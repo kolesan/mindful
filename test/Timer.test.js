@@ -1,4 +1,4 @@
-import { newTimerEvent, newTimer } from '../src/Timer';
+import { newTimerEvent, newTimer } from '../src/timer_screen/Timer';
 
 let noop = () => {};
 let mainEvent =

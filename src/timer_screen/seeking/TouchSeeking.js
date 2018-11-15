@@ -1,5 +1,5 @@
 import * as Seeking from './Seeking';
-import * as eventBus from '../EventBus';
+import * as eventBus from '../../utils/EventBus';
 import {
   TOUCH_START_ON_SEEKING_INDICATOR,
   TOUCH_MOVE_ON_SEEKING_INDICATOR,

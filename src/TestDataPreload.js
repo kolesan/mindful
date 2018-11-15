@@ -1,8 +1,8 @@
-import * as TimerModule from './TimerToDisplayBinder';
-import * as eventBus from './EventBus';
-import * as Controls from './Controls';
-import * as TreeUtils from './TreeUtils';
-import * as utils from './Utils';
+import * as TimerModule from './timer_screen/TimerToDisplayBinder';
+import * as eventBus from './utils/EventBus';
+import * as Controls from './timer_screen/TimerControls';
+import * as TreeUtils from './utils/TreeUtils';
+import { createComponent } from './utils/HtmlUtils';
 
 eventBus.globalInstance.bindListener(Controls.Events.START_CLICKED, () => timerModules.current.start());
 eventBus.globalInstance.bindListener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause());
@@ -97,8 +97,8 @@ function createAndInjectButtons(programWrappers) {
 
 function createButtonForProgram(programWrapper) {
   let { program } = programWrapper;
-  let btn = utils.createComponent("button", ["drawer_menu__item"]);
-  btn.appendChild(utils.createComponent("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
+  let btn = createComponent("button", ["drawer_menu__item"]);
+  btn.appendChild(createComponent("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
   btn.appendChild(document.createTextNode(program.title));
   btn.addEventListener("click", () => loadProgarm(programWrapper));
   return btn;

@@ -1,5 +1,5 @@
 import * as Seeking from './Seeking';
-import * as eventBus from '../EventBus';
+import * as eventBus from '../../utils/EventBus';
 import {
   MOUSE_MOVE_ON_SEEKING_INDICATOR,
   MOUSE_DOWN_ON_SEEKING_INDICATOR,

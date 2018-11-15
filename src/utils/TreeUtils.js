@@ -52,4 +52,4 @@ function *postorderTreeVisitor(node) {
   yield node;
 }
 
-export { visit, flatten, reduce, preorderTreeVisitor, postorderTreeVisitor,  };
+export { visit, flatten, reduce, preorderTreeVisitor, postorderTreeVisitor };

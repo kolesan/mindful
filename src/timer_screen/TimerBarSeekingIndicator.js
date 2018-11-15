@@ -1,7 +1,7 @@
-import * as log from './Logging';
-import { createComponent } from './Utils';
-import * as Component from './Component';
-import * as eventBus from './EventBus';
+import * as log from '../utils/Logging';
+import { createComponent } from '../utils/HtmlUtils';
+import * as Component from '../utils/Component';
+import * as eventBus from '../utils/EventBus';
 
 const TOUCH_START_ON_SEEKING_INDICATOR = "TOUCH_START_ON_SEEKING_INDICATOR";
 const TOUCH_MOVE_ON_SEEKING_INDICATOR = "TOUCH_MOVE_ON_SEEKING_INDICATOR";

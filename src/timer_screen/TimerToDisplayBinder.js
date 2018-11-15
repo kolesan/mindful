@@ -1,10 +1,10 @@
 import { newTimer, TIMER_FINISHED } from './Timer';
-import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from './Settings';
+import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../settings/Settings';
 import { newInstance as newTimerDisplay } from './TimerDisplay';
-import * as eventBus from './EventBus';
-import * as log from './Logging';
-import * as utils from './Utils';
-import * as Controls from './Controls';
+import * as eventBus from '../utils/EventBus';
+import * as log from '../utils/Logging';
+import * as utils from '../utils/Utils';
+import * as Controls from './TimerControls';
 
 function newInstance(program, timerComponentContainer) {
   let timer = newTimer(program);

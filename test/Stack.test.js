@@ -1,4 +1,4 @@
-import { newEventStack } from '../src/Stack';
+import { newEventStack } from '../src/utils/Stack';
 import * as utils from './TestUtils';
 
 let entryPoint = {

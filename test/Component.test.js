@@ -1,4 +1,4 @@
-import { create } from '../src/Component';
+import { create } from '../src/utils/Component';
 
 test('assigns passed properties to created component', () => {
   let c = {ca: "ca"};

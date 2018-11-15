@@ -1,5 +1,5 @@
-import { minmax } from './Utils';
-import * as log from './Logging';
+import { minmax } from '../../utils/Utils';
+import * as log from '../../utils/Logging';
 
 const ZERO_VOLUME = 0;
 const MAX_VOLUME = 100;
