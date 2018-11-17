@@ -56,11 +56,10 @@
     width: 100%;
     position: absolute;
     background: linear-gradient(to right, #6f7272, #a5a9a9) transparent;
-    background-size: 0%;
+    background-size: 0;
     background-repeat: no-repeat;
     opacity: 0.3;
     border-radius: 3px;
-    /*box-shadow: 0px 0px 2px 1px #6F7373;*/
 }
 
 .cursor_pointer {
@@ -68,7 +67,6 @@
 }
 
 .timer__bar__seeking_indicator_active {
-    /*border: 1px solid white;*/
     box-shadow: 0 0 3px 2px white;
     opacity: 0.6;
 }
@@ -83,16 +81,4 @@
     .timer__bar__seeking_indicator {
         background: none;
     }
-    /*.timer__display {*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
-    /*}*/
-
-    /*.timer__duration {*/
-        /*display: none;*/
-    /*}*/
-
-    /*.timer__current_time {*/
-        /*display: none;*/
-    /*}*/
 }

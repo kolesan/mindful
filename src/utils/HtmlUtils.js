@@ -1,11 +1,21 @@
-export function createComponent(tag, styles, content) {
+function isArray(o) {
+  return Array.prototype.isPrototypeOf(o);
+}
+export function createComponent(tag, classes, content) {
   let elem = document.createElement(tag);
-  styles.forEach(function(it) {
-    elem.classList.add(it);
-  });
+
+  if (isArray(classes)) {
+    classes.forEach(it => {
+      it.split(" ").forEach(c => elem.classList.add(c))
+    });
+  } else {
+    classes.split(" ").forEach(c => elem.classList.add(c))
+  }
+
   if (content) {
     elem.innerHTML = content;
   }
+
   return elem;
 }
 

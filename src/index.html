@@ -26,7 +26,7 @@
         </button>
     </nav>
     <section class="main_screen"><!-- style="display: none"-->
-        <section class="timer_screen">
+        <section class="timer_screen" style="display: none">
             <section class="title section">
                 <button class="icon-button" title="Menu" id="menuBtn"><i class="fas fa-bars"></i></button>
                 <span id="titleText">Mindful</span>
@@ -54,11 +54,31 @@
                 <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
             </section>
         </section>
-        <section class="edit_screen" style="display: none">
+        <section class="edit_screen">
             <section class="title section">
                 <button name="menuBtn" class="icon-button" title="Menu"><i class="fas fa-bars"></i></button>
                 <span>Edit program</span>
                 <button class="icon-button" title="Save program" id="saveBtn"><i class="fas fa-save"></i></button>
+            </section>
+            <section class="tools section">
+                <div id="loopTool" class="tools__tool" draggable="true">
+                    <i class="tools__tool_icon fas fa-undo-alt"></i><span class="tools__tool__text">loop</span>
+                </div>
+                <div id="eventTool" class="tools__tool" draggable="true">
+                    <i class="tools__tool_icon fas fa-bell"></i><span class="tools__tool__text">event</span>
+                </div>
+            </section>
+            <section class="program section">
+                <div class="shadowt"></div>
+                <div class="shadowr"></div>
+                <div class="program__editor">
+                    <div class="program__element program__element__loop"><i class="fas fa-undo-alt"></i></div>
+                    <div class="program__element program__element__event"><i class="fas fa-bell"></i></div>
+                    <div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div></div></div>
+                    <div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div><div class="program__element program__element__LOOP_TOOL"><i class="fas fa-undo-alt"></i></div></div></div>
+                </div>
+                <div class="shadowb"></div>
+                <div class="shadowl"></div>
             </section>
         </section>
     </section>
