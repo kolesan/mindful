@@ -4,12 +4,14 @@ function isArray(o) {
 export function createComponent(tag, classes, content) {
   let elem = document.createElement(tag);
 
-  if (isArray(classes)) {
-    classes.forEach(it => {
-      it.split(" ").forEach(c => elem.classList.add(c))
-    });
-  } else {
-    classes.split(" ").forEach(c => elem.classList.add(c))
+  if (classes) {
+    if (isArray(classes)) {
+      classes.forEach(it => {
+        it.split(" ").forEach(c => elem.classList.add(c))
+      });
+    } else {
+      classes.split(" ").forEach(c => elem.classList.add(c))
+    }
   }
 
   if (content) {

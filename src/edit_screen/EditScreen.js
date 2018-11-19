@@ -1,85 +1,120 @@
 import './edit_screen.css';
 
-import { createComponent } from '../utils/HtmlUtils';
+import { createComponent, removeComponent } from '../utils/HtmlUtils';
 
 let loop = document.querySelector("#loopTool");
 let event = document.querySelector("#eventTool");
-let programEditor = document.querySelector(".program__editor");
-
+let program = document.querySelector(".program__editor");
 
 const Tools = {
   loop: "loop",
   event: "event"
 };
 
-loop.addEventListener("dragstart", event => {
-  event.dataTransfer.setData('tool', Tools.loop);
-  event.dataTransfer.effectAllowed = "copy";
-  // console.log(event)
+let dragging = false;
+let tool;
+let originalToolStyle;
+let movable;
+// let clickX = 0;
+// let clickY = 0;
+
+//Pick up tool
+loop.addEventListener("mousedown", event => {
+  tool = event.currentTarget;
+
+  //Create element that will float under mouse
+  movable = draggable(event);
+  movable.move(event.x, event.y);
+
+  //Paint picked up element differently
+  originalToolStyle = tool.style;
+  tool.style.opacity = 0.7;
+  tool.style.border = "1px dashed gray";
+
+  dragging = true;
 });
 
-event.addEventListener("dragstart", event => {
-  event.dataTransfer.setData('tool', Tools.event);
-  event.dataTransfer.effectAllowed = "copy";
-  // console.log(event)
-});
 
-programEditor.addEventListener("drop", dropListener);
+function draggable(mouseDownEvent) {
+  let node = mouseDownEvent.currentTarget;
+  let clone = node.cloneNode(true);
+  let rect = node.getBoundingClientRect();
+  let clickX = mouseDownEvent.x - rect.left;
+  let clickY = mouseDownEvent.y - rect.top;
 
-function dropListener(event) {
-  event.preventDefault();
-  let tool = event.dataTransfer.getData("tool");
-  if (tool) {
-    console.log("drop", event);
-    console.log(event.dataTransfer);
-    console.log(event.target);
-    console.log(tool);
-    addTool(tool, event.target);
-  }
-}
-function addTool(tool, parent) {
-  switch(tool) {
-    case Tools.loop:
-      addLoop(parent);
-      break;
-    case Tools.event:
-      addEvent(parent);
-      break;
-  }
-}
-const LOOP_ICON = "fas fa-undo-alt";
-const EVENT_ICON = "fas fa-bell";
-function addLoop(parent) {
-  let loop = createElement(Tools.loop, LOOP_ICON);
-  parent.appendChild(loop);
-}
-function addEvent(parent) {
-  let event = createElement(Tools.event, EVENT_ICON);
-  parent.appendChild(event);
-}
-function createElement(tool, icon) {
-  let elem = createComponent("div", `program__element program__element__${tool}`);
-  elem.appendChild(iconCmp(icon));
-  elem.addEventListener("dragstart", event => {
-    event.dataTransfer.setData('tool', Tools.loop);
-    event.dataTransfer.effectAllowed = "move";
-    console.log("start", event);
+  clone.style.position = "absolute";
+  clone.style.margin = "0";
+  document.querySelector("body").appendChild(clone);
+
+  return Object.freeze({
+    move(x, y) {
+      // console.log({x, y, clickX, clickY});
+      clone.style.top = y - clickY + "px";
+      clone.style.left = x - clickX + "px";
+    },
+    destroy() {
+      removeComponent(clone);
+    },
+    over(elem) {
+      return intersect(clone.getBoundingClientRect(), elem.getBoundingClientRect())
+    }
   });
-  elem.addEventListener("dragenter", event => {event.preventDefault();});
-  elem.addEventListener("dragover", event => {event.preventDefault();});
-  elem.addEventListener("drop", event => dropListener);
-  return elem;
-}
-function iconCmp(classes) {
-  return createComponent("i", classes);
+
+  function intersect(a, b) {
+    return !(a.left > b.right || a.right < b.left || a.top > b.bottom || a.bottom < b.top);
+  }
 }
 
-programEditor.addEventListener("dragenter", event => {
-  event.preventDefault();
-  console.log("enter", event);
+function droppable(node) {
+  return Object.freeze({
+    under() {
+
+    }
+  })
+}
+
+let placeholder = createComponent("div", `program__element program__element__${tool}`);
+placeholder.style.border = "2px dashed gray";
+placeholder.style.opacity = "0.8";
+let showingPlaceholder = false;
+
+window.addEventListener("mousemove", event => {
+  if (dragging) {
+    movable.move(event.x, event.y);
+    let overProgram = movable.over(program);
+    if (overProgram) {
+      if (!showingPlaceholder) {
+        program.appendChild(placeholder);
+        showingPlaceholder = true;
+      }
+    } else {
+      if (showingPlaceholder) {
+        removeComponent(placeholder);
+        showingPlaceholder = false;
+      }
+    }
+    console.log({overProgram: overProgram});
+  }
 });
-programEditor.addEventListener("dragover", event => {
-  event.preventDefault();
-  /*console.log(event)*/
+
+window.addEventListener("mouseup", event => {
+  if (dragging) {
+
+    movable.destroy();
+    movable = undefined;
+
+    tool.style = originalToolStyle;
+
+    dragging = false;
+  }
 });
-programEditor.addEventListener("dragend", event => console.log(event));
+
+program.addEventListener("mouseenter", event => {
+  // console.log("program enter", event)
+});
+program.addEventListener("mouseover", event => {
+  // console.log("program over", event)
+});
+program.addEventListener("mousemove", event => {
+  // console.log("program move", event)
+});
