@@ -22,5 +22,7 @@ export function createComponent(tag, classes, content) {
 }
 
 export function removeComponent(node) {
-  node.parentNode.removeChild(node);
+  if (node && node.parentNode) {
+    node.parentNode.removeChild(node);
+  }
 }

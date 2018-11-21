@@ -20,6 +20,7 @@ let overProgram = false;
 let loop = document.querySelector("#loopTool");
 let event = document.querySelector("#eventTool");
 let program = document.querySelector(".program__editor");
+let trashcan = document.querySelector(".tools__trash_can");
 loop.addEventListener("mousedown", draggableMouseDownListener(Tools.loop));
 event.addEventListener("mousedown", draggableMouseDownListener(Tools.event));
 
@@ -45,26 +46,38 @@ function draggable(mouseDownEvent) {
   let node = mouseDownEvent.currentTarget;
   let clickX = mouseDownEvent.x - node.getBoundingClientRect().left;
   let clickY = mouseDownEvent.y - node.getBoundingClientRect().top;
-  let dragImg = node.cloneNode(true);
   let data = Map.inst();
 
-  dragImg.style.position = "absolute";
-  dragImg.style.margin = "0";
+  let dragImg = null;
+  setDragImage(node.cloneNode(true));
   dragImg.style.width = node.getBoundingClientRect().width + "px";
 
-  document.querySelector("body").appendChild(dragImg);
-  move(mouseDownEvent.x, mouseDownEvent.y);
+  moveDragImg(mouseDownEvent.x - clickX, mouseDownEvent.y - clickY);
 
   return Object.freeze({
     get data() { return data; },
-    move,
+    get style() { return dragImg.style },
+    set style(style) { dragImg.style = style },
+    move(x,  y) {
+      moveDragImg(x - clickX, y - clickY);
+    },
+    get dragImage() { return dragImg },
+    set dragImage(img) {
+      setDragImage(img)
+    },
+    centerOn(x, y) {
+      let rect = dragImg.getBoundingClientRect();
+      clickX = rect.width / 2;
+      clickY = rect.height / 2;
+      this.move(x, y);
+    },
     destroy() {
       removeComponent(dragImg);
     },
     over(elem) {
       return intersects(dragImg.getBoundingClientRect(), elem.getBoundingClientRect());
     },
-    centerIsInside(elem, threshold) {
+    centerIsInside(elem, threshold = 0) {
       // console.log({inside: inside(center(dragImg), elem), center: center(dragImg), threshold, elem});
       return inside(center(dragImg), elem, threshold);
     },
@@ -72,7 +85,13 @@ function draggable(mouseDownEvent) {
       return center(dragImg).y < center(elem).y;
     }
   });
-
+  function setDragImage(img) {
+    removeComponent(dragImg);
+    dragImg = img;
+    dragImg.style.position = "absolute";
+    dragImg.style.margin = "0";
+    document.querySelector("body").appendChild(dragImg);
+  }
   function center(elem) {
     let rect = elem.getBoundingClientRect();
     return {
@@ -87,9 +106,9 @@ function draggable(mouseDownEvent) {
            point.y >= (elemRect.top - threshold) && point.y <= (elemRect.bottom + threshold);
   }
 
-  function move(x, y) {
-    dragImg.style.top = y - clickY + "px";
-    dragImg.style.left = x - clickX + "px";
+  function moveDragImg(x, y) {
+    dragImg.style.top = y + "px";
+    dragImg.style.left = x + "px";
   }
 
   function intersects(a, b) {
@@ -104,9 +123,37 @@ function createPlaceholder(draggable) {
   return placeholder;
 }
 
+let dragImgSave;
+let alreadyTrash = false;
 window.addEventListener("mousemove", event => {
   if (dragging) {
-    movable.move(event.x, event.y);
+    if (movable.centerIsInside(trashcan, 10)) {
+      if (!alreadyTrash) {
+        alreadyTrash = true;
+        // elemStyle = movable.style;
+        // x = elemStyle.left;
+        // y = elemStyle.top;
+
+        // movable.style.width = "3rem";
+        // movable.style.height = "3rem";
+        // movable.style.overflow = "hidden";
+        console.log(dragImgSave);
+        dragImgSave = movable.dragImage;
+        movable.dragImage = trashImage;
+        // console.log(trashImage);
+        movable.centerOn(event.x, event.y);
+      } else {
+        movable.move(event.x, event.y);
+      }
+    } else {
+      alreadyTrash = false;
+      if (dragImgSave) {
+        movable.dragImage = dragImgSave;
+        dragImgSave = null;
+        movable.centerOn(event.x, event.y);
+      }
+      movable.move(event.x, event.y);
+    }
     overProgram = movable.over(program);
     if (overProgram) {
       showPlaceholder(program);
@@ -150,6 +197,7 @@ window.addEventListener("mouseup", event => {
     movable = undefined;
     tool.style = originalToolStyle;
     dragging = false;
+    dragImgSave = null;
     removePlaceholder();
   }
 });
@@ -185,6 +233,15 @@ function addTool(tool) {
   placeholder.parentNode.insertBefore(newElem, placeholder);
 }
 
+const TRASH_ICON = "fas fa-drumstick-bite";
+let trashImage = trashImageElement();
+function trashImageElement() {
+  let elem = createComponent("div", `program__element`);
+  elem.appendChild(iconCmp(TRASH_ICON));
+  elem.style.width = "3rem";
+  elem.style.height = "3rem";
+  return elem;
+}
 let count = 1;
 function createElement(tool, icon) {
   let elem = createComponent("div", `program__element program__element__${tool}`);

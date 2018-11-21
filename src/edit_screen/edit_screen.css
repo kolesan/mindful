@@ -148,6 +148,8 @@
 
     user-select: none;
     -moz-user-select: none;
+
+    /*transition: height ease 1000ms, width ease 300ms;*/
 }
 .program__element:last-child {
     margin-bottom: 1rem;
