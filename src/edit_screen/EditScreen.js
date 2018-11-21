@@ -3,10 +3,6 @@ import './edit_screen.css';
 import { createComponent, removeComponent } from '../utils/HtmlUtils';
 import * as Map from '../utils/Map';
 
-let loop = document.querySelector("#loopTool");
-let event = document.querySelector("#eventTool");
-let program = document.querySelector(".program__editor");
-
 const Tools = {
   loop: "loop",
   event: "event"
@@ -21,6 +17,9 @@ let showingPlaceholder = false;
 let overProgram = false;
 
 //Pick up tool
+let loop = document.querySelector("#loopTool");
+let event = document.querySelector("#eventTool");
+let program = document.querySelector(".program__editor");
 loop.addEventListener("mousedown", draggableMouseDownListener(Tools.loop));
 event.addEventListener("mousedown", draggableMouseDownListener(Tools.event));
 
@@ -51,6 +50,8 @@ function draggable(mouseDownEvent) {
 
   dragImg.style.position = "absolute";
   dragImg.style.margin = "0";
+  dragImg.style.width = node.getBoundingClientRect().width + "px";
+
   document.querySelector("body").appendChild(dragImg);
   move(mouseDownEvent.x, mouseDownEvent.y);
 
@@ -97,9 +98,9 @@ function draggable(mouseDownEvent) {
 }
 
 
-function createPlaceholder(tool) {
+function createPlaceholder(draggable) {
   let placeholder = createComponent("div", `program__element program__element__placeholder`);
-  placeholder.style.height = tool.getBoundingClientRect().height + "px";
+  placeholder.style.height = draggable.getBoundingClientRect().height + "px";
   return placeholder;
 }
 
@@ -143,19 +144,28 @@ function removePlaceholder() {
 window.addEventListener("mouseup", event => {
   if (dragging) {
     if (overProgram) {
-      addTool(movable.data.get("tool"));
+      handleDrop(movable);
     }
-
     movable.destroy();
     movable = undefined;
-
     tool.style = originalToolStyle;
-
     dragging = false;
-
     removePlaceholder();
   }
 });
+
+function handleDrop(movable) {
+  let tool = movable.data.get("tool");
+  if (tool) {
+    addTool(tool);
+    return;
+  }
+
+  let element = movable.data.get("element");
+  if (element) {
+    putElement(element);
+  }
+}
 
 const LOOP_ICON = "fas fa-undo-alt";
 const EVENT_ICON = "fas fa-bell";
@@ -176,18 +186,25 @@ let count = 1;
 function createElement(tool, icon) {
   let elem = createComponent("div", `program__element program__element__${tool}`, count++);
   elem.appendChild(iconCmp(icon));
+  elem.addEventListener("mousedown", event => {
+    event.stopPropagation();
+    let element = event.currentTarget;
+
+    dragging = true;
+    movable = draggable(event);
+    movable.data.put("element", element);
+
+    placeholder = createPlaceholder(element);
+    let parent = element.parentNode;
+    removeComponent(element);
+    showPlaceholder(parent);
+  });
   return elem;
 }
 function iconCmp(classes) {
   return createComponent("i", classes);
 }
-
-program.addEventListener("mouseenter", event => {
-  // console.log("program enter", event)
-});
-program.addEventListener("mouseover", event => {
-  // console.log("program over", event)
-});
-program.addEventListener("mousemove", event => {
-  // console.log("program move", event)
-});
+function putElement(element) {
+  placeholder.parentNode.insertBefore(element, placeholder);
+  removePlaceholder();
+}
