@@ -26,6 +26,23 @@
     -moz-user-select: none;
 }
 
+.tools__trash_can {
+    width: 260px;
+    border-radius: 6px;
+    box-shadow: inset 1px 1px 5px 1px black;
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    background-color: #313233;
+}
+.tools__trash_can > i {
+    opacity: 0.7;
+    margin-right: 1rem;
+}
+
 .tools__tool:not(:first-child) {
     margin-left: 1rem;
 }
@@ -134,4 +151,34 @@
 }
 .program__element:last-child {
     margin-bottom: 1rem;
+}
+.pel__heading {
+}
+.pee__heading {
+    height: 3rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.text_input {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    color: var(--font-color);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid gray;
+
+    outline: none;
+
+    height: 100%;
+}
+.text_input:focus {
+}
+.peh__iterations_input {
+    width: 4rem;
+}
+.peh__name_input {
+}
+.peh__duration_input {
 }

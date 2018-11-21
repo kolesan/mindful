@@ -173,19 +173,21 @@ function addTool(tool) {
   let newElem;
   switch(tool) {
     case Tools.loop:
-      newElem = createElement(Tools.loop, LOOP_ICON);
+      newElem = createElement(Tools.loop);
+      newElem.appendChild(loopHeadingCmp());
       break;
     case Tools.event:
-      newElem = createElement(Tools.event, EVENT_ICON);
+      newElem = createElement(Tools.event);
+      newElem.appendChild(eventHeadingCmp());
       break;
   }
+  newElem.dataset.element = tool;
   placeholder.parentNode.insertBefore(newElem, placeholder);
 }
 
 let count = 1;
 function createElement(tool, icon) {
-  let elem = createComponent("div", `program__element program__element__${tool}`, count++);
-  elem.appendChild(iconCmp(icon));
+  let elem = createComponent("div", `program__element program__element__${tool}`);
   elem.addEventListener("mousedown", event => {
     event.stopPropagation();
     let element = event.currentTarget;
@@ -197,6 +199,44 @@ function createElement(tool, icon) {
     showPlaceholderInsteadOf(element);
   });
   return elem;
+}
+function loopHeadingCmp() {
+  let heading = createComponent("div", "pel__heading");
+  heading.appendChild(iconCmp(LOOP_ICON));
+  heading.appendChild(loopIterationsInputCmp());
+  return heading;
+}
+function loopIterationsInputCmp() {
+  let input = createComponent("input", "text_input peh__iterations_input");
+  input.setAttribute("type", "number");
+  input.value = `2`;
+  input.addEventListener("mousedown", event => event.stopPropagation());
+
+  let label = createComponent("label", "", "x");
+  label.appendChild(input);
+  return label;
+}
+function eventHeadingCmp() {
+  let heading = createComponent("div", "pee__heading");
+  heading.appendChild(iconCmp(EVENT_ICON));
+  heading.appendChild(nameInputCmp());
+  heading.appendChild(durationInputCmp());
+  return heading;
+}
+function nameInputCmp() {
+  let input = createComponent("input", "text_input peh__name_input");
+  input.setAttribute("type", "text");
+  input.value = `Timer${count}`;
+  input.addEventListener("mousedown", event => event.stopPropagation());
+  return input;
+}
+function durationInputCmp() {
+  let input = createComponent("input", "text_input peeh__duration_input");
+  input.setAttribute("type", "time");
+  input.setAttribute("step", "1000");
+  input.value = `00:00:00`;
+  input.addEventListener("mousedown", event => event.stopPropagation());
+  return input;
 }
 function showPlaceholderInsteadOf(elem) {
   placeholder = createPlaceholder(elem);
