@@ -106,6 +106,13 @@
 ::-webkit-scrollbar-thumb {
     background: #FF0000;
 }
+
+.program__element__placeholder {
+    border: 2px dashed gray;
+    opacity: 1;
+    background: transparent !important;
+}
+
 .program__element {
     height: auto;
 
