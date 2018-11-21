@@ -21,22 +21,26 @@ let showingPlaceholder = false;
 let overProgram = false;
 
 //Pick up tool
-loop.addEventListener("mousedown", event => {
-  tool = event.currentTarget;
+loop.addEventListener("mousedown", draggableMouseDownListener(Tools.loop));
+event.addEventListener("mousedown", draggableMouseDownListener(Tools.event));
 
-  //Create element that will float under mouse
-  movable = draggable(event);
-  movable.data.put("tool", Tools.loop);
+function draggableMouseDownListener(toolName) {
+  return event => {
+    tool = event.currentTarget;
 
-  //Paint picked up element differently
-  originalToolStyle = tool.style;
-  tool.style.opacity = 0.7;
-  tool.style.border = "1px dashed gray";
+    //Create element that will float under mouse
+    movable = draggable(event);
+    movable.data.put("tool", toolName);
 
-  dragging = true;
-  placeholder = createPlaceholder(tool);
-});
+    //Paint picked up element differently
+    originalToolStyle = tool.style;
+    tool.style.opacity = 0.7;
+    tool.style.border = "1px dashed gray";
 
+    dragging = true;
+    placeholder = createPlaceholder(tool);
+  };
+}
 
 function draggable(mouseDownEvent) {
   let node = mouseDownEvent.currentTarget;
@@ -59,19 +63,8 @@ function draggable(mouseDownEvent) {
     over(elem) {
       return intersects(dragImg.getBoundingClientRect(), elem.getBoundingClientRect());
     },
-    compareY(elem) {
-      let elemCenter = centerY(elem);
-      let dragImgCenter = centerY(dragImg);
-
-      if (dragImgCenter < elemCenter) {
-        return -1;
-      } else if (dragImgCenter > elemCenter) {
-        return 1;
-      }
-      return 0;
-    },
     centerIsInside(elem, threshold) {
-      console.log({inside: inside(center(dragImg), elem), center: center(dragImg), threshold, elem});
+      // console.log({inside: inside(center(dragImg), elem), center: center(dragImg), threshold, elem});
       return inside(center(dragImg), elem, threshold);
     },
     centerIsAbove(elem) {
@@ -101,15 +94,6 @@ function draggable(mouseDownEvent) {
   function intersects(a, b) {
     return !(a.left > b.right || a.right < b.left || a.top > b.bottom || a.bottom < b.top);
   }
-
-}
-
-function droppable(node) {
-  return Object.freeze({
-    under() {
-
-    }
-  })
 }
 
 
@@ -132,26 +116,22 @@ window.addEventListener("mousemove", event => {
   }
 });
 
-
-let elemNearPlaceholder;
 function showPlaceholder(parent) {
+  showingPlaceholder = true;
   for(let child of parent.children) {
     if (!child.classList.contains("program__element") || child.classList.contains("program__element__placeholder")) {
       continue;
     }
     if (movable.centerIsInside(child, -5)) {
       showPlaceholder(child);
-      showingPlaceholder = true;
       return;
     }
     if (movable.centerIsAbove(child)) {
       parent.insertBefore(placeholder, child);
-      showingPlaceholder = true;
       return;
     }
   }
   parent.appendChild(placeholder);
-  showingPlaceholder = true;
 }
 function removePlaceholder() {
   if (showingPlaceholder) {
