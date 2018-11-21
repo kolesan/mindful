@@ -110,15 +110,14 @@ window.addEventListener("mousemove", event => {
     overProgram = movable.over(program);
     if (overProgram) {
       showPlaceholder(program);
+      showingPlaceholder = true;
     } else {
       removePlaceholder();
     }
-    // console.log({overProgram: overProgram});
   }
 });
 
 function showPlaceholder(parent) {
-  showingPlaceholder = true;
   for(let child of parent.children) {
     if (!child.classList.contains("program__element") || child.classList.contains("program__element__placeholder")) {
       continue;
@@ -134,6 +133,7 @@ function showPlaceholder(parent) {
   }
   parent.appendChild(placeholder);
 }
+
 function removePlaceholder() {
   if (showingPlaceholder) {
     removeComponent(placeholder);
@@ -194,13 +194,17 @@ function createElement(tool, icon) {
     movable = draggable(event);
     movable.data.put("element", element);
 
-    placeholder = createPlaceholder(element);
-    let parent = element.parentNode;
-    removeComponent(element);
-    showPlaceholder(parent);
+    showPlaceholderInsteadOf(element);
   });
   return elem;
 }
+function showPlaceholderInsteadOf(elem) {
+  placeholder = createPlaceholder(elem);
+  elem.parentNode.insertBefore(placeholder, elem);
+  removeComponent(elem);
+  showingPlaceholder = true;
+}
+
 function iconCmp(classes) {
   return createComponent("i", classes);
 }
