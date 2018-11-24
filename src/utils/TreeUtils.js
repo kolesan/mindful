@@ -1,6 +1,10 @@
 function visit(node, fn) {
-  node.children.forEach(child => visit(child, fn));
-  fn(node);
+  if (node) {
+    if (node.children) {
+      node.children.forEach(child => visit(child, fn));
+    }
+    fn(node);
+  }
 }
 
 function flatten(root) {

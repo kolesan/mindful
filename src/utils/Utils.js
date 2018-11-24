@@ -15,3 +15,7 @@ export function makeSetIconByStateFunction(iconElem, iconTrue, iconFalse) {
     }
   }
 }
+
+export function isArray(o) {
+  return Array.prototype.isPrototypeOf(o);
+}

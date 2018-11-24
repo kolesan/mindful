@@ -2,11 +2,18 @@ import './edit_screen.css';
 
 import { createComponent, removeComponent } from '../utils/HtmlUtils';
 import * as Map from '../utils/Map';
+import * as Audio from '../Audio';
+import * as Storage from '../Storage';
+import * as Drawer from '../drawer/DrawerMenu';
 
 const Tools = {
   loop: "loop",
   event: "event"
 };
+
+const TRASH_ICON = "fas fa-drumstick-bite";
+const LOOP_ICON = "fas fa-undo-alt";
+const EVENT_ICON = "fas fa-bell";
 
 let dragging = false;
 let tool;
@@ -16,13 +23,74 @@ let placeholder;
 let showingPlaceholder = false;
 let overProgram = false;
 
-//Pick up tool
-let loop = document.querySelector("#loopTool");
-let event = document.querySelector("#eventTool");
-let program = document.querySelector(".program__editor");
-let trashcan = document.querySelector(".tools__trash_can");
+let count = 1;
+
+let editorScreen = document.querySelector("#editScreen");
+
+let loop = editorScreen.querySelector("#loopTool");
+let event = editorScreen.querySelector("#eventTool");
+let programEditor = editorScreen.querySelector(".program__editor");
+let headingSection = editorScreen.querySelector(".program__heading");
+let trashcan = editorScreen.querySelector(".tools__trash_can");
 loop.addEventListener("mousedown", draggableMouseDownListener(Tools.loop));
 event.addEventListener("mousedown", draggableMouseDownListener(Tools.event));
+
+let menuBtn = editorScreen.querySelector("button[name=menuBtn]");
+menuBtn.addEventListener("click", Drawer.toggleDrawerState);
+
+let saveBtn = editorScreen.querySelector("#saveBtn");
+saveBtn.addEventListener("click", saveProgram);
+function saveProgram() {
+  console.log("Saving");
+  let mainEvent = {
+    name: headingSection.querySelector("[name=mainEventNameInput").value,
+    duration: headingSection.querySelector("[name=mainEventDurationInput").value,
+    callback: Audio.sgong
+  };
+  mainEvent.children = generateChildElements(programEditor.children);
+  console.log(mainEvent);
+  let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
+  let title = editorScreen.querySelector(".basic_program_data input[name=programTitle]").value;
+  let program = {
+    title,
+    icon,
+    description: "",
+    mainEvent
+  };
+  console.log(program);
+  Storage.saveProgram(program);
+}
+function generateChildElements(viewChildren) {
+  let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
+  let programElements = [];
+  viewElements.forEach(viewElement => {
+    console.log(viewElement);
+    let tool = viewElement.dataset.element;
+    let programElement = {tool};
+    switch(tool) {
+      case Tools.loop:
+        let iterations = viewElement.querySelector("[name=iterationsInput").value;
+        Object.assign(programElement, {iterations});
+        break;
+      case Tools.event:
+        let name = viewElement.querySelector("[name=eventNameInput").value;
+        let duration = viewElement.querySelector("[name=eventDurationInput").value;
+        Object.assign(programElement, {name, duration, callback: Audio.fgong});
+        break;
+    }
+    programElement.children = generateChildElements(viewElement.children);
+    console.log(programElement);
+    programElements.push(programElement);
+  });
+  return programElements;
+}
+let dragHereCmp = dragHereHelpTextCmp();
+function dragHereHelpTextCmp() {
+  let wrapper = createComponent("div", "program__drag_here_txt_wrapper");
+  wrapper.appendChild(createComponent("div", "program__drag_here_txt", "Drag items here to construct program"));
+  return wrapper;
+}
+showDragHereTxt();
 
 function draggableMouseDownListener(toolName) {
   return event => {
@@ -44,32 +112,35 @@ function draggableMouseDownListener(toolName) {
 
 function draggable(mouseDownEvent) {
   let node = mouseDownEvent.currentTarget;
-  let clickX = mouseDownEvent.x - node.getBoundingClientRect().left;
-  let clickY = mouseDownEvent.y - node.getBoundingClientRect().top;
+  let offsetX = mouseDownEvent.x - node.getBoundingClientRect().left;
+  let offsetY = mouseDownEvent.y - node.getBoundingClientRect().top;
   let data = Map.inst();
 
   let dragImg = null;
   setDragImage(node.cloneNode(true));
   dragImg.style.width = node.getBoundingClientRect().width + "px";
 
-  moveDragImg(mouseDownEvent.x - clickX, mouseDownEvent.y - clickY);
+  move(mouseDownEvent.x, mouseDownEvent.y);
 
   return Object.freeze({
+    get offset() { return {x: offsetX, y: offsetY} },
     get data() { return data; },
     get style() { return dragImg.style },
     set style(style) { dragImg.style = style },
-    move(x,  y) {
-      moveDragImg(x - clickX, y - clickY);
-    },
     get dragImage() { return dragImg },
     set dragImage(img) {
       setDragImage(img)
     },
+    move,
+    offsetBy(x, y) {
+      offsetX = x;
+      offsetY = y;
+    },
     centerOn(x, y) {
       let rect = dragImg.getBoundingClientRect();
-      clickX = rect.width / 2;
-      clickY = rect.height / 2;
-      this.move(x, y);
+      offsetX = rect.width / 2;
+      offsetY = rect.height / 2;
+      move(x, y);
     },
     destroy() {
       removeComponent(dragImg);
@@ -100,15 +171,9 @@ function draggable(mouseDownEvent) {
     };
   }
 
-  function inside(point, elem, threshold) {
-    let elemRect = elem.getBoundingClientRect();
-    return point.x >= (elemRect.left - threshold) && point.x <= (elemRect.right + threshold) &&
-           point.y >= (elemRect.top - threshold) && point.y <= (elemRect.bottom + threshold);
-  }
-
-  function moveDragImg(x, y) {
-    dragImg.style.top = y + "px";
-    dragImg.style.left = x + "px";
+  function move(x, y) {
+    dragImg.style.left = x - offsetX + "px";
+    dragImg.style.top = y - offsetY + "px";
   }
 
   function intersects(a, b) {
@@ -116,6 +181,15 @@ function draggable(mouseDownEvent) {
   }
 }
 
+function isCursorInside(event, elem, threshold) {
+  return inside({x: event.x, y: event.y}, elem, threshold);
+}
+
+function inside(point, elem, threshold = 0) {
+  let elemRect = elem.getBoundingClientRect();
+  return point.x >= (elemRect.left - threshold) && point.x <= (elemRect.right + threshold) &&
+    point.y >= (elemRect.top - threshold) && point.y <= (elemRect.bottom + threshold);
+}
 
 function createPlaceholder(draggable) {
   let placeholder = createComponent("div", `program__element program__element__placeholder`);
@@ -123,24 +197,17 @@ function createPlaceholder(draggable) {
   return placeholder;
 }
 
+let offsetSave;
 let dragImgSave;
 let alreadyTrash = false;
 window.addEventListener("mousemove", event => {
   if (dragging) {
-    if (movable.centerIsInside(trashcan, 10)) {
+    if (isCursorInside(event, trashcan, 24)) {
       if (!alreadyTrash) {
         alreadyTrash = true;
-        // elemStyle = movable.style;
-        // x = elemStyle.left;
-        // y = elemStyle.top;
-
-        // movable.style.width = "3rem";
-        // movable.style.height = "3rem";
-        // movable.style.overflow = "hidden";
-        console.log(dragImgSave);
         dragImgSave = movable.dragImage;
+        offsetSave = movable.offset;
         movable.dragImage = trashImage;
-        // console.log(trashImage);
         movable.centerOn(event.x, event.y);
       } else {
         movable.move(event.x, event.y);
@@ -150,20 +217,22 @@ window.addEventListener("mousemove", event => {
       if (dragImgSave) {
         movable.dragImage = dragImgSave;
         dragImgSave = null;
-        movable.centerOn(event.x, event.y);
+        movable.offsetBy(offsetSave.x, offsetSave.y);
       }
       movable.move(event.x, event.y);
     }
-    overProgram = movable.over(program);
+    overProgram = movable.over(programEditor);
     if (overProgram) {
-      showPlaceholder(program);
+      showPlaceholder(programEditor);
       showingPlaceholder = true;
     } else {
       removePlaceholder();
     }
   }
 });
-
+function px(x) {
+  return x + "px";
+}
 function showPlaceholder(parent) {
   for(let child of parent.children) {
     if (!child.classList.contains("program__element") || child.classList.contains("program__element__placeholder")) {
@@ -193,14 +262,26 @@ window.addEventListener("mouseup", event => {
     if (overProgram) {
       handleDrop(movable);
     }
+    if (programEditor.children.length > 0) {
+      hideDragHereTxt();
+    } else {
+      showDragHereTxt();
+    }
     movable.destroy();
     movable = undefined;
     tool.style = originalToolStyle;
     dragging = false;
     dragImgSave = null;
+    alreadyTrash = false;
     removePlaceholder();
   }
 });
+function hideDragHereTxt() {
+  removeComponent(dragHereCmp);
+}
+function showDragHereTxt() {
+  programEditor.appendChild(dragHereCmp);
+}
 
 function handleDrop(movable) {
   let tool = movable.data.get("tool");
@@ -215,8 +296,6 @@ function handleDrop(movable) {
   }
 }
 
-const LOOP_ICON = "fas fa-undo-alt";
-const EVENT_ICON = "fas fa-bell";
 function addTool(tool) {
   let newElem;
   switch(tool) {
@@ -233,7 +312,6 @@ function addTool(tool) {
   placeholder.parentNode.insertBefore(newElem, placeholder);
 }
 
-const TRASH_ICON = "fas fa-drumstick-bite";
 let trashImage = trashImageElement();
 function trashImageElement() {
   let elem = createComponent("div", `program__element`);
@@ -242,8 +320,7 @@ function trashImageElement() {
   elem.style.height = "3rem";
   return elem;
 }
-let count = 1;
-function createElement(tool, icon) {
+function createElement(tool) {
   let elem = createComponent("div", `program__element program__element__${tool}`);
   elem.addEventListener("mousedown", event => {
     event.stopPropagation();
@@ -266,6 +343,7 @@ function loopHeadingCmp() {
 function loopIterationsInputCmp() {
   let input = createComponent("input", "text_input peh__iterations_input");
   input.setAttribute("type", "number");
+  input.setAttribute("name", "iterationsInput");
   input.value = `2`;
   input.addEventListener("mousedown", event => event.stopPropagation());
 
@@ -280,10 +358,12 @@ function eventHeadingCmp() {
   heading.appendChild(durationInputCmp());
   return heading;
 }
-function nameInputCmp() {
+function nameInputCmp(name = `Timer${count++}`) {
   let input = createComponent("input", "text_input peh__name_input");
   input.setAttribute("type", "text");
-  input.value = `Timer${count}`;
+  input.setAttribute("spellcheck", "false");
+  input.setAttribute("name", "eventNameInput");
+  input.value = name;
   input.addEventListener("mousedown", event => event.stopPropagation());
   return input;
 }
@@ -291,6 +371,7 @@ function durationInputCmp() {
   let input = createComponent("input", "text_input peeh__duration_input");
   input.setAttribute("type", "time");
   input.setAttribute("step", "1000");
+  input.setAttribute("name", "eventDurationInput");
   input.value = `00:00:00`;
   input.addEventListener("mousedown", event => event.stopPropagation());
   return input;

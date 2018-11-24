@@ -11,6 +11,8 @@ function initDevTools() {
   let panel = createComponent("div", ["dev_tools_panel"]);
   let loadStorageBtn = createComponent("button", ["dtbtn"], "Load storage");
   loadStorageBtn.addEventListener("click", loadTestProgramsToStorage);
+  let printStorageBtn = createComponent("button", ["dtbtn"], "Print storage");
+  printStorageBtn.addEventListener("click", printStoredPrograms);
   let clearStorageBtn = createComponent("button", ["dtbtn"], "Clear storage");
   clearStorageBtn.addEventListener("click", clearTestProgramsFromStorage);
   let toggleLoggingBtn = createComponent("button", ["dtbtn"], "Toggle logging");
@@ -18,6 +20,7 @@ function initDevTools() {
   let toggleTracingBtn = createComponent("button", ["dtbtn"], "Toggle tracing");
   toggleTracingBtn.addEventListener("click", toggleTracing);
   panel.appendChild(loadStorageBtn);
+  panel.appendChild(printStorageBtn);
   panel.appendChild(clearStorageBtn);
   panel.appendChild(toggleLoggingBtn);
   panel.appendChild(toggleTracingBtn);
@@ -38,8 +41,12 @@ function replaceCallbackFunctionsWithTheirNames(program) {
   return clone;
 }
 
+function printStoredPrograms() {
+  console.log(...JSON.parse(window.localStorage.getItem("programs")));
+}
+
 function findCallbackName(callback) {
-  return callbackDictionary.entries().find(it => it.v == callback).k;
+  return callbackDictionary.findByValue(callback);
 }
 
 function clearTestProgramsFromStorage() {

@@ -1,4 +1,4 @@
-import * as audio from './timer_screen/Audio';
+import * as audio from './Audio';
 import * as Map from './utils/Map';
 
 let callbackDictionary = Map.inst()

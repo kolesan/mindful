@@ -34,3 +34,4 @@ function hideDrawer() {
   drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
 }
 
+export { toggleDrawerState };

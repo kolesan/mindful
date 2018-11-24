@@ -54,10 +54,16 @@
                 <input class="controls__volume__slider" type="range" min="0" max="100" id="volumeSlider"/>
             </section>
         </section>
-        <section class="edit_screen">
+        <section id="editScreen" class="edit_screen">
             <section class="title section">
                 <button name="menuBtn" class="icon-button" title="Menu"><i class="fas fa-bars"></i></button>
-                <span>Edit program</span>
+                <div class="basic_program_data">Edit:
+                    <button name="selectIconBtn" data-icon="fas fa-heartbeat" class="icon-button basic_program_data__icon" title="Select program icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </button>
+                    <input name="programTitle" type="text" class="text_input basic_program_data__title"
+                           title="Program title" placeholder="Enter program title" value="New Program" spellcheck="false"/>
+                </div>
                 <button class="icon-button" title="Save program" id="saveBtn"><i class="fas fa-save"></i></button>
             </section>
             <section class="tools section">
@@ -70,6 +76,11 @@
                 <div id="trashCan" class="tools__trash_can">
                     <i class="fas fa-trash-alt"></i>
                 </div>
+            </section>
+            <section class="program__heading section">
+                <i class="fas fa-bell"></i>
+                <input name="mainEventNameInput" class="text_input" type="text" value="MainTimer" spellcheck="false"/>
+                <input name="mainEventDurationInput" class="text_input" type="time" value="00:00:00" step="1000">
             </section>
             <section class="program section">
                 <div class="shadowt"></div>
