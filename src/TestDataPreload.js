@@ -8,7 +8,6 @@ eventBus.globalInstance.bindListener(Controls.Events.START_CLICKED, () => timerM
 eventBus.globalInstance.bindListener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause());
 eventBus.globalInstance.bindListener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop());
 
-
 const ITEM_SELECTED_CLASS = "drawer_menu__item_selected";
 function selectItem(item) {
   item.classList.add(ITEM_SELECTED_CLASS);
@@ -42,7 +41,7 @@ function loadProgarm(programWrapper) {
   if (timerModules.current) {
     timerModules.current.init();
   } else {
-    timerModules.add(programWrapper.id, TimerModule.newInstance(program.mainEvent, document.querySelector(".timer__display")));
+    timerModules.add(programWrapper.id, TimerModule.newInstance(convertEvent(program.mainEvent, 0), document.querySelector(".timer__display")));
   }
 
   if (timerModules.current.paused) {
@@ -56,20 +55,67 @@ function loadProgarm(programWrapper) {
   deselectAllSelectOne(btn);
 }
 
+import { Tools } from "./edit_screen/EditScreen";
+import { newTimerEvent } from "./timer_screen/Timer";
+function convertEvent(programEvent, startTime) {
+  let timerEvent = newTimerEvent(
+    programEvent.name,
+    startTime,
+    programEvent.duration,
+    programEvent.callback,
+    convertProgramElementChildren(programEvent, startTime)
+  );
+  console.log(timerEvent);
+  return timerEvent;
+}
+
+function convertProgramElementChildren(programElement, startTime) {
+  let children = [];
+  // console.log(programElement);
+  programElement.children.forEach(it => {
+    switch(it.element) {
+      case Tools.event:
+        children.push(convertEvent(it, startTime));
+        startTime += it.duration;
+        break;
+      case Tools.loop:
+        let childrenDurationSum = it.children.reduce((a, b) => a + b.duration, 0);
+        for(let i = 0; i < it.iterations; i++) {
+          children.push(...convertProgramElementChildren(it, startTime));
+          startTime += childrenDurationSum;
+        }
+        break;
+    }
+  });
+  return children;
+}
 
 import { callbackDictionary } from './EventCallbacks';
+import * as EditScreen from './edit_screen/EditScreen';
 
 let programWrappers = [];
 loadProgramsFromLocalStorage();
 function loadProgramsFromLocalStorage() {
   let stored = window.localStorage.getItem("programs");
   if (stored && stored.length > 0) {
-    programWrappers = deserializePrograms(stored).map(it => {return {program: it}});
-    injectProgramIds(programWrappers);
-    createAndInjectButtons(programWrappers);
+    programWrappers = deserializePrograms(stored).map((it, i) =>{
+      let wrapper = initWrapper(it);
+      injectProgramId(wrapper, i);
+      createAndInjectButton(wrapper);
+      return wrapper;
+    });
     loadDefaultProgram(programWrappers);
   }
-  //Show title screen
+  //Else show title screen
+}
+
+eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT, appendNewProgram);
+function appendNewProgram(program) {
+  let wrapper = initWrapper(program);
+  injectProgramId(wrapper);
+  createAndInjectButton(wrapper);
+  programWrappers.push(wrapper);
+  loadProgarm(wrapper);
 }
 
 function deserializePrograms(serializedPrograms) {
@@ -79,20 +125,21 @@ function deserializePrograms(serializedPrograms) {
   });
   return programs;
 }
+function initWrapper(program) {
+  return {program};
+}
 function loadDefaultProgram(programWrappers) {
   let defaultProgramWrapper = programWrappers.find(it => it.program.default) || programWrappers[0];
   loadProgarm(defaultProgramWrapper);
 }
-function injectProgramIds(programWrappers) {
-  programWrappers.forEach((it, i) => it.id = i);
+function injectProgramId(programWrapper, i) {
+  programWrapper.id = i;
 }
-function createAndInjectButtons(programWrappers) {
+function createAndInjectButton(programWrapper) {
   let drawerProgramsSection = document.querySelector("#drawerProgramsSection");
-  programWrappers.forEach(it => {
-    let btn = createButtonForProgram(it);
-    drawerProgramsSection.appendChild(btn);
-    it.btn = btn;
-  });
+  let btn = createButtonForProgram(programWrapper);
+  drawerProgramsSection.appendChild(btn);
+  programWrapper.btn = btn;
 }
 
 function createButtonForProgram(programWrapper) {

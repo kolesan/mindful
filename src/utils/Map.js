@@ -2,7 +2,7 @@ function inst() {
   let map = {};
   return Object.freeze({
     findByValue(v) {
-      for(let k in Object.keys(map)) {
+      for(let k of Object.keys(map)) {
         if (map[k] === v) {
           return k;
         }

@@ -29,8 +29,8 @@ function initDevTools() {
 
 function loadTestProgramsToStorage() {
   let programsPreparedForSerialization = programs.map(it => replaceCallbackFunctionsWithTheirNames(it));
-  console.log(programsPreparedForSerialization);
-  console.log(JSON.stringify(programsPreparedForSerialization));
+  // console.log(programsPreparedForSerialization);
+  // console.log(JSON.stringify(programsPreparedForSerialization));
   window.localStorage.setItem("programs", JSON.stringify(programsPreparedForSerialization));
 }
 

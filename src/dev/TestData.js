@@ -1,5 +1,6 @@
 import * as audio from '../Audio';
 import { newTimerEvent } from '../timer_screen/Timer';
+import {Tools} from "../edit_screen/EditScreen";
 
 function s(c) {
   return c*1000;
@@ -148,20 +149,57 @@ let testProgram = {
   description: `
      ¯\\_(ツ)_/¯
   `,
-  mainEvent: function test() {
-    let l2events = [];
-
-    l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, audio.fsgong));
-
-    let l3events = [];
-    l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, audio.ffgong));
-    l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, audio.ffgong));
-
-    l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, audio.fgong, l3events));
-
-    return newTimerEvent(`MainTimer`, 0, 10000, audio.sgong, l2events);
-  }()
+  mainEvent: {
+    name: `MainTimer`,
+    duration: 10000,
+    callback: audio.sgong,
+    children: [
+      {
+        element: Tools.event,
+        name: `l2_timer0`,
+        duration: 2000,
+        callback: audio.fsgong,
+        children: []
+      },
+      {
+        element: Tools.event,
+        name: `l2_timer1`,
+        duration: 7000,
+        callback: audio.fgong,
+        children: [
+          {
+            element: Tools.event,
+            name: `l3_timer1.1`,
+            duration: 3000,
+            callback: audio.ffgong,
+            children: []
+          },
+          {
+            element: Tools.event,
+            name: `l3_timer1.2`,
+            duration: 3000,
+            callback: audio.ffgong,
+            children: []
+          }
+        ]
+      }
+    ]
+  }
 };
+
+// mainEvent: function test() {
+//   let l2events = [];
+//
+//   l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, audio.fsgong));
+//
+//   let l3events = [];
+//   l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, audio.ffgong));
+//   l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, audio.ffgong));
+//
+//   l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, audio.fgong, l3events));
+//
+//   return newTimerEvent(`MainTimer`, 0, 10000, audio.sgong, l2events);
+// }()
 
 let programs = [yogaProgram, meditationProgram, absAthleanXProgram, cardioProgram, chestProgram, testProgram];
 export { programs };

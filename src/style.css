@@ -78,7 +78,9 @@ body {
     color: rgba(205, 205, 205, 0.4);
 }
 
-
+.hidden {
+    display: none !important;
+}
 
 @media(min-resolution: 200dpi) {
     html {

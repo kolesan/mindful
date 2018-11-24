@@ -5,8 +5,10 @@ import * as Map from '../utils/Map';
 import * as Audio from '../Audio';
 import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
+import * as EventBus from '../utils/EventBus';
+import { parseTime } from '../utils/TimeUtils';
 
-const Tools = {
+export const Tools = {
   loop: "loop",
   event: "event"
 };
@@ -14,6 +16,7 @@ const Tools = {
 const TRASH_ICON = "fas fa-drumstick-bite";
 const LOOP_ICON = "fas fa-undo-alt";
 const EVENT_ICON = "fas fa-bell";
+export const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
 
 let dragging = false;
 let tool;
@@ -41,16 +44,15 @@ menuBtn.addEventListener("click", Drawer.toggleDrawerState);
 let saveBtn = editorScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", saveProgram);
 function saveProgram() {
-  console.log("Saving");
+  let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
+  let title = editorScreen.querySelector(".basic_program_data input[name=programTitle]").value;
   let mainEvent = {
     name: headingSection.querySelector("[name=mainEventNameInput").value,
-    duration: headingSection.querySelector("[name=mainEventDurationInput").value,
+    duration: parseTime(headingSection.querySelector("[name=mainEventDurationInput").value),
     callback: Audio.sgong
   };
   mainEvent.children = generateChildElements(programEditor.children);
-  console.log(mainEvent);
-  let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
-  let title = editorScreen.querySelector(".basic_program_data input[name=programTitle]").value;
+
   let program = {
     title,
     icon,
@@ -59,6 +61,7 @@ function saveProgram() {
   };
   console.log(program);
   Storage.saveProgram(program);
+  EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, program);
 }
 function generateChildElements(viewChildren) {
   let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
@@ -66,7 +69,7 @@ function generateChildElements(viewChildren) {
   viewElements.forEach(viewElement => {
     console.log(viewElement);
     let tool = viewElement.dataset.element;
-    let programElement = {tool};
+    let programElement = {element: tool};
     switch(tool) {
       case Tools.loop:
         let iterations = viewElement.querySelector("[name=iterationsInput").value;
@@ -74,7 +77,7 @@ function generateChildElements(viewChildren) {
         break;
       case Tools.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;
-        let duration = viewElement.querySelector("[name=eventDurationInput").value;
+        let duration = parseTime(viewElement.querySelector("[name=eventDurationInput").value);
         Object.assign(programElement, {name, duration, callback: Audio.fgong});
         break;
     }
