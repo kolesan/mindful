@@ -34,25 +34,10 @@ function hideDrawer() {
   drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
 }
 
+
 let newProgramBtn = document.querySelector("#newProgramBtn");
 newProgramBtn.addEventListener("click", event => {
-  showEditScreen();
+  history.pushState({ woot: "no" }, "New program", "/new");
 });
-let timerScreen = document.querySelector("#timerScreen");
-let editScreen = document.querySelector("#editScreen");
-showTimerScreen();
-function showTimerScreen() {
-  hide(editScreen);
-  show(timerScreen);
-}
-function showEditScreen() {
-  hide(timerScreen);
-  show(editScreen);
-}
-function hide(elem) {
-  elem.classList.add("hidden");
-}
-function show(elem) {
-  elem.classList.remove("hidden");
-}
+
 export { toggleDrawerState };
