@@ -223,3 +223,13 @@
 }
 .peh__duration_input {
 }
+
+.error_msg {
+    width: 200px;
+    background-color: rgba(219, 86, 96, 0.8);
+    border-radius: 6px;
+    border: 1px solid dimgray;
+    padding: 0.5rem;
+    opacity: 1;
+    font-size: calc(var(--font-size) * 0.75);
+}

@@ -43,11 +43,72 @@ menuBtn.addEventListener("click", Drawer.toggleDrawerState);
 
 let saveBtn = editorScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", saveProgram);
+
+function isValidString(s) {
+  console.log(s);
+  let pattern = RegExp("^[a-zA-Z0-9-_\ ]+$");
+  console.log(pattern.test(s));
+  return pattern.test(s);
+}
+
+function invalid(input) {
+  input.style.borderBottomColor = "red";
+}
+function valid(input) {
+  input.style.borderBottomColor = "";
+}
+
+function floatingErrorMsg(msg) {
+  let errorMsg = createComponent("div", "error_msg", msg);
+  errorMsg.addEventListener("click", event => {
+    fade(0, 150, () => removeComponent(errorMsg));
+  });
+  return Object.freeze({
+    showAt(x, y, w, h) {
+      document.querySelector("body").appendChild(errorMsg);
+      errorMsg.style.display = "";
+      errorMsg.style.position = "absolute";
+      errorMsg.style.left = px(x);
+      errorMsg.style.top = px(y);
+      errorMsg.style.width = px(w);
+      fade(3000, 220, () => removeComponent(errorMsg));
+    },
+    hide() {
+      if (errorMsg.parentNode) {
+        fade(0, 150, () => removeComponent(errorMsg));
+      }
+    }
+  });
+  function fade(delay, duration, onFinish) {
+    let animation = errorMsg.animate([
+      { opacity: 1 },
+      { opacity: 0 }
+    ],
+    { delay, duration, easing: "ease-in" });
+    animation.onfinish = onFinish;
+  }
+}
+let programTitleInput = editorScreen.querySelector(".basic_program_data input[name=programTitle]");
+programTitleInput.addEventListener("input", validateInput);
+let mainEventNameInput = headingSection.querySelector("[name=mainEventNameInput");
+mainEventNameInput.addEventListener("input", validateInput);
+function validateInput(event) {
+  let input = event.target;
+  let inputRect = input.getBoundingClientRect();
+  let errorMsg = floatingErrorMsg("Only alphanumeric characters spaces, dashes and underscores allowed");
+  if (!isValidString(input.value)) {
+    errorMsg.showAt(inputRect.left, inputRect.bottom + 3, inputRect.width, inputRect.height);
+    invalid(input);
+  } else {
+    valid(input);
+    errorMsg.hide();
+  }
+}
 function saveProgram() {
   let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
-  let title = editorScreen.querySelector(".basic_program_data input[name=programTitle]").value;
+  let title = programTitleInput.value;
   let mainEvent = {
-    name: headingSection.querySelector("[name=mainEventNameInput").value,
+    name: mainEventNameInput.value,
     duration: parseTime(headingSection.querySelector("[name=mainEventDurationInput").value),
     callback: Audio.sgong
   };
@@ -159,6 +220,7 @@ function draggable(mouseDownEvent) {
       return center(dragImg).y < center(elem).y;
     }
   });
+
   function setDragImage(img) {
     removeComponent(dragImg);
     dragImg = img;
@@ -166,6 +228,7 @@ function draggable(mouseDownEvent) {
     dragImg.style.margin = "0";
     document.querySelector("body").appendChild(dragImg);
   }
+
   function center(elem) {
     let rect = elem.getBoundingClientRect();
     return {
@@ -233,8 +296,8 @@ window.addEventListener("mousemove", event => {
     }
   }
 });
-function px(x) {
-  return x + "px";
+function px(v) {
+  return v + "px";
 }
 function showPlaceholder(parent) {
   for(let child of parent.children) {
@@ -368,6 +431,7 @@ function nameInputCmp(name = `Timer${count++}`) {
   input.setAttribute("name", "eventNameInput");
   input.value = name;
   input.addEventListener("mousedown", event => event.stopPropagation());
+  input.addEventListener("input", validateInput);
   return input;
 }
 function durationInputCmp() {
