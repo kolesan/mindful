@@ -1,4 +1,4 @@
-import './text_input_validator.css';
+import './input_validator.css';
 
 import { createComponent } from "../utils/HtmlUtils";
 import * as ErrorMessage from "../utils/ErrorMessage";
@@ -6,7 +6,7 @@ import { fade, noop, px } from "../utils/Utils";
 import * as log from "../utils/Logging";
 
 function inst(input) {
-  let validators = [];
+  let validations = [];
 
   let errorContainer = createComponent("div", "text_input__error_container");
   document.querySelector("body").appendChild(errorContainer);
@@ -20,13 +20,13 @@ function inst(input) {
     validate() {
       let valid = true;
       positionErrorContainer(input);
-      validators.forEach(it => {
-        let validationResult = it.validator.validate(input.value);
-        if (!validationResult.valid) {
-          it.msg.showIn(errorContainer, validationResult.msg);
+      validations.forEach(validation => {
+        let result = validation.validate(input.value);
+        if (!result.valid) {
+          validation.msg.showIn(errorContainer, result.msg);
           valid = false;
         } else {
-          it.msg.hide();
+          validation.msg.hide();
         }
       });
       if (valid) {
@@ -35,8 +35,8 @@ function inst(input) {
         onFail(input);
       }
     },
-    bindValidator(validator) {
-      validators.push({validator, msg: ErrorMessage.inst()});
+    bindValidation(validation) {
+      validations.push({validate: validation.validate, msg: ErrorMessage.inst()});
       return this;
     },
     onFail(fn) {
@@ -70,7 +70,7 @@ function inst(input) {
 
 }
 
-function validatorWithStaticErrorMessage(fn, msg) {
+function validationWithStaticErrorMessage(fn, msg) {
   return Object.freeze({
     validate(val) {
       if (fn(val)) {
@@ -82,4 +82,4 @@ function validatorWithStaticErrorMessage(fn, msg) {
   });
 }
 
-export { inst, validatorWithStaticErrorMessage }
+export { inst, validationWithStaticErrorMessage }

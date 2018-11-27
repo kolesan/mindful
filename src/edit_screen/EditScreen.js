@@ -7,7 +7,7 @@ import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
 import { parseTime } from '../utils/TimeUtils';
-import * as TextInputValidator from "../text_input/TextInputValidator";
+import * as InputValidator from "../text_input/InputValidator";
 
 export { onShow };
 function onShow() {
@@ -66,21 +66,21 @@ function loadProgramTitles() {
   return Storage.loadPrograms().map(program => program.title);
 }
 
-let emptyStringValidator = TextInputValidator.validatorWithStaticErrorMessage(
+let emptyStringValidation = InputValidator.validationWithStaticErrorMessage(
   notEmpty, "Program title is required"
 );
-let alphanumericValidator = TextInputValidator.validatorWithStaticErrorMessage(
+let alphanumericValidation = InputValidator.validationWithStaticErrorMessage(
   validString, "Only alphanumeric characters, spaces, dashes and underscores allowed"
 );
-let uniqueTitleValidator = TextInputValidator.validatorWithStaticErrorMessage(
+let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
   uniqueTitle, "Program with such name already exists"
 );
 
 let programTitleInput = editorScreen.querySelector(".basic_program_data input[name=programTitle]");
-var titleValidator = TextInputValidator.inst(programTitleInput)
-  .bindValidator(emptyStringValidator)
-  .bindValidator(alphanumericValidator)
-  .bindValidator(uniqueTitleValidator)
+var titleValidator = InputValidator.inst(programTitleInput)
+  .bindValidation(emptyStringValidation)
+  .bindValidation(alphanumericValidation)
+  .bindValidation(uniqueTitleValidation)
   .onFail(markInvalid)
   .onSuccess(markValid)
   .triggerOn("input");
@@ -98,8 +98,8 @@ function notEmpty(s) {
 }
 
 let mainEventNameInput = headingSection.querySelector("[name=mainEventNameInput");
-TextInputValidator.inst(mainEventNameInput)
-  .bindValidator(alphanumericValidator)
+InputValidator.inst(mainEventNameInput)
+  .bindValidation(alphanumericValidation)
   .onFail(markInvalid)
   .onSuccess(markValid)
   .triggerOn("input");
@@ -432,8 +432,8 @@ function nameInputCmp(name = `Timer${count++}`) {
   input.value = name;
   input.addEventListener("mousedown", event => event.stopPropagation());
 
-  TextInputValidator.inst(input)
-    .bindValidator(alphanumericValidator)
+  InputValidator.inst(input)
+    .bindValidation(alphanumericValidation)
     .onFail(markInvalid)
     .onSuccess(markValid)
     .triggerOn("input");
