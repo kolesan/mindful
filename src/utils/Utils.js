@@ -19,3 +19,21 @@ export function makeSetIconByStateFunction(iconElem, iconTrue, iconFalse) {
 export function isArray(o) {
   return Array.prototype.isPrototypeOf(o);
 }
+
+export function px(v) {
+  return v + "px";
+}
+
+export function noop() {}
+
+export function fade(cmp, from, to, delay, duration, easing) {
+  cmp.style.opacity = from;
+  let animation = cmp.animate(
+    [
+      { opacity: from },
+      { opacity: to }
+    ],
+    { delay, duration, easing }
+  );
+  animation.onfinish = () => cmp.style.opacity = to;
+}

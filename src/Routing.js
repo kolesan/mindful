@@ -1,4 +1,5 @@
 import * as log from "./utils/Logging"
+import * as EditScreen from "./edit_screen/EditScreen";
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -82,6 +83,7 @@ function showTimerScreen() {
 function showEditScreen() {
   hide(timerScreen);
   show(editScreen);
+  EditScreen.onShow();
 }
 function hide(elem) {
   elem.classList.add("hidden");

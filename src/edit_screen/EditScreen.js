@@ -7,6 +7,12 @@ import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
 import { parseTime } from '../utils/TimeUtils';
+import * as TextInputValidator from "../text_input/TextInputValidator";
+
+export { onShow };
+function onShow() {
+  titleValidator.validate();
+}
 
 export const Tools = {
   loop: "loop",
@@ -44,66 +50,61 @@ menuBtn.addEventListener("click", Drawer.toggleDrawerState);
 let saveBtn = editorScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", saveProgram);
 
-function isValidString(s) {
-  console.log(s);
-  let pattern = RegExp("^[a-zA-Z0-9-_\ ]+$");
-  console.log(pattern.test(s));
-  return pattern.test(s);
+function validString(s) {
+  return /^[a-zA-Z0-9-_\ ]*$/.test(s);
 }
 
-function invalid(input) {
+function markInvalid(input) {
   input.style.borderBottomColor = "red";
 }
-function valid(input) {
+function markValid(input) {
   input.style.borderBottomColor = "";
 }
 
-function floatingErrorMsg(msg) {
-  let errorMsg = createComponent("div", "error_msg", msg);
-  errorMsg.addEventListener("click", event => {
-    fade(0, 150, () => removeComponent(errorMsg));
-  });
-  return Object.freeze({
-    showAt(x, y, w, h) {
-      document.querySelector("body").appendChild(errorMsg);
-      errorMsg.style.display = "";
-      errorMsg.style.position = "absolute";
-      errorMsg.style.left = px(x);
-      errorMsg.style.top = px(y);
-      errorMsg.style.width = px(w);
-      fade(3000, 220, () => removeComponent(errorMsg));
-    },
-    hide() {
-      if (errorMsg.parentNode) {
-        fade(0, 150, () => removeComponent(errorMsg));
-      }
-    }
-  });
-  function fade(delay, duration, onFinish) {
-    let animation = errorMsg.animate([
-      { opacity: 1 },
-      { opacity: 0 }
-    ],
-    { delay, duration, easing: "ease-in" });
-    animation.onfinish = onFinish;
-  }
+let programTitles = loadProgramTitles();
+function loadProgramTitles() {
+  return Storage.loadPrograms().map(program => program.title);
 }
+
+let emptyStringValidator = TextInputValidator.validatorWithStaticErrorMessage(
+  notEmpty, "Program title is required"
+);
+let alphanumericValidator = TextInputValidator.validatorWithStaticErrorMessage(
+  validString, "Only alphanumeric characters, spaces, dashes and underscores allowed"
+);
+let uniqueTitleValidator = TextInputValidator.validatorWithStaticErrorMessage(
+  uniqueTitle, "Program with such name already exists"
+);
+
 let programTitleInput = editorScreen.querySelector(".basic_program_data input[name=programTitle]");
-programTitleInput.addEventListener("input", validateInput);
-let mainEventNameInput = headingSection.querySelector("[name=mainEventNameInput");
-mainEventNameInput.addEventListener("input", validateInput);
-function validateInput(event) {
-  let input = event.target;
-  let inputRect = input.getBoundingClientRect();
-  let errorMsg = floatingErrorMsg("Only alphanumeric characters spaces, dashes and underscores allowed");
-  if (!isValidString(input.value)) {
-    errorMsg.showAt(inputRect.left, inputRect.bottom + 3, inputRect.width, inputRect.height);
-    invalid(input);
-  } else {
-    valid(input);
-    errorMsg.hide();
+var titleValidator = TextInputValidator.inst(programTitleInput)
+  .bindValidator(emptyStringValidator)
+  .bindValidator(alphanumericValidator)
+  .bindValidator(uniqueTitleValidator)
+  .onFail(markInvalid)
+  .onSuccess(markValid)
+  .triggerOn("input");
+
+function uniqueTitle(title) {
+  let titleWithoutSpaces = noSpaces(title);
+  return !programTitles.find(it => noSpaces(it) == titleWithoutSpaces);
+
+  function noSpaces(s) {
+    return s.replace(" ", "");
   }
 }
+function notEmpty(s) {
+  return !/^\s*$/.test(s);
+}
+
+let mainEventNameInput = headingSection.querySelector("[name=mainEventNameInput");
+TextInputValidator.inst(mainEventNameInput)
+  .bindValidator(alphanumericValidator)
+  .onFail(markInvalid)
+  .onSuccess(markValid)
+  .triggerOn("input");
+
+
 function saveProgram() {
   let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
   let title = programTitleInput.value;
@@ -123,7 +124,9 @@ function saveProgram() {
   console.log(program);
   Storage.saveProgram(program);
   EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, program);
+  programTitles = loadProgramTitles();
 }
+
 function generateChildElements(viewChildren) {
   let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
   let programElements = [];
@@ -296,9 +299,6 @@ window.addEventListener("mousemove", event => {
     }
   }
 });
-function px(v) {
-  return v + "px";
-}
 function showPlaceholder(parent) {
   for(let child of parent.children) {
     if (!child.classList.contains("program__element") || child.classList.contains("program__element__placeholder")) {
@@ -431,7 +431,13 @@ function nameInputCmp(name = `Timer${count++}`) {
   input.setAttribute("name", "eventNameInput");
   input.value = name;
   input.addEventListener("mousedown", event => event.stopPropagation());
-  input.addEventListener("input", validateInput);
+
+  TextInputValidator.inst(input)
+    .bindValidator(alphanumericValidator)
+    .onFail(markInvalid)
+    .onSuccess(markValid)
+    .triggerOn("input");
+
   return input;
 }
 function durationInputCmp() {

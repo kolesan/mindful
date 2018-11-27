@@ -1,0 +1,10 @@
+.text_input__error_container {
+    position: absolute;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.text_input__error_container > * {
+     margin-bottom: 2px;
+}

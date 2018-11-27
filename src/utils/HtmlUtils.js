@@ -26,3 +26,7 @@ export function removeComponent(node) {
     node.parentNode.removeChild(node);
   }
 }
+
+export function appendAsFirstChild(child, parent) {
+  parent.insertBefore(child, parent.firstChild);
+}

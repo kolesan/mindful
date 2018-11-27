@@ -225,7 +225,7 @@
 }
 
 .error_msg {
-    width: 200px;
+    width: 100%;
     background-color: rgba(219, 86, 96, 0.8);
     border-radius: 6px;
     border: 1px solid dimgray;

@@ -33,7 +33,7 @@ function putProgramsInToStorage(programs) {
 }
 
 
-function deserializePrograms() {
+function loadPrograms() {
   let programs = getProgramsFromStorage();
 
   programs.forEach(program => deserializeCallbackFunctions(program));
@@ -46,4 +46,4 @@ function deserializeCallbackFunctions(program) {
 }
 
 
-export { saveProgram };
+export { saveProgram, loadPrograms };
