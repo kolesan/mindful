@@ -32,16 +32,16 @@ let timerModules = {
   add(id, module) { this[String(id)] = module; },
   toggleCurrent(id) { this.currentModuleId = id }
 };
-function loadProgarm(programWrapper) {
+function loadProgram(programWrapper) {
   let { program, btn } = programWrapper;
   if (timerModules.current) {
     timerModules.current.shutDown();
   }
-  timerModules.toggleCurrent(programWrapper.id);
+  timerModules.toggleCurrent(program.id);
   if (timerModules.current) {
     timerModules.current.init();
   } else {
-    timerModules.add(programWrapper.id, TimerModule.newInstance(convertEvent(program.mainEvent), document.querySelector(".timer__display")));
+    timerModules.add(program.id, TimerModule.newInstance(convertEvent(program.mainEvent), document.querySelector(".timer__display")));
   }
 
   if (timerModules.current.paused) {
@@ -65,13 +65,11 @@ function convertEvent(programEvent, startTime = 0, i = 1) {
     programEvent.callback,
     convertProgramElementChildren(programEvent, startTime, i)
   );
-  console.log(timerEvent);
   return timerEvent;
 }
 
 function convertProgramElementChildren(programElement, startTime, i) {
   let children = [];
-  // console.log(programElement);
   programElement.children.forEach(it => {
     switch(it.element) {
       case Tools.event:
@@ -92,6 +90,7 @@ function convertProgramElementChildren(programElement, startTime, i) {
 
 import { callbackDictionary } from './EventCallbacks';
 import * as EditScreen from './edit_screen/EditScreen';
+import * as Routing from "./Routing";
 
 let programWrappers = [];
 loadProgramsFromLocalStorage();
@@ -100,7 +99,6 @@ function loadProgramsFromLocalStorage() {
   if (stored && stored.length > 0) {
     programWrappers = deserializePrograms(stored).map((it, i) =>{
       let wrapper = initWrapper(it);
-      injectProgramId(wrapper, i);
       createAndInjectButton(wrapper);
       return wrapper;
     });
@@ -112,10 +110,9 @@ function loadProgramsFromLocalStorage() {
 eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT, appendNewProgram);
 function appendNewProgram(program) {
   let wrapper = initWrapper(program);
-  injectProgramId(wrapper);
   createAndInjectButton(wrapper);
   programWrappers.push(wrapper);
-  loadProgarm(wrapper);
+  loadProgram(wrapper);
 }
 
 function deserializePrograms(serializedPrograms) {
@@ -128,12 +125,9 @@ function deserializePrograms(serializedPrograms) {
 function initWrapper(program) {
   return {program};
 }
-function loadDefaultProgram(programWrappers) {
+function loadDefaultProgram() {
   let defaultProgramWrapper = programWrappers.find(it => it.program.default) || programWrappers[0];
-  loadProgarm(defaultProgramWrapper);
-}
-function injectProgramId(programWrapper, i) {
-  programWrapper.id = i;
+  loadProgram(defaultProgramWrapper);
 }
 function createAndInjectButton(programWrapper) {
   let drawerProgramsSection = document.querySelector("#drawerProgramsSection");
@@ -147,7 +141,10 @@ function createButtonForProgram(programWrapper) {
   let btn = createComponent("button", ["drawer_menu__item"]);
   btn.appendChild(createComponent("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
   btn.appendChild(document.createTextNode(program.title));
-  btn.addEventListener("click", () => loadProgarm(programWrapper));
+  btn.addEventListener("click", () => {
+    loadProgram(programWrapper);
+    Routing.toTimerScreen(program.title, program.id);
+  });
   return btn;
 }
 
@@ -155,4 +152,10 @@ function currentTimer() {
   return timerModules.current;
 }
 
-export { currentTimer };
+function loadProgramById(id) {
+  loadProgram(
+    programWrappers.find(wrapper => wrapper.program.id == id)
+  );
+}
+
+export { currentTimer, loadProgramById, loadDefaultProgram };

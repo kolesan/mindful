@@ -1,5 +1,6 @@
 import * as log from "./utils/Logging"
 import * as EditScreen from "./edit_screen/EditScreen";
+import * as TimerScreen from "./timer_screen/TimerScreen";
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -21,11 +22,11 @@ function titleScreen() {
 function newProgram() {
   showEditScreen();
 }
-function loadProgram() {
-
+function loadProgram(id) {
+  showTimerScreen(id);
 }
-function editProgram() {
-
+function editProgram(id) {
+  showEditScreen(id);
 }
 function route(path) {
   let matchingRoute = findRoute(path);
@@ -76,14 +77,15 @@ function extractParams(path, route) {
 let timerScreen = document.querySelector("#timerScreen");
 let editScreen = document.querySelector("#editScreen");
 
-function showTimerScreen() {
+function showTimerScreen(programId) {
   hide(editScreen);
   show(timerScreen);
+  TimerScreen.onShow(programId);
 }
-function showEditScreen() {
+function showEditScreen(programId) {
   hide(timerScreen);
   show(editScreen);
-  EditScreen.onShow();
+  EditScreen.onShow(programId);
 }
 function hide(elem) {
   elem.classList.add("hidden");
@@ -94,7 +96,27 @@ function show(elem) {
 
 window.addEventListener("popstate", event => {
   console.log("Popstate", event, history, history.state);
-  let path = location.path;
-  // log.log({path});
+  let path = location.pathname;
+  log.log({path});
   route(path);
 });
+
+function toTimerScreen(programTitle, programId) {
+  document.title = `Program ${programTitle}`;
+  history.pushState({}, document.title, `/programs/${programId}`);
+  showTimerScreen(programId);
+}
+
+function toNewProgramScreen() {
+  document.title = `New program`;
+  history.pushState({}, document.title, "/new");
+  showEditScreen();
+}
+
+function toEditScreen(programTitle, programId) {
+  document.title = `Edit program ${programTitle}`;
+  history.pushState({}, document.title, `/programs/${programId}/edit`);
+  showEditScreen(programId);
+}
+
+export { toTimerScreen, toEditScreen, toNewProgramScreen };

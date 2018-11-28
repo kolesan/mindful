@@ -10,7 +10,7 @@ import { parseTime } from '../utils/TimeUtils';
 import * as InputValidator from "../text_input/InputValidator";
 
 export { onShow };
-function onShow() {
+function onShow(programId) {
   titleValidator.validate();
 }
 

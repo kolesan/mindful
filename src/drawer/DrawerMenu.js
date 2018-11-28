@@ -1,5 +1,6 @@
 import './drawer_menu.css';
 import '../settings/Settings';
+import * as Routing from "../Routing";
 
 const HIDDEN_DRAWER_CLASS = "drawer_menu__hidden";
 
@@ -36,8 +37,6 @@ function hideDrawer() {
 
 
 let newProgramBtn = document.querySelector("#newProgramBtn");
-newProgramBtn.addEventListener("click", event => {
-  history.pushState({ woot: "no" }, "New program", "/new");
-});
+newProgramBtn.addEventListener("click", Routing.toEditScreen);
 
 export { toggleDrawerState };
