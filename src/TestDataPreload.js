@@ -41,7 +41,7 @@ function loadProgarm(programWrapper) {
   if (timerModules.current) {
     timerModules.current.init();
   } else {
-    timerModules.add(programWrapper.id, TimerModule.newInstance(convertEvent(program.mainEvent, 0), document.querySelector(".timer__display")));
+    timerModules.add(programWrapper.id, TimerModule.newInstance(convertEvent(program.mainEvent), document.querySelector(".timer__display")));
   }
 
   if (timerModules.current.paused) {
@@ -57,31 +57,31 @@ function loadProgarm(programWrapper) {
 
 import { Tools } from "./edit_screen/EditScreen";
 import { newTimerEvent } from "./timer_screen/Timer";
-function convertEvent(programEvent, startTime) {
+function convertEvent(programEvent, startTime = 0, i = 1) {
   let timerEvent = newTimerEvent(
-    programEvent.name,
+    programEvent.name.replace("%{i}", i),
     startTime,
     programEvent.duration,
     programEvent.callback,
-    convertProgramElementChildren(programEvent, startTime)
+    convertProgramElementChildren(programEvent, startTime, i)
   );
   console.log(timerEvent);
   return timerEvent;
 }
 
-function convertProgramElementChildren(programElement, startTime) {
+function convertProgramElementChildren(programElement, startTime, i) {
   let children = [];
   // console.log(programElement);
   programElement.children.forEach(it => {
     switch(it.element) {
       case Tools.event:
-        children.push(convertEvent(it, startTime));
+        children.push(convertEvent(it, startTime, i));
         startTime += it.duration;
         break;
       case Tools.loop:
         let childrenDurationSum = it.children.reduce((a, b) => a + b.duration, 0);
         for(let i = 0; i < it.iterations; i++) {
-          children.push(...convertProgramElementChildren(it, startTime));
+          children.push(...convertProgramElementChildren(it, startTime, i+1));
           startTime += childrenDurationSum;
         }
         break;

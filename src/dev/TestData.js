@@ -1,6 +1,6 @@
 import * as audio from '../Audio';
-import { newTimerEvent } from '../timer_screen/Timer';
-import {Tools} from "../edit_screen/EditScreen";
+import { Tools } from "../edit_screen/EditScreen";
+import * as utils from "../utils/Utils";
 
 function s(c) {
   return c*1000;
@@ -11,25 +11,62 @@ function m(c) {
 function h(c) {
   return m(c)*60;
 }
-
-function EventBuilder() {
-  let totalTime = 0;
-  let children = [];
+function programBuilder(name) {
+  let programDuration = 0;
+  let program = newEvent(name, programDuration, utils.noop);
+  let elemStack = [program];
   return Object.freeze({
-    add(name, duration, callback, grandChildren) {
-      children.push(newTimerEvent(name, totalTime, duration, callback, grandChildren));
-      totalTime += duration;
+    loop(iterations) {
+      addElem(newLoop(iterations));
       return this;
     },
-    build(name, callback) {
-      return newTimerEvent(name, 0, totalTime + 1000, callback, children);
+    event(name, duration, callback) {
+      addElem(newEvent(name, duration, callback));
+      console.log({name, duration, callback});
+      return this;
+    },
+    end() {
+      elemStack.pop();
+      return this;
+    },
+    build() {
+      program.duration = calculateDuration(program);
+      console.log("duration", program.duration);
+      return program;
     }
   });
+
+  function calculateDuration(parent) {
+    return parent.children.reduce((a, b) => {
+      if (b.element == Tools.event) {
+        console.log("event", a + b.duration);
+        return a + b.duration;
+      } else {
+        console.log("loop", a + calculateDuration(b) * b.iterations);
+        return a + calculateDuration(b) * b.iterations;
+      }
+    }, 0);
+  }
+
+  function addElem(elem) {
+    let parent = utils.last(elemStack);
+    if (!parent) {
+      throw new Error("DSL error, trying to add child to non existent parent. Check your 'end`s'.");
+    }
+
+    parent.children.push(elem);
+    elemStack.push(elem);
+  }
+  function newLoop(iterations, children = []) {
+    return { element: Tools.loop, iterations, children };
+  }
+  function newEvent(name, duration, callback, children = []) {
+    return { element: Tools.event, name, duration, callback, children };
+  }
 }
 
-
-
 let yogaProgram = {
+  id: "Yoga",
   title: "Yoga",
   icon: "fas fa-dumbbell",
   description: `
@@ -37,25 +74,20 @@ let yogaProgram = {
     70s poses x 50
     01h total
   `,
-  mainEvent: function yoga() {
-    let l2events = [];
-
-    l2events.push(newTimerEvent(`l2_timer0`, 0, 30000, audio.fsgong));
-    for(let i = 0; i < 50; i++) {
-      let startTime = i*70000+30000;
-
-      let l3events = [];
-      l3events.push(newTimerEvent(`l3_timer${i+1}.1`, startTime, 30000, audio.ffgong));
-      l3events.push(newTimerEvent(`l3_timer${i+1}.2`, startTime+30000, 30000, audio.ffgong));
-
-      l2events.push(newTimerEvent(`l2_timer${i+1}`, startTime, 70000, audio.fgong, l3events));
-    }
-
-    return newTimerEvent(`MainTimer`, 0, 3600000, audio.sgong, l2events);
-  }()
+  mainEvent: programBuilder( `Mindful Yoga` )
+                     .event( `Preparation`,      s(30), audio.fsgong ).end()
+                     .loop(50)
+                       .event( `Hold pose %{i}`, s(70), audio.fgong  )
+                         .event( `1/2`,          s(30), audio.ffgong ).end()
+                         .event( `2/2`,          s(30), audio.ffgong ).end()
+                       .end()
+                     .end()
+                     .event( `Chill`,            s(70), audio.sgong  )
+                     .build()
 };
 
 let meditationProgram = {
+  id: "Meditation",
   title: "Meditation",
   icon: "fas fa-brain",
   description: `
@@ -66,83 +98,80 @@ let meditationProgram = {
     02m Ground
     01m Chill
   `,
-  mainEvent: function meditation() {
-    let l2events = [];
-    l2events.push(newTimerEvent(`Prep`, 0, 30*1000, audio.fsgong));
-
-    l2events.push(newTimerEvent(`Breathing`, 0.5*60*1000, 20*60*1000, audio.fgong));
-    l2events.push(newTimerEvent(`Body`,      20*60*1000,  15*60*1000, audio.fgong));
-    l2events.push(newTimerEvent(`Hearing`,   35*60*1000,  5*60*1000, audio.fgong));
-    l2events.push(newTimerEvent(`Thoughts`,  40*60*1000,  3*60*1000, audio.fgong));
-    l2events.push(newTimerEvent(`Ground`,    43*60*1000,  2*60*1000, audio.fgong));
-
-    return newTimerEvent(`MainTimer`, 0, 46*60*1000, audio.sgong, l2events);
-  }()
+  mainEvent: programBuilder( `Meditation` )
+                     .event( `Preparation`, s(30), audio.fsgong ).end()
+                     .event( `Breathing`,   m(20), audio.fgong  ).end()
+                     .event( `Body`,        m(15), audio.fgong  ).end()
+                     .event( `Hearing`,     m(5),  audio.fgong  ).end()
+                     .event( `Thoughts`,    m(3),  audio.fgong  ).end()
+                     .event( `Ground`,      m(2),  audio.fgong  ).end()
+                     .event( `Chill`,       m(1),  audio.sgong  )
+                     .build()
 };
 
 let absAthleanXProgram = {
+  id: "Abs",
   title: "Abs",
   icon: "fas fa-table",
   description: `AthleanX ABS`,
-  mainEvent: (function() {
-    return EventBuilder()
-      .add(`Preparation`, s(10), audio.fsgong)
-      .add(`Seated Ab Circles L`, s(60), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Seated Ab Circles R`, s(60), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Drunken Mountain Climber`, s(60), audio.fgong)
-      .add(`REST`, s(30), audio.fsgong)
-      .add(`Marching Planks`, s(60), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Scissors`, s(60), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Starfish Crunch`, s(30), audio.fgong)
-      .add(`REST`, s(30), audio.fsgong)
-      .add(`Russian 'V' Tuck Twist`, s(30), audio.fsgong)
-      .build(`MainTimer`, audio.sgong);
-  })()
+  mainEvent: programBuilder( `Dem ABS` )
+                     .event( `Preparation`,              s(10), audio.fsgong ).end()
+                     .event( `Seated Ab Circles L`,      s(60), audio.fgong  ).end()
+                     .event( `Preparation`,              s(3),  audio.fsgong ).end()
+                     .event( `Seated Ab Circles R`,      s(60), audio.fgong  ).end()
+                     .event( `Preparation`,              s(3),  audio.fsgong ).end()
+                     .event( `Drunken Mountain Climber`, s(60), audio.fgong  ).end()
+                     .event( `REST`,                     s(30), audio.fsgong ).end()
+                     .event( `Marching Planks`,          s(60), audio.fgong  ).end()
+                     .event( `Preparation`,              s(3),  audio.fsgong ).end()
+                     .event( `Scissors`,                 s(60), audio.fgong  ).end()
+                     .event( `Preparation`,              s(3),  audio.fsgong ).end()
+                     .event( `Starfish Crunch`,          s(30), audio.fgong  ).end()
+                     .event( `REST`,                     s(30), audio.fsgong ).end()
+                     .event( `Russian 'V' Tuck Twist`,   s(30), audio.sgong  ).end()
+                     .build()
 };
 
 let cardioProgram = {
+  id: "Cardio",
   title: "Cardio",
   icon: "fas fa-heartbeat",
   description: `Simple HIIT 1min action/1min rest`,
-  mainEvent: (function() {
-    let builder = EventBuilder();
-    builder.add(`Preparation`, s(10), audio.fsgong);
-    for(let i = 0; i < 30; i++) {
-      builder.add(`Action`, m(1), audio.fgong).add(`Rest`, m(1), audio.fsgong)
-    }
-    return builder.build(`1h HIIT`, audio.sgong);
-  })()
+  mainEvent: programBuilder( `1h HIIT Cardio` )
+                     .event( `Preparation`, s(10), audio.fsgong ).end()
+                     .loop(30)
+                       .event( `Action`,    m(1),  audio.fgong  ).end()
+                       .event( `Rest`,      m(1),  audio.fsgong ).end()
+                     .end()
+                     .event( `Chill`,       m(1),  audio.sgong  )
+                     .build()
 };
 
 let chestProgram = {
+  id: "Chest",
   title: "Chest",
   icon: "fas fa-user",
   description: `Sore in 6`,
-  mainEvent: (function() {
-    return EventBuilder()
-      .add(`Preparation`, s(15), audio.fsgong)
-      .add(`Dumbbell press`, m(1), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Dumbbell pullover`, m(1), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Dumbbell press fast`, s(30), audio.fgong)
-      .add(`Rest`, s(30), audio.fsgong)
-      .add(`Dumbbell pullover`, m(1), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Dumbbell press`, m(1), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Dumbbell press fast`, s(30), audio.fgong)
-      .add(`Preparation`, s(3), audio.fsgong)
-      .add(`Spiderman pushups`, s(30), audio.fgong)
-      .build(`Sore in 6 AthleanX Chest`, audio.sgong);
-  })()
+  mainEvent: programBuilder(`Sore in 6 AthleanX Chest`)
+                     .event( `Preparation`,         s(15), audio.fsgong ).end()
+                     .event( `Dumbbell press`,      m(1),  audio.fgong  ).end()
+                     .event( `Preparation`,         s(5),  audio.fsgong ).end()
+                     .event( `Dumbbell pullover`,   m(1),  audio.fgong  ).end()
+                     .event( `Preparation`,         s(5),  audio.fsgong ).end()
+                     .event( `Dumbbell press fast`, s(30), audio.fgong  ).end()
+                     .event( `Rest`,                s(30), audio.fsgong ).end()
+                     .event( `Dumbbell pullover`,   m(1),  audio.fgong  ).end()
+                     .event( `Preparation`,         s(5),  audio.fsgong ).end()
+                     .event( `Dumbbell press`,      m(1),  audio.fgong  ).end()
+                     .event( `Preparation`,         s(5),  audio.fsgong ).end()
+                     .event( `Dumbbell press fast`, s(30), audio.fgong  ).end()
+                     .event( `Preparation`,         s(5),  audio.fsgong ).end()
+                     .event( `Spiderman pushups`,   s(30), audio.fgong  )
+                     .build()
 };
 
 let testProgram = {
+  id: "Test",
   default: true,
   title: "Test",
   icon: "fas fa-text-height",
@@ -186,20 +215,6 @@ let testProgram = {
     ]
   }
 };
-
-// mainEvent: function test() {
-//   let l2events = [];
-//
-//   l2events.push(newTimerEvent(`l2_timer0`, 0, 2000, audio.fsgong));
-//
-//   let l3events = [];
-//   l3events.push(newTimerEvent(`l3_timer1.1`, 2000, 3000, audio.ffgong));
-//   l3events.push(newTimerEvent(`l3_timer1.2`, 5000, 3000, audio.ffgong));
-//
-//   l2events.push(newTimerEvent(`l2_timer1`, 2000, 7000, audio.fgong, l3events));
-//
-//   return newTimerEvent(`MainTimer`, 0, 10000, audio.sgong, l2events);
-// }()
 
 let programs = [yogaProgram, meditationProgram, absAthleanXProgram, cardioProgram, chestProgram, testProgram];
 export { programs };

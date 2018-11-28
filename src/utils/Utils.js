@@ -37,3 +37,7 @@ export function fade(cmp, from, to, delay, duration, easing) {
   );
   animation.onfinish = () => cmp.style.opacity = to;
 }
+
+export function last(arr) {
+  return arr[arr.length - 1];
+}

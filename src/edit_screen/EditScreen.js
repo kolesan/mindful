@@ -116,6 +116,7 @@ function saveProgram() {
   mainEvent.children = generateChildElements(programEditor.children);
 
   let program = {
+    id: noSpaces(title),
     title,
     icon,
     description: "",
