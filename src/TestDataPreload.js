@@ -57,15 +57,15 @@ function loadProgram(programWrapper) {
 
 import { Tools } from "./edit_screen/EditScreen";
 import { newTimerEvent } from "./timer_screen/Timer";
+import { callbackDictionary } from './EventCallbacks';
 function convertEvent(programEvent, startTime = 0, i = 1) {
-  let timerEvent = newTimerEvent(
+  return newTimerEvent(
     programEvent.name.replace("%{i}", i),
     startTime,
     programEvent.duration,
-    programEvent.callback,
+    callbackDictionary.get(programEvent.callback),
     convertProgramElementChildren(programEvent, startTime, i)
   );
-  return timerEvent;
 }
 
 function convertProgramElementChildren(programElement, startTime, i) {
@@ -88,7 +88,6 @@ function convertProgramElementChildren(programElement, startTime, i) {
   return children;
 }
 
-import { callbackDictionary } from './EventCallbacks';
 import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
 
@@ -97,7 +96,7 @@ loadProgramsFromLocalStorage();
 function loadProgramsFromLocalStorage() {
   let stored = window.localStorage.getItem("programs");
   if (stored && stored.length > 0) {
-    programWrappers = deserializePrograms(stored).map((it, i) =>{
+    programWrappers = JSON.parse(stored).map((it, i) =>{
       let wrapper = initWrapper(it);
       createAndInjectButton(wrapper);
       return wrapper;
@@ -115,13 +114,6 @@ function appendNewProgram(program) {
   loadProgram(wrapper);
 }
 
-function deserializePrograms(serializedPrograms) {
-  let programs = JSON.parse(serializedPrograms);
-  programs.forEach(program => {
-    TreeUtils.visit(program.mainEvent, eventNode => eventNode.callback = callbackDictionary.get(eventNode.callback));
-  });
-  return programs;
-}
 function initWrapper(program) {
   return {program};
 }

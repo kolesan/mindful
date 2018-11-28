@@ -2,12 +2,12 @@ import './edit_screen.css';
 
 import { createComponent, removeComponent } from '../utils/HtmlUtils';
 import * as Map from '../utils/Map';
-import * as Audio from '../Audio';
 import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
 import { parseTime } from '../utils/TimeUtils';
 import * as InputValidator from "../text_input/InputValidator";
+import {fgong, sgong} from "../EventCallbacks";
 
 export { onShow };
 function onShow(programId) {
@@ -111,7 +111,7 @@ function saveProgram() {
   let mainEvent = {
     name: mainEventNameInput.value,
     duration: parseTime(headingSection.querySelector("[name=mainEventDurationInput").value),
-    callback: Audio.sgong
+    callback: sgong
   };
   mainEvent.children = generateChildElements(programEditor.children);
 
@@ -143,7 +143,7 @@ function generateChildElements(viewChildren) {
       case Tools.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;
         let duration = parseTime(viewElement.querySelector("[name=eventDurationInput").value);
-        Object.assign(programElement, {name, duration, callback: Audio.fgong});
+        Object.assign(programElement, {name, duration, callback: fgong});
         break;
     }
     programElement.children = generateChildElements(viewElement.children);

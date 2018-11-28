@@ -5,44 +5,21 @@ import { callbackDictionary } from "./EventCallbacks";
 const PROGRAMS_KEY = "programs";
 
 function saveProgram(program) {
-  let programs = getProgramsFromStorage();
-  programs.push(cloneProgramAndSerializeCallbacks(program));
+  let programs = loadPrograms();
+  programs.push(program);
   putProgramsInToStorage(programs);
 }
 
-function cloneProgramAndSerializeCallbacks(program) {
-  let clone = Object.assign({}, program);
-  serializeCallbacks(clone);
-  return clone;
-}
-
-function serializeCallbacks(program) {
-  TreeUtils.visit(program.mainEvent, event => event.callback = callbackDictionary.findByValue(event.callback));
-}
-
-
-function getProgramsFromStorage() {
+function loadPrograms() {
   let programs = JSON.parse(window.localStorage.getItem(PROGRAMS_KEY)) || [];
   if (!isArray(programs)) {
     throw new Error(`Program deserialization error. Serialized object '${programs}' is not an array.`);
   }
   return programs;
 }
+
 function putProgramsInToStorage(programs) {
   window.localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs))
-}
-
-
-function loadPrograms() {
-  let programs = getProgramsFromStorage();
-
-  programs.forEach(program => deserializeCallbackFunctions(program));
-
-  return programs;
-}
-
-function deserializeCallbackFunctions(program) {
-  TreeUtils.visit(program.mainEvent, event => event.callback = callbackDictionary.get(event.callback));
 }
 
 

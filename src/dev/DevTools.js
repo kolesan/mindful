@@ -28,25 +28,11 @@ function initDevTools() {
 }
 
 function loadTestProgramsToStorage() {
-  let programsPreparedForSerialization = programs.map(it => replaceCallbackFunctionsWithTheirNames(it));
-  // console.log(programsPreparedForSerialization);
-  // console.log(JSON.stringify(programsPreparedForSerialization));
-  window.localStorage.setItem("programs", JSON.stringify(programsPreparedForSerialization));
-}
-
-function replaceCallbackFunctionsWithTheirNames(program) {
-  let clone = Object.assign({}, program);
-  console.log(clone);
-  TreeUtils.visit(clone.mainEvent, event => event.callback = findCallbackName(event.callback));
-  return clone;
+  window.localStorage.setItem("programs", JSON.stringify(programs));
 }
 
 function printStoredPrograms() {
   console.log(...JSON.parse(window.localStorage.getItem("programs")));
-}
-
-function findCallbackName(callback) {
-  return callbackDictionary.findByValue(callback);
 }
 
 function clearTestProgramsFromStorage() {
