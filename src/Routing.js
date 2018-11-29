@@ -4,9 +4,7 @@ import * as TimerScreen from "./timer_screen/TimerScreen";
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
-  // console.log(location);
   let path = location.pathname;
-  // log.log({path});
   route(path);
 });
 

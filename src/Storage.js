@@ -18,9 +18,13 @@ function loadPrograms() {
   return programs;
 }
 
+function loadProgram(id) {
+  return loadPrograms().find(it => it.id == id);
+}
+
 function putProgramsInToStorage(programs) {
   window.localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs))
 }
 
 
-export { saveProgram, loadPrograms };
+export { saveProgram, loadPrograms, loadProgram };

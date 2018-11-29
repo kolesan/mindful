@@ -1,17 +1,21 @@
 import './edit_screen.css';
 
-import { createComponent, removeComponent } from '../utils/HtmlUtils';
+import {createComponent, removeAllChildNodes, removeComponent, setIcon} from '../utils/HtmlUtils';
 import * as Map from '../utils/Map';
 import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
-import { parseTime } from '../utils/TimeUtils';
+import {formatTime, parseTime} from '../utils/TimeUtils';
 import * as InputValidator from "../text_input/InputValidator";
 import {fgong, sgong} from "../EventCallbacks";
 
 export { onShow };
+let currentProgram = null;
 function onShow(programId) {
-  titleValidator.validate();
+  programToView(Storage.loadProgram(programId));
+  if (!programId) {
+    titleValidator.validate();
+  }
 }
 
 export const Tools = {
@@ -105,12 +109,14 @@ InputValidator.inst(mainEventNameInput)
   .triggerOn("input");
 
 
+let programIconInput = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
+let mainEventDurationCmp = headingSection.querySelector("[name=mainEventDurationInput");
 function saveProgram() {
-  let icon = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]").dataset.icon;
+  let icon = programIconInput.dataset.icon;
   let title = programTitleInput.value;
   let mainEvent = {
     name: mainEventNameInput.value,
-    duration: parseTime(headingSection.querySelector("[name=mainEventDurationInput").value),
+    duration: parseTime(mainEventDurationCmp.value),
     callback: sgong
   };
   mainEvent.children = generateChildElements(programEditor.children);
@@ -152,6 +158,43 @@ function generateChildElements(viewChildren) {
   });
   return programElements;
 }
+
+function programToView(program) {
+  currentProgram = program;
+  programTitleInput.value = program.title;
+  programIconInput.dataset.icon = program.icon;
+  setIcon(programIconInput, program.icon);
+
+  let mainEvent = program.mainEvent;
+  mainEventNameInput.value = mainEvent.name;
+  mainEventDurationCmp.value = formatTime(mainEvent.duration);
+
+  removeAllChildNodes(programEditor);
+  let viewElements = generateChildViewElements(mainEvent);
+  if (viewElements.length > 0) {
+    viewElements.forEach(viewElement => programEditor.appendChild(viewElement));
+    hideDragHereTxt();
+  }
+}
+function generateChildViewElements(parent) {
+  let elements = [];
+  parent.children.forEach(programElement => {
+    let viewElement = null;
+    switch(programElement.element) {
+      case Tools.event:
+        viewElement = createEvent(programElement.name, formatTime(programElement.duration));
+        break;
+      case Tools.loop:
+        console.log({loop: programElement});
+        viewElement = createLoop(programElement.iterations);
+        break;
+    }
+    generateChildViewElements(programElement).forEach(it => viewElement.appendChild(it));
+    elements.push(viewElement)
+  });
+  return elements;
+}
+
 let dragHereCmp = dragHereHelpTextCmp();
 function dragHereHelpTextCmp() {
   let wrapper = createComponent("div", "program__drag_here_txt_wrapper");
@@ -367,12 +410,10 @@ function addTool(tool) {
   let newElem;
   switch(tool) {
     case Tools.loop:
-      newElem = createElement(Tools.loop);
-      newElem.appendChild(loopHeadingCmp());
+      newElem = createLoop();
       break;
     case Tools.event:
-      newElem = createElement(Tools.event);
-      newElem.appendChild(eventHeadingCmp());
+      newElem = createEvent();
       break;
   }
   newElem.dataset.element = tool;
@@ -386,6 +427,16 @@ function trashImageElement() {
   elem.style.width = "3rem";
   elem.style.height = "3rem";
   return elem;
+}
+function createLoop(iterations) {
+  let loop = createElement(Tools.loop);
+  loop.appendChild(loopHeadingCmp(iterations));
+  return loop;
+}
+function createEvent(name, duration) {
+  let event = createElement(Tools.event);
+  event.appendChild(eventHeadingCmp(name, duration));
+  return event;
 }
 function createElement(tool) {
   let elem = createComponent("div", `program__element program__element__${tool}`);
@@ -401,28 +452,28 @@ function createElement(tool) {
   });
   return elem;
 }
-function loopHeadingCmp() {
+function loopHeadingCmp(iterations) {
   let heading = createComponent("div", "pel__heading");
   heading.appendChild(iconCmp(LOOP_ICON));
-  heading.appendChild(loopIterationsInputCmp());
+  heading.appendChild(loopIterationsInputCmp(iterations));
   return heading;
 }
-function loopIterationsInputCmp() {
+function loopIterationsInputCmp(iterations = 2) {
   let input = createComponent("input", "text_input peh__iterations_input");
   input.setAttribute("type", "number");
   input.setAttribute("name", "iterationsInput");
-  input.value = `2`;
+  input.value = iterations;
   input.addEventListener("mousedown", event => event.stopPropagation());
 
   let label = createComponent("label", "", "x");
   label.appendChild(input);
   return label;
 }
-function eventHeadingCmp() {
+function eventHeadingCmp(name, duration) {
   let heading = createComponent("div", "pee__heading");
   heading.appendChild(iconCmp(EVENT_ICON));
-  heading.appendChild(nameInputCmp());
-  heading.appendChild(durationInputCmp());
+  heading.appendChild(nameInputCmp(name));
+  heading.appendChild(durationInputCmp(duration));
   return heading;
 }
 function nameInputCmp(name = `Timer${count++}`) {
@@ -441,12 +492,12 @@ function nameInputCmp(name = `Timer${count++}`) {
 
   return input;
 }
-function durationInputCmp() {
+function durationInputCmp(duration = `00:00:00`) {
   let input = createComponent("input", "text_input peeh__duration_input");
   input.setAttribute("type", "time");
   input.setAttribute("step", "1000");
   input.setAttribute("name", "eventDurationInput");
-  input.value = `00:00:00`;
+  input.value = duration;
   input.addEventListener("mousedown", event => event.stopPropagation());
   return input;
 }

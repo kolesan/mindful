@@ -32,6 +32,7 @@ let timerModules = {
   add(id, module) { this[String(id)] = module; },
   toggleCurrent(id) { this.currentModuleId = id }
 };
+let currentProgram = null;
 function loadProgram(programWrapper) {
   let { program, btn } = programWrapper;
   if (timerModules.current) {
@@ -53,6 +54,8 @@ function loadProgram(programWrapper) {
   document.querySelector("#titleText").innerHTML = program.title;
   document.querySelector("#descriptionText").innerHTML = program.description;
   deselectAllSelectOne(btn);
+
+  currentProgram = program;
 }
 
 import { Tools } from "./edit_screen/EditScreen";
@@ -150,4 +153,4 @@ function loadProgramById(id) {
   );
 }
 
-export { currentTimer, loadProgramById, loadDefaultProgram };
+export { currentProgram, currentTimer, loadProgramById, loadDefaultProgram };

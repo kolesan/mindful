@@ -30,3 +30,15 @@ export function removeComponent(node) {
 export function appendAsFirstChild(child, parent) {
   parent.insertBefore(child, parent.firstChild);
 }
+
+export function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+export function setIcon(cmp, iconClasses) {
+  let newIcon = createComponent("i", iconClasses);
+  let oldIcon = cmp.querySelector("i");
+  cmp.replaceChild(newIcon, oldIcon);
+}
