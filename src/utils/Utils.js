@@ -26,7 +26,7 @@ export function px(v) {
 
 export function noop() {}
 
-export function fade(cmp, from, to, delay, duration, easing) {
+export function fade(cmp, from, to, delay, duration, easing, onFinish = noop) {
   cmp.style.opacity = from;
   let animation = cmp.animate(
     [
@@ -35,9 +35,16 @@ export function fade(cmp, from, to, delay, duration, easing) {
     ],
     { delay, duration, easing }
   );
-  animation.onfinish = () => cmp.style.opacity = to;
+  animation.onfinish = () => {
+    cmp.style.opacity = to;
+    onFinish();
+  }
 }
 
 export function last(arr) {
   return arr[arr.length - 1];
+}
+
+export function noSpaces(s) {
+  return s.replace(" ", "");
 }

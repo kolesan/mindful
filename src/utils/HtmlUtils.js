@@ -37,8 +37,12 @@ export function removeAllChildNodes(parent) {
   }
 }
 
+export function iconCmp(classes) {
+  return createComponent("i", classes);
+}
+
 export function setIcon(cmp, iconClasses) {
-  let newIcon = createComponent("i", iconClasses);
+  let newIcon = iconCmp(iconClasses);
   let oldIcon = cmp.querySelector("i");
   cmp.replaceChild(newIcon, oldIcon);
 }

@@ -1,6 +1,6 @@
 import './input_validator.css';
 
-import { createComponent } from "../utils/HtmlUtils";
+import {createComponent, removeComponent} from "../utils/HtmlUtils";
 import * as ErrorMessage from "../utils/ErrorMessage";
 import { fade, noop, px } from "../utils/Utils";
 import * as log from "../utils/Logging";
@@ -9,9 +9,10 @@ function inst(input) {
   let validations = [];
 
   let errorContainer = createComponent("div", "text_input__error_container");
-  document.querySelector("body").appendChild(errorContainer);
-  let onFail = noop;
-  let onSuccess = noop;
+  appendContainer();
+
+  let onFailCb = noop;
+  let onSuccessCb = noop;
 
   input.addEventListener("focus", showContainer);
   input.addEventListener("blur", hideContainer);
@@ -30,9 +31,9 @@ function inst(input) {
         }
       });
       if (valid) {
-        onSuccess(input);
+        onSuccessCb(input);
       } else {
-        onFail(input);
+        onFailCb(input);
       }
     },
     bindValidation(validation) {
@@ -40,25 +41,33 @@ function inst(input) {
       return this;
     },
     onFail(fn) {
-      onFail = fn;
+      onFailCb = fn;
       return this;
     },
     onSuccess(fn) {
-      onSuccess = fn;
+      onSuccessCb = fn;
       return this;
     },
     triggerOn(eventName) {
       input.addEventListener(eventName, this.validate);
       return this;
+    },
+    hideErrors() {
+      hideContainer();
     }
   });
 
   function showContainer() {
+    appendContainer();
     fade(errorContainer, 0, 1, 0, 150, "ease-out");
   }
 
   function hideContainer() {
-    fade(errorContainer, 1, 0, 0, 150, "ease-in");
+    fade(errorContainer, 1, 0, 0, 150, "ease-in", () => removeComponent(errorContainer));
+  }
+
+  function appendContainer() {
+    document.querySelector("body").appendChild(errorContainer);
   }
 
   function positionErrorContainer() {
