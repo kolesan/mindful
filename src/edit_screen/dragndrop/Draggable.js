@@ -11,8 +11,8 @@ function makeDraggable(cmp) {
   let originalCmpStyle = null;
 
   cmp.addEventListener("mousedown", onMouseDown);
-  window.addEventListener("mouseup", onMouseUp);
   window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onEnd);
 
   return Object.freeze({
     onDragStart(fn) {
@@ -27,26 +27,46 @@ function makeDraggable(cmp) {
       dropZones.push(zone);
       console.log("binding zone", zone);
       return this;
+    },
+    allowTouch() {
+      cmp.addEventListener("touchstart", onTouchStart);
+      cmp.addEventListener("touchmove", onTouchMove);
+      cmp.addEventListener("touchend", onEnd);
     }
   });
 
   function onMouseDown(event) {
     event.stopPropagation();
+    onStart(event.currentTarget, event.x, event.y)
+  }
+  function onMouseMove(event) {
+    onMove(event.x, event.y);
+  }
 
+  function onTouchStart(event) {
+    event.stopPropagation();
+    let {x, y} = touchPoint(event);
+    onStart(event.currentTarget, x, y);
+  }
+  function onTouchMove(event) {
+    let {x, y} = touchPoint(event);
+    onMove(x, y)
+  }
+
+  function onStart(target, x, y) {
+    console.log("Drag start", {target, x, y});
     dragging = true;
-    dragged = draggable(event);
+    dragged = draggable(target, x, y);
 
     dragStartCb(dragged, cmp);
 
     originalCmpStyle = cmp.style;
     stylePlaceholderCb(cmp.style);
-
-    // placeholder = createPlaceholder(tool);
   }
-
-  function onMouseMove(event) {
+  function onMove(x, y) {
+    console.log("Drag move", {x, y});
     if (dragging) {
-      dragged.move(event.x, event.y);
+      dragged.move(x, y);
       dropZones.forEach((zone, i) => {
         // console.log("dragging over", i, zone, zone.zone);
         if (dragged.over(zone.zone)) {
@@ -61,11 +81,8 @@ function makeDraggable(cmp) {
       });
     }
   }
-
-  function onMouseUp(event) {
+  function onEnd() {
     if (dragging) {
-      dragged.move(event.x, event.y);
-
       dropZones.forEach(zone => {
         if (dragged.over(zone.zone)) {
           zone.drop(dragged);
@@ -79,20 +96,29 @@ function makeDraggable(cmp) {
       dragging = false;
     }
   }
+
+  function touchPoint(event) {
+    let touch = event.touches[0];
+    let cmpRect = event.currentTarget.getBoundingClientRect();
+    console.log(touch.clientX, touch.clientY);
+    return {
+      x: touch.clientX - cmpRect.left,
+      y: touch.clientY - cmpRect.top
+    };
+  }
 }
 
 
-function draggable(mouseDownEvent) {
-  let node = mouseDownEvent.currentTarget;
-  let offsetX = mouseDownEvent.x - node.getBoundingClientRect().left;
-  let offsetY = mouseDownEvent.y - node.getBoundingClientRect().top;
+function draggable(cmp, x, y) {
+  let offsetX = x - cmp.getBoundingClientRect().left;
+  let offsetY = y - cmp.getBoundingClientRect().top;
   let data = Map.inst();
 
   let dragImg = null;
-  setDragImage(node.cloneNode(true));
-  dragImg.style.width = node.getBoundingClientRect().width + "px";
+  setDragImage(cmp.cloneNode(true));
+  dragImg.style.width = cmp.getBoundingClientRect().width + "px";
 
-  move(mouseDownEvent.x, mouseDownEvent.y);
+  move(x, y);
 
   return Object.freeze({
     get offset() { return {x: offsetX, y: offsetY} },

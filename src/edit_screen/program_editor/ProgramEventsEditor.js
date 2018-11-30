@@ -230,7 +230,8 @@ function inst(containerCmp) {
         showPlaceholderInsteadOf(element);
         showingPlaceholder = true;
       })
-      .bindDropZone(programEditorDropZone);
+      .bindDropZone(programEditorDropZone)
+      .allowTouch();
 
     return elem;
   }

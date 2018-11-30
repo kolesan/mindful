@@ -72,7 +72,8 @@ function makeToolDraggable(toolCmp, toolName) {
   makeDraggable(toolCmp)
     .onDragStart(putToolNameToData(toolName))
     .stylePlaceholder(asTransparentDashed)
-    .bindDropZone(programEventsEditor.dropZone);
+    .bindDropZone(programEventsEditor.dropZone)
+    .allowTouch();
 }
 
 let menuBtn = editorScreen.querySelector("button[name=menuBtn]");
