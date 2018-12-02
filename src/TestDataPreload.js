@@ -63,7 +63,7 @@ import { newTimerEvent } from "./timer_screen/Timer";
 import { callbackDictionary } from './EventCallbacks';
 function convertEvent(programEvent, startTime = 0, i = 1) {
   return newTimerEvent(
-    programEvent.name.replace("%{i}", i),
+    programEvent.name.replace("{i}", i),
     startTime,
     programEvent.duration,
     callbackDictionary.get(programEvent.callback),

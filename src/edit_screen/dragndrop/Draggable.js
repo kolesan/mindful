@@ -4,7 +4,7 @@ import * as Map from '../../utils/Map';
 
 function makeDraggable(cmp) {
   let dragging = false;
-  let dragged = null;
+  let dragImage = null;
   let dragStartCb = noop;
   let stylePlaceholderCb = noop;
   let dropZones = [];
@@ -56,27 +56,27 @@ function makeDraggable(cmp) {
   function onStart(target, x, y) {
     console.log("Drag start", {target, x, y});
     dragging = true;
-    dragged = draggable(target, x, y);
+    dragImage = makeDragImage(target, x, y);
 
-    dragStartCb(dragged, cmp);
+    dragStartCb(dragImage, cmp);
 
     originalCmpStyle = cmp.style;
     stylePlaceholderCb(cmp.style);
   }
   function onMove(x, y) {
-    console.log("Drag move", {x, y});
     if (dragging) {
-      dragged.move(x, y);
+      console.log("Drag move", {x, y});
+      dragImage.move(x, y);
       dropZones.forEach((zone, i) => {
         // console.log("dragging over", i, zone, zone.zone);
-        if (dragged.over(zone.zone)) {
+        if (dragImage.over(zone.zone)) {
           if (!zone.wasDraggedOver) {
-            zone.dragEnter(dragged)
+            zone.dragEnter(dragImage)
           } else {
-            zone.dragOver(dragged);
+            zone.dragOver(dragImage);
           }
         } else if (zone.wasDraggedOver) {
-          zone.dragLeave(dragged);
+          zone.dragLeave(dragImage);
         }
       });
     }
@@ -84,13 +84,13 @@ function makeDraggable(cmp) {
   function onEnd() {
     if (dragging) {
       dropZones.forEach(zone => {
-        if (dragged.over(zone.zone)) {
-          zone.drop(dragged);
+        if (dragImage.over(zone.zone)) {
+          zone.drop(dragImage);
         }
       });
 
-      dragged.destroy();
-      dragged = null;
+      dragImage.destroy();
+      dragImage = null;
 
       cmp.style = originalCmpStyle;
       dragging = false;
@@ -109,23 +109,23 @@ function makeDraggable(cmp) {
 }
 
 
-function draggable(cmp, x, y) {
+function makeDragImage(cmp, x, y) {
   let offsetX = x - cmp.getBoundingClientRect().left;
   let offsetY = y - cmp.getBoundingClientRect().top;
   let data = Map.inst();
 
-  let dragImg = null;
+  let img = null;
   setDragImage(cmp.cloneNode(true));
-  dragImg.style.width = cmp.getBoundingClientRect().width + "px";
+  img.style.width = cmp.getBoundingClientRect().width + "px";
 
   move(x, y);
 
   return Object.freeze({
     get offset() { return {x: offsetX, y: offsetY} },
     get data() { return data; },
-    get style() { return dragImg.style },
-    set style(style) { dragImg.style = style },
-    get dragImage() { return dragImg },
+    get style() { return img.style },
+    set style(style) { img.style = style },
+    get dragImage() { return img },
     set dragImage(img) {
       setDragImage(img)
     },
@@ -135,23 +135,23 @@ function draggable(cmp, x, y) {
       offsetY = y;
     },
     centerOn(x, y) {
-      let rect = dragImg.getBoundingClientRect();
+      let rect = img.getBoundingClientRect();
       offsetX = rect.width / 2;
       offsetY = rect.height / 2;
       move(x, y);
     },
     destroy() {
-      removeComponent(dragImg);
+      removeComponent(img);
     },
     over(rect) {
-      return intersects(dragImg.getBoundingClientRect(), rect);
+      return intersects(img.getBoundingClientRect(), rect);
     },
     centerIsInside(elem, threshold = 0) {
       // console.log({inside: inside(center(dragImg), elem), center: center(dragImg), threshold, elem});
-      return inside(center(dragImg), elem, threshold);
+      return inside(center(img), elem, threshold);
     },
     centerIsAbove(elem) {
-      return center(dragImg).y < center(elem).y;
+      return center(img).y < center(elem).y;
     }
   });
 
@@ -165,12 +165,12 @@ function draggable(cmp, x, y) {
       point.y >= (elemRect.top - threshold) && point.y <= (elemRect.bottom + threshold);
   }
 
-  function setDragImage(img) {
-    removeComponent(dragImg);
-    dragImg = img;
-    dragImg.style.position = "absolute";
-    dragImg.style.margin = "0";
-    document.querySelector("body").appendChild(dragImg);
+  function setDragImage(newImg) {
+    removeComponent(img);
+    img = newImg;
+    img.style.position = "absolute";
+    img.style.margin = "0";
+    document.querySelector("body").appendChild(img);
   }
 
   function center(elem) {
@@ -182,8 +182,8 @@ function draggable(cmp, x, y) {
   }
 
   function move(x, y) {
-    dragImg.style.left = x - offsetX + "px";
-    dragImg.style.top = y - offsetY + "px";
+    img.style.left = x - offsetX + "px";
+    img.style.top = y - offsetY + "px";
   }
 
   function intersects(a, b) {

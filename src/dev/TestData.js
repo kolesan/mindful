@@ -73,7 +73,7 @@ let yogaProgram = {
   mainEvent: programBuilder( `Mindful Yoga` )
                      .event( `Preparation`,      s(30), fsgong ).end()
                      .loop(50)
-                       .event( `Hold pose %{i}`, s(70), fgong  )
+                       .event( `Hold pose {i}`, s(70), fgong  )
                          .event( `1/2`,          s(30), ffgong ).end()
                          .event( `2/2`,          s(30), ffgong ).end()
                        .end()
