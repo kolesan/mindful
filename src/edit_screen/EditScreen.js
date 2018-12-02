@@ -1,20 +1,17 @@
 import './edit_screen.css';
 
-import {createComponent, iconCmp, setIcon} from '../utils/HtmlUtils';
+import { setIcon } from '../utils/HtmlUtils';
 import * as Storage from '../Storage';
 import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
 import * as InputValidator from "../text_input/InputValidator";
 import { makeDraggable } from "./dragndrop/Draggable";
 import * as ProgramEventsEditor from "./program_editor/ProgramEventsEditor";
-import {alphanumericValidation, emptyStringValidation, markInvalid, markValid} from "../Validation";
-import {noSpaces} from "../utils/Utils";
+import { alphanumericValidation, emptyStringValidation, markInvalid, markValid } from "../Validation";
+import { noSpaces } from "../utils/Utils";
+import { ToolNames } from "./tools/Tools";
 
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
-const Tools = {
-  loop: "loop",
-  event: "event"
-};
 
 const TRASH_ICON = "fas fa-drumstick-bite";
 
@@ -66,8 +63,8 @@ function putToolNameToData(toolName) {
   }
 }
 
-makeToolDraggable(loop, Tools.loop);
-makeToolDraggable(event, Tools.event);
+makeToolDraggable(loop, ToolNames.loop);
+makeToolDraggable(event, ToolNames.event);
 function makeToolDraggable(toolCmp, toolName) {
   makeDraggable(toolCmp)
     .onDragStart(putToolNameToData(toolName))
@@ -128,4 +125,4 @@ function load(program) {
 //   return elem;
 // }
 
-export { onShow, Tools, PROGRAM_SAVED_EVENT };
+export { onShow, PROGRAM_SAVED_EVENT };

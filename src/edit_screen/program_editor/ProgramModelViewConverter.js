@@ -1,0 +1,52 @@
+import { formatTime, parseTime } from "../../utils/TimeUtils";
+import { fgong } from "../../EventCallbacks";
+import { Tools, ToolNames } from "../tools/Tools";
+
+function viewToProgram(viewChildren) {
+  let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
+  let programElements = [];
+  viewElements.forEach(viewElement => {
+    console.log(viewElement);
+    let tool = viewElement.dataset.element;
+    let programElement = {element: tool};
+    switch(tool) {
+      case ToolNames.loop:
+        let iterations = viewElement.querySelector("[name=iterationsInput").value;
+        Object.assign(programElement, {iterations});
+        break;
+      case ToolNames.event:
+        let name = viewElement.querySelector("[name=eventNameInput").value;
+        let duration = parseTime(viewElement.querySelector("[name=eventDurationInput").value);
+        Object.assign(programElement, {name, duration, callback: fgong});
+        break;
+    }
+    programElement.children = viewToProgram(viewElement.children);
+    console.log(programElement);
+    programElements.push(programElement);
+  });
+  return programElements;
+}
+
+function programToView(parent, afterToolCreationHook) {
+  let elements = [];
+  parent.children.forEach(programElement => {
+    console.log(programElement);
+    let viewElement = null;
+    let tool = Tools.get(programElement.element);
+    switch(tool.name) {
+      case ToolNames.event:
+        viewElement = tool.create(programElement.name, formatTime(programElement.duration));
+        break;
+      case ToolNames.loop:
+        viewElement = tool.create(programElement.iterations);
+        break;
+    }
+    programToView(programElement, afterToolCreationHook).forEach(it => viewElement.appendChild(it));
+    console.log(afterToolCreationHook);
+    afterToolCreationHook(viewElement);
+    elements.push(viewElement)
+  });
+  return elements;
+}
+
+export { viewToProgram, programToView }

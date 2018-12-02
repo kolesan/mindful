@@ -1,5 +1,5 @@
 import { noop, fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
-import { Tools } from "../edit_screen/EditScreen";
+import { ToolNames } from "../edit_screen/tools/Tools";
 import { last } from "../utils/Utils";
 
 function s(c) {
@@ -36,7 +36,7 @@ function programBuilder(name) {
 
   function calculateDuration(parent) {
     return parent.children.reduce((a, b) => {
-      if (b.element == Tools.event) {
+      if (b.element == ToolNames.event) {
         return a + b.duration;
       } else {
         return a + calculateDuration(b) * b.iterations;
@@ -54,10 +54,10 @@ function programBuilder(name) {
     elemStack.push(elem);
   }
   function newLoop(iterations, children = []) {
-    return { element: Tools.loop, iterations, children };
+    return { element: ToolNames.loop, iterations, children };
   }
   function newEvent(name, duration, callback, children = []) {
-    return { element: Tools.event, name, duration, callback, children };
+    return { element: ToolNames.event, name, duration, callback, children };
   }
 }
 
@@ -180,27 +180,27 @@ let testProgram = {
     callback: sgong,
     children: [
       {
-        element: Tools.event,
+        element: ToolNames.event,
         name: `l2_timer0`,
         duration: 2000,
         callback: fsgong,
         children: []
       },
       {
-        element: Tools.event,
+        element: ToolNames.event,
         name: `l2_timer1`,
         duration: 7000,
         callback: fgong,
         children: [
           {
-            element: Tools.event,
+            element: ToolNames.event,
             name: `l3_timer1.1`,
             duration: 3000,
             callback: ffgong,
             children: []
           },
           {
-            element: Tools.event,
+            element: ToolNames.event,
             name: `l3_timer1.2`,
             duration: 3000,
             callback: ffgong,

@@ -1,7 +1,6 @@
 import * as TimerModule from './timer_screen/TimerToDisplayBinder';
 import * as eventBus from './utils/EventBus';
 import * as Controls from './timer_screen/TimerControls';
-import * as TreeUtils from './utils/TreeUtils';
 import { createComponent } from './utils/HtmlUtils';
 
 eventBus.globalInstance.bindListener(Controls.Events.START_CLICKED, () => timerModules.current.start());
@@ -58,7 +57,7 @@ function loadProgram(programWrapper) {
   currentProgram = program;
 }
 
-import { Tools } from "./edit_screen/EditScreen";
+import { ToolNames } from "./edit_screen/tools/Tools";
 import { newTimerEvent } from "./timer_screen/Timer";
 import { callbackDictionary } from './EventCallbacks';
 function convertEvent(programEvent, startTime = 0, i = 1) {
@@ -75,11 +74,11 @@ function convertProgramElementChildren(programElement, startTime, i) {
   let children = [];
   programElement.children.forEach(it => {
     switch(it.element) {
-      case Tools.event:
+      case ToolNames.event:
         children.push(convertEvent(it, startTime, i));
         startTime += it.duration;
         break;
-      case Tools.loop:
+      case ToolNames.loop:
         let childrenDurationSum = it.children.reduce((a, b) => a + b.duration, 0);
         for(let i = 0; i < it.iterations; i++) {
           children.push(...convertProgramElementChildren(it, startTime, i+1));
