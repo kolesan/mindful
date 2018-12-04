@@ -1,9 +1,7 @@
-import { newTimer, TIMER_FINISHED } from './Timer';
+import { newTimer } from './Timer';
 import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../settings/Settings';
 import { newInstance as newTimerDisplay } from './TimerDisplay';
 import * as eventBus from '../utils/EventBus';
-import * as log from '../utils/Logging';
-import * as utils from '../utils/Utils';
 import * as Controls from './TimerControls';
 
 function newInstance(program, timerComponentContainer) {

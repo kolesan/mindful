@@ -33,12 +33,12 @@ function show(btn) {
   btn.style.display = "";
 }
 function start() {
-  setButtonToAfterStartState();
+  setButtonsToAfterStartState();
   eventBus.globalInstance.fire(Events.START_CLICKED);
 }
 
 function pause() {
-  setButtonToAfterPauseState();
+  setButtonsToAfterPauseState();
   eventBus.globalInstance.fire(Events.PAUSE_CLICKED);
 }
 
@@ -47,7 +47,7 @@ function stop() {
   eventBus.globalInstance.fire(Events.STOP_CLICKED);
 }
 
-function setButtonToAfterStartState() {
+function setButtonsToAfterStartState() {
   hide(playBtn);
   disable(playBtn);
   show(pauseBtn);
@@ -55,7 +55,7 @@ function setButtonToAfterStartState() {
   enable(stopBtn);
 }
 
-function setButtonToAfterPauseState() {
+function setButtonsToAfterPauseState() {
   hide(pauseBtn);
   disable(pauseBtn);
   show(playBtn);
@@ -77,4 +77,4 @@ stopBtn.addEventListener("click", stop);
 volumeBtn.addEventListener("click", toggleMuted);
 volumeSlider.addEventListener("input", setVolume);
 
-export { Events, setButtonToAfterStartState, setButtonToAfterPauseState, resetButtons };
+export { Events, setButtonsToAfterStartState, setButtonsToAfterPauseState, resetButtons };

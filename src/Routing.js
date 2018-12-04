@@ -1,6 +1,7 @@
 import * as log from "./utils/Logging"
 import * as EditScreen from "./edit_screen/EditScreen";
 import * as TimerScreen from "./timer_screen/TimerScreen";
+import { screens } from "./Screens";
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -14,18 +15,20 @@ let Routes = {
   "/programs/:id": loadProgram,
   "/programs/:id/edit": editProgram
 };
+
 function titleScreen() {
-  showTimerScreen();
+  // screens.title.show();
 }
 function newProgram() {
-  showEditScreen();
+  screens.edit.show();
 }
 function loadProgram(id) {
-  showTimerScreen(id);
+  screens.timer.show(id);
 }
 function editProgram(id) {
-  showEditScreen(id);
+  screens.edit.show(id);
 }
+
 function route(path) {
   let matchingRoute = findRoute(path);
 
@@ -58,6 +61,7 @@ function findRoute(path) {
       return true;
     });
 }
+
 function extractParams(path, route) {
   let pathSegments = path.split("/");
   let routeSegments = route.split("/");
@@ -72,26 +76,6 @@ function extractParams(path, route) {
   return pathParams;
 }
 
-let timerScreen = document.querySelector("#timerScreen");
-let editScreen = document.querySelector("#editScreen");
-
-function showTimerScreen(programId) {
-  hide(editScreen);
-  show(timerScreen);
-  TimerScreen.onShow(programId);
-}
-function showEditScreen(programId) {
-  hide(timerScreen);
-  show(editScreen);
-  EditScreen.onShow(programId);
-}
-function hide(elem) {
-  elem.classList.add("hidden");
-}
-function show(elem) {
-  elem.classList.remove("hidden");
-}
-
 window.addEventListener("popstate", event => {
   console.log("Popstate", event, history, history.state);
   let path = location.pathname;
@@ -102,19 +86,19 @@ window.addEventListener("popstate", event => {
 function toTimerScreen(programTitle, programId) {
   document.title = `Program ${programTitle}`;
   history.pushState({}, document.title, `/programs/${programId}`);
-  showTimerScreen(programId);
+  screens.timer.show(programId);
 }
 
 function toNewProgramScreen() {
   document.title = `New program`;
   history.pushState({}, document.title, "/new");
-  showEditScreen();
+  screens.edit.show();
 }
 
 function toEditScreen(programTitle, programId) {
   document.title = `Edit program ${programTitle}`;
   history.pushState({}, document.title, `/programs/${programId}/edit`);
-  showEditScreen(programId);
+  screens.edit.show(programId);
 }
 
 export { toTimerScreen, toEditScreen, toNewProgramScreen };

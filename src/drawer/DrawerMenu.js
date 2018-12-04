@@ -1,19 +1,29 @@
 import './drawer_menu.css';
+
 import '../settings/Settings';
+import * as ProgramsSection from './programs/ProgramsDrawerSection';
+
 import * as Routing from "../Routing";
 
 const HIDDEN_DRAWER_CLASS = "drawer_menu__hidden";
 
 let drawer = document.querySelector(".drawer_menu");
-let drawerBtn = document.getElementById("menuBtn");
-drawerBtn.addEventListener("click", toggleDrawerState);
+
+let drawerBtns = document.querySelectorAll("button[name=menuBtn]");
+drawerBtns.forEach(btn => btn.addEventListener("click", toggleDrawerState));
+
 let drawerOverlay = document.querySelector(".drawer_menu_overlay");
 drawerOverlay.addEventListener("click", toggleDrawerState);
+
 let closeDrawerBtn = document.querySelector("#closeDrawerBtn");
 closeDrawerBtn.addEventListener("click", toggleDrawerState);
-let shown = window.innerWidth > 1000;
-// let shown = false;
-toggleDrawer();
+
+// let shown = window.innerWidth > 1000;
+let shown = false;
+function init() {
+  toggleDrawer();
+  ProgramsSection.init();
+}
 
 function toggleDrawerState(event) {
   shown = !shown;
@@ -35,8 +45,7 @@ function hideDrawer() {
   drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
 }
 
-
 let newProgramBtn = document.querySelector("#newProgramBtn");
 newProgramBtn.addEventListener("click", Routing.toNewProgramScreen);
 
-export { toggleDrawerState };
+export { init };

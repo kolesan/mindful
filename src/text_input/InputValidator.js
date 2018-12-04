@@ -9,7 +9,7 @@ function inst(input) {
   let validations = [];
 
   let errorContainer = createComponent("div", "text_input__error_container");
-  appendContainer();
+  let showingContainer = false;
 
   let onFailCb = noop;
   let onSuccessCb = noop;
@@ -31,10 +31,13 @@ function inst(input) {
         }
       });
       if (valid) {
+        hideContainer();
         onSuccessCb(input);
       } else {
+        showContainer();
         onFailCb(input);
       }
+      return valid;
     },
     bindValidation(validation) {
       validations.push({validate: validation.validate, msg: ErrorMessage.inst()});
@@ -58,12 +61,18 @@ function inst(input) {
   });
 
   function showContainer() {
-    appendContainer();
-    fade(errorContainer, 0, 1, 0, 150, "ease-out");
+    if (!showingContainer) {
+      appendContainer();
+      fade(errorContainer, 0, 1, 0, 150, "ease-out");
+      showingContainer = true;
+    }
   }
 
   function hideContainer() {
-    fade(errorContainer, 1, 0, 0, 150, "ease-in", () => removeComponent(errorContainer));
+    if (showingContainer) {
+      fade(errorContainer, 1, 0, 0, 150, "ease-in", () => removeComponent(errorContainer));
+      showingContainer = false;
+    }
   }
 
   function appendContainer() {

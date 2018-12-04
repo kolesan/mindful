@@ -12,18 +12,19 @@ import { noSpaces } from "../utils/Utils";
 import { ToolNames } from "./tools/Tools";
 
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
+const NEW_PROGRAM_SAVED_EVENT = "NEW_PROGRAM_SAVED_EVENT";
 
 const TRASH_ICON = "fas fa-drumstick-bite";
 
-let editorScreen = document.querySelector("#editScreen");
+let editScreen = document.querySelector("#editScreen");
 
-let loop = editorScreen.querySelector("#loopTool");
-let event = editorScreen.querySelector("#eventTool");
+let loop = editScreen.querySelector("#loopTool");
+let event = editScreen.querySelector("#eventTool");
 
-let programEditorContainer = editorScreen.querySelector(".program_events");
+let programEditorContainer = editScreen.querySelector(".program_events");
 let programEventsEditor = ProgramEventsEditor.inst(programEditorContainer);
 let programTitles;
-let programTitleInput = editorScreen.querySelector(".basic_program_data input[name=programTitle]");
+let programTitleInput = editScreen.querySelector(".basic_program_data input[name=programTitle]");
 
 let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
   uniqueTitle, "Program with such name already exists"
@@ -40,18 +41,6 @@ let titleValidator = InputValidator.inst(programTitleInput)
   .onFail(markInvalid)
   .onSuccess(markValid)
   .triggerOn("input");
-
-function onShow(programId) {
-  programTitles = loadProgramTitles();
-  programEventsEditor.init();
-  if (programId) {
-    load(Storage.loadProgram(programId));
-  } else {
-    programTitleInput.value = "New Program";
-    titleValidator.validate();
-    titleValidator.hideErrors();
-  }
-}
 
 function asTransparentDashed(style) {
   style.opacity = 0.7;
@@ -73,10 +62,7 @@ function makeToolDraggable(toolCmp, toolName) {
     .allowTouch();
 }
 
-let menuBtn = editorScreen.querySelector("button[name=menuBtn]");
-menuBtn.addEventListener("click", Drawer.toggleDrawerState);
-
-let saveBtn = editorScreen.querySelector("#saveBtn");
+let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", save);
 
 function loadProgramTitles() {
@@ -85,8 +71,11 @@ function loadProgramTitles() {
 
 
 
-let programIconInput = editorScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
+let programIconInput = editScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
 function save() {
+  if (!titleValidator.validate()) {
+    return;
+  }
   let icon = programIconInput.dataset.icon;
   let title = programTitleInput.value;
   let mainEvent = programEventsEditor.save();
@@ -100,7 +89,7 @@ function save() {
   };
   console.log(program);
   Storage.saveProgram(program);
-  EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, program);
+  EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
   programTitles = loadProgramTitles();
 }
 
@@ -115,7 +104,7 @@ function load(program) {
   programEventsEditor.load(program.mainEvent);
 }
 
-// let trashcan = editorScreen.querySelector(".tools__trash_can");
+// let trashcan = editScreen.querySelector(".tools__trash_can");
 // let trashImage = trashImageElement();
 // function trashImageElement() {
 //   let elem = createComponent("div", `program__element`);
@@ -125,4 +114,22 @@ function load(program) {
 //   return elem;
 // }
 
-export { onShow, PROGRAM_SAVED_EVENT };
+function onShow(programId) {
+  programTitles = loadProgramTitles();
+  programEventsEditor.init();
+  if (programId) {
+    load(Storage.loadProgram(programId));
+  } else {
+    programTitleInput.value = "New Program";
+    setIcon(programIconInput, "fas fa-heartbeat");
+    titleValidator.validate();
+    titleValidator.hideErrors();
+  }
+}
+
+let screen = {
+  cmp: editScreen,
+  onShow
+};
+
+export { screen, PROGRAM_SAVED_EVENT, NEW_PROGRAM_SAVED_EVENT };
