@@ -32,24 +32,21 @@ function inst(containerCmp) {
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
-      mainEventNameInput.value = "MainTimer";
-      mainEventDurationCmp.value = formatTime(0);
-      removeAllChildNodes(childEventsEditorCmp);
-
-      programEditorDropZone.init();
-      showDragHereTxt();
+      this.load(newMainEvent());
     },
     load(mainEvent) {
       mainEventNameInput.value = mainEvent.name;
-      markValid(mainEventNameInput);
-
       mainEventDurationCmp.value = formatTime(mainEvent.duration);
+
+      markValid(mainEventNameInput);
 
       removeAllChildNodes(childEventsEditorCmp);
       let viewElements = ModelViewConverter.programToView(mainEvent, makeElementDraggable);
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
         hideDragHereTxt();
+      } else {
+        showDragHereTxt();
       }
     },
     save() {
@@ -176,4 +173,13 @@ function inst(containerCmp) {
   }
 }
 
-export { inst }
+function newMainEvent() {
+  return {
+    name: "MainTimer",
+    duration: 0,
+    callback: sgong,
+    children: []
+  };
+}
+
+export { inst, newMainEvent }

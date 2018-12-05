@@ -14,7 +14,7 @@ import { programs, currentProgram } from '../index';
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
 editBtn.addEventListener("click", event => {
-  Routing.toEditScreen(currentProgram.title, currentProgram.id);
+  Routing.toEditScreen(currentProgram);
 });
 
 
@@ -55,20 +55,17 @@ function currentTimer() {
   return timerModules.current;
 }
 
-function loadTimerById(id) {
-  loadTimer(
-    programs.find(program => program.id == id)
-  );
-}
-
 eventBus.globalInstance.bindListener(Controls.Events.START_CLICKED, () => timerModules.current.start());
 eventBus.globalInstance.bindListener(Controls.Events.PAUSE_CLICKED, () => timerModules.current.pause());
 eventBus.globalInstance.bindListener(Controls.Events.STOP_CLICKED, () => timerModules.current.stop());
 
 let screen = {
+  title: function(program) {
+    return `${program.title}`;
+  },
   cmp: timerScreen,
-  onShow(id) {
-    loadTimerById(id);
+  onShow(program) {
+    loadTimer(program);
   }
 };
 

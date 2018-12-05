@@ -22,7 +22,9 @@ function wrap(screen) {
       currentScreen = this;
       showOneHideOthers(screen);
       screen.onShow(...args);
-    }
+      document.title = screen.title(...args);
+    },
+    title: screen.title
   });
 }
 

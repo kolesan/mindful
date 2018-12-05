@@ -10,6 +10,7 @@ import * as ProgramEventsEditor from "./program_editor/ProgramEventsEditor";
 import { alphanumericValidation, emptyStringValidation, markInvalid, markValid } from "../Validation";
 import { noSpaces } from "../utils/Utils";
 import { ToolNames } from "./tools/Tools";
+import { newMainEvent } from "./program_editor/ProgramEventsEditor";
 
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
 const NEW_PROGRAM_SAVED_EVENT = "NEW_PROGRAM_SAVED_EVENT";
@@ -42,6 +43,7 @@ let titleValidator = InputValidator.inst(programTitleInput)
   .onSuccess(markValid)
   .triggerOn("input");
 
+
 function asTransparentDashed(style) {
   style.opacity = 0.7;
   style.border = "1px dashed gray";
@@ -51,9 +53,6 @@ function putToolNameToData(toolName) {
     dragged.data.put("tool", toolName);
   }
 }
-
-makeToolDraggable(loop, ToolNames.loop);
-makeToolDraggable(event, ToolNames.event);
 function makeToolDraggable(toolCmp, toolName) {
   makeDraggable(toolCmp)
     .onDragStart(putToolNameToData(toolName))
@@ -61,6 +60,9 @@ function makeToolDraggable(toolCmp, toolName) {
     .bindDropZone(programEventsEditor.dropZone)
     .allowTouch();
 }
+makeToolDraggable(loop, ToolNames.loop);
+makeToolDraggable(event, ToolNames.event);
+
 
 let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", save);
@@ -68,8 +70,6 @@ saveBtn.addEventListener("click", save);
 function loadProgramTitles() {
   return Storage.loadPrograms().map(program => program.title);
 }
-
-
 
 let programIconInput = editScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
 function save() {
@@ -93,6 +93,16 @@ function save() {
   programTitles = loadProgramTitles();
 }
 
+function newProgram() {
+  return {
+    id: null,
+    title: "New Program",
+    icon: "fas fa-heartbeat",
+    description: "",
+    mainEvent: newMainEvent()
+  };
+}
+
 function load(program) {
   programTitleInput.value = program.title;
   markValid(programTitleInput);
@@ -114,20 +124,19 @@ function load(program) {
 //   return elem;
 // }
 
-function onShow(programId) {
+function onShow(program) {
+  load(program || newProgram());
   programTitles = loadProgramTitles();
-  programEventsEditor.init();
-  if (programId) {
-    load(Storage.loadProgram(programId));
-  } else {
-    programTitleInput.value = "New Program";
-    setIcon(programIconInput, "fas fa-heartbeat");
-    titleValidator.validate();
-    titleValidator.hideErrors();
-  }
 }
 
 let screen = {
+  title: function(program) {
+    if (program) {
+      return `Edit ${program.title}`;
+    } else {
+      return `New program`;
+    }
+  },
   cmp: editScreen,
   onShow
 };

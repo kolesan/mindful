@@ -8,16 +8,11 @@ import './Routing';
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
 import { screens } from './Screens';
+
 let programs = loadProgramsFromLocalStorage();
 let currentProgram = programs.find(program => program.default) || programs[0];
 
 Drawer.init();
-
-if (currentProgram) {
-  screens.timer.show(currentProgram.id);
-} else {
-  screens.title.show();
-}
 
 function loadProgramsFromLocalStorage() {
   let stored = window.localStorage.getItem("programs");
@@ -44,7 +39,7 @@ eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT,
 
 function setCurrentProgram(program) {
   currentProgram = program;
-  screens.current.init(program.id);
+  // screens.current.init(program.id);
 }
 
 export { programs, currentProgram, setCurrentProgram };

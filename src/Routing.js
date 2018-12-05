@@ -1,7 +1,6 @@
 import * as log from "./utils/Logging"
-import * as EditScreen from "./edit_screen/EditScreen";
-import * as TimerScreen from "./timer_screen/TimerScreen";
 import { screens } from "./Screens";
+import * as Storage from './Storage';
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -17,16 +16,16 @@ let Routes = {
 };
 
 function titleScreen() {
-  // screens.title.show();
+  screens.title.show();
 }
 function newProgram() {
   screens.edit.show();
 }
 function loadProgram(id) {
-  screens.timer.show(id);
+  screens.timer.show(Storage.loadProgram(id));
 }
 function editProgram(id) {
-  screens.edit.show(id);
+  screens.edit.show(Storage.loadProgram(id));
 }
 
 function route(path) {
@@ -83,22 +82,22 @@ window.addEventListener("popstate", event => {
   route(path);
 });
 
-function toTimerScreen(programTitle, programId) {
-  document.title = `Program ${programTitle}`;
-  history.pushState({}, document.title, `/programs/${programId}`);
-  screens.timer.show(programId);
-}
 
+function toTitleScreen() {
+  history.pushState({}, screens.title.title(), `/`);
+  screens.title.show();
+}
 function toNewProgramScreen() {
-  document.title = `New program`;
-  history.pushState({}, document.title, "/new");
+  history.pushState({}, screens.edit.title(), "/new");
   screens.edit.show();
 }
-
-function toEditScreen(programTitle, programId) {
-  document.title = `Edit program ${programTitle}`;
-  history.pushState({}, document.title, `/programs/${programId}/edit`);
-  screens.edit.show(programId);
+function toTimerScreen(program) {
+  history.pushState({}, screens.timer.title(program), `/programs/${program.id}`);
+  screens.timer.show(program);
+}
+function toEditScreen(program) {
+  history.pushState({}, screens.edit.title(program), `/programs/${program.id}/edit`);
+  screens.edit.show(program);
 }
 
-export { toTimerScreen, toEditScreen, toNewProgramScreen };
+export { toTimerScreen, toEditScreen, toNewProgramScreen, toTitleScreen };
