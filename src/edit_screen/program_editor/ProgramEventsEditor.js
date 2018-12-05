@@ -10,6 +10,7 @@ import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
 import { Tools } from "../tools/Tools";
 import { px } from "../../utils/Utils";
+import * as TreeUtils from "../../utils/TreeUtils";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -22,7 +23,7 @@ function inst(containerCmp) {
   let placeholder = createPlaceholder();
   let showingPlaceholder = false;
 
-  InputValidator.inst(mainEventNameInput)
+  let mainEventNameValidator = InputValidator.inst(mainEventNameInput)
     .bindValidation(alphanumericValidation)
     .onFail(markInvalid)
     .onSuccess(markValid)
@@ -56,6 +57,10 @@ function inst(containerCmp) {
         callback: sgong,
         children: ModelViewConverter.viewToProgram(childEventsEditorCmp.children)
       };
+    },
+    validate() {
+      let invalidElem = TreeUtils.flatten(childEventsEditorCmp).find(elem => elem.dataset.valid === "false");
+      return mainEventNameValidator.validate() && !invalidElem;
     }
   });
 

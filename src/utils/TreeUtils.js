@@ -1,7 +1,7 @@
 function visit(node, fn) {
   if (node) {
     if (node.children) {
-      node.children.forEach(child => visit(child, fn));
+      Array.from(node.children).forEach(child => visit(child, fn));
     }
     fn(node);
   }

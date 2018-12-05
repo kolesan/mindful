@@ -25,7 +25,6 @@ function makeDraggable(cmp) {
     },
     bindDropZone(zone) {
       dropZones.push(zone);
-      console.log("binding zone", zone);
       return this;
     },
     allowTouch() {

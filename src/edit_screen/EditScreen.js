@@ -26,6 +26,7 @@ let programEditorContainer = editScreen.querySelector(".program_events");
 let programEventsEditor = ProgramEventsEditor.inst(programEditorContainer);
 let programTitles;
 let programTitleInput = editScreen.querySelector(".basic_program_data input[name=programTitle]");
+let currentProgram = newProgram();
 
 let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
   uniqueTitle, "Program with such name already exists"
@@ -65,7 +66,12 @@ makeToolDraggable(event, ToolNames.event);
 
 
 let saveBtn = editScreen.querySelector("#saveBtn");
-saveBtn.addEventListener("click", save);
+saveBtn.addEventListener("click", event => {
+  if (!titleValidator.validate() || !programEventsEditor.validate()) {
+    return;
+  }
+  save();
+});
 
 function loadProgramTitles() {
   return Storage.loadPrograms().map(program => program.title);
@@ -73,23 +79,25 @@ function loadProgramTitles() {
 
 let programIconInput = editScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
 function save() {
-  if (!titleValidator.validate()) {
-    return;
-  }
-  let icon = programIconInput.dataset.icon;
-  let title = programTitleInput.value;
-  let mainEvent = programEventsEditor.save();
+  if (currentProgram.id) {
 
+  }
+  let title = programTitleInput.value;
   let program = {
     id: noSpaces(title),
     title,
-    icon,
+    icon: programIconInput.dataset.icon,
     description: "",
-    mainEvent
+    mainEvent: programEventsEditor.save()
   };
   console.log(program);
-  Storage.saveProgram(program);
-  EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
+  if (program.id) {
+    Storage.saveProgram(program);
+    EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
+  } else {
+    Storage.saveProgram(program);
+    EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
+  }
   programTitles = loadProgramTitles();
 }
 
@@ -105,13 +113,13 @@ function newProgram() {
 
 function load(program) {
   programTitleInput.value = program.title;
-  markValid(programTitleInput);
-
   programIconInput.dataset.icon = program.icon;
   setIcon(programIconInput, program.icon);
 
   console.log("loading", program);
   programEventsEditor.load(program.mainEvent);
+
+  currentProgram = program;
 }
 
 // let trashcan = editScreen.querySelector(".tools__trash_can");
@@ -127,6 +135,7 @@ function load(program) {
 function onShow(program) {
   load(program || newProgram());
   programTitles = loadProgramTitles();
+  markValid(programTitleInput);
 }
 
 let screen = {

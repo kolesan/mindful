@@ -6,7 +6,6 @@ function viewToProgram(viewChildren) {
   let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
   let programElements = [];
   viewElements.forEach(viewElement => {
-    console.log(viewElement);
     let tool = viewElement.dataset.element;
     let programElement = {element: tool};
     switch(tool) {
@@ -21,7 +20,6 @@ function viewToProgram(viewChildren) {
         break;
     }
     programElement.children = viewToProgram(viewElement.children);
-    console.log(programElement);
     programElements.push(programElement);
   });
   return programElements;
@@ -30,7 +28,6 @@ function viewToProgram(viewChildren) {
 function programToView(parent, afterToolCreationHook) {
   let elements = [];
   parent.children.forEach(programElement => {
-    console.log(programElement);
     let viewElement = null;
     let tool = Tools.get(programElement.element);
     switch(tool.name) {
@@ -42,7 +39,6 @@ function programToView(parent, afterToolCreationHook) {
         break;
     }
     programToView(programElement, afterToolCreationHook).forEach(it => viewElement.appendChild(it));
-    console.log(afterToolCreationHook);
     afterToolCreationHook(viewElement);
     elements.push(viewElement)
   });

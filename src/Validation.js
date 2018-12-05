@@ -16,9 +16,11 @@ export function notEmpty(s) {
 }
 
 export function markInvalid(input) {
+  input.dataset.valid = false;
   input.style.borderBottomColor = "red";
 }
 export function markValid(input) {
+  input.dataset.valid = true;
   input.style.borderBottomColor = "";
 }
 
