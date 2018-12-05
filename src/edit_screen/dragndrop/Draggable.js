@@ -1,4 +1,4 @@
-import { noop } from "../../utils/Utils";
+import { noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
 import * as Map from '../../utils/Map';
 
@@ -37,10 +37,12 @@ function makeDraggable(cmp) {
   function onMouseDown(event) {
     console.log("Mouse down");
     event.stopPropagation();
+
     onStart(event.currentTarget, event.x, event.y)
   }
   function onMouseMove(event) {
     console.log("Mouse move");
+
     onMove(event.x, event.y);
   }
 
@@ -48,12 +50,14 @@ function makeDraggable(cmp) {
     console.log("Touch start");
     event.stopPropagation();
     event.preventDefault();
+
     let {x, y} = touchPoint(event);
     onStart(event.currentTarget, x, y);
   }
   function onTouchMove(event) {
     event.preventDefault();
     console.log("Touch move");
+
     let {x, y} = touchPoint(event);
     onMove(x, y)
   }
@@ -86,7 +90,7 @@ function makeDraggable(cmp) {
       });
     }
   }
-  function onEnd() {
+  function onEnd(event) {
     event.preventDefault();
     if (dragging) {
       console.log("Drag end");
@@ -106,11 +110,9 @@ function makeDraggable(cmp) {
 
   function touchPoint(event) {
     let touch = event.touches[0];
-    let cmpRect = event.currentTarget.getBoundingClientRect();
-    console.log(touch.clientX, touch.clientY);
     return {
-      x: touch.clientX - cmpRect.left,
-      y: touch.clientY - cmpRect.top
+      x: touch.clientX,
+      y: touch.clientY
     };
   }
 }
@@ -189,8 +191,9 @@ function makeDragImage(cmp, x, y) {
   }
 
   function move(x, y) {
-    img.style.left = x - offsetX + "px";
-    img.style.top = y - offsetY + "px";
+    console.log({offsetX, offsetY});
+    img.style.left = px(x - offsetX);
+    img.style.top = px(y - offsetY);
   }
 
   function intersects(a, b) {
