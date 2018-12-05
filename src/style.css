@@ -84,7 +84,7 @@ body {
 
 @media(min-resolution: 200dpi) {
     html {
-        --font-size: 4rem;
+        /*--font-size: 4rem;*/
     }
 }
 @media(max-width: 1000px) {
