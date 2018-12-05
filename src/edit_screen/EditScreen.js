@@ -69,14 +69,7 @@ makeToolDraggable(event, ToolNames.event);
 
 let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", event => {
-  let editingProgram = !!currentProgram.id;
-  let programTitleChanged = currentProgram.title != programTitleInput.value;
-  if (editingProgram && programTitleChanged) {
-    if (!titleValidator.validate()) {
-      return;
-    }
-  }
-  if (!programEventsEditor.validate()) {
+  if (!titleValidator.validate() || !programEventsEditor.validate()) {
     return;
   }
   save(currentProgram.id);
