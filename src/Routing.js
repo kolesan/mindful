@@ -91,9 +91,9 @@ function toNewProgramScreen() {
   history.pushState({}, screens.edit.title(), "/new");
   screens.edit.show();
 }
-function toTimerScreen(program) {
+function toTimerScreen(program, recreateTimer) {
   history.pushState({}, screens.timer.title(program), `/programs/${program.id}`);
-  screens.timer.show(program);
+  screens.timer.show(program, recreateTimer);
 }
 function toEditScreen(program) {
   history.pushState({}, screens.edit.title(program), `/programs/${program.id}/edit`);

@@ -22,22 +22,22 @@ let timerModules = {
   currentModuleId: null,
   get current() { return this[String(this.currentModuleId)] },
   get(id) { return this[String(id)] },
-  add(id, module) { this[String(id)] = module; },
+  put(id, module) { this[String(id)] = module; },
   toggleCurrent(id) { this.currentModuleId = id }
 };
 
 
-function loadTimer(program) {
+function loadTimer(program, recreateTimer = false) {
   if (currentTimer()) {
     currentTimer().shutDown();
   }
+
   timerModules.toggleCurrent(program.id);
-  if (currentTimer()) {
-    currentTimer().init();
+
+  if (!currentTimer() || recreateTimer) {
+    timerModules.put(program.id, newTimerModule(program));
   } else {
-    let timerEvent = convertEvent(program.mainEvent);
-    let timerModule = TimerModule.newInstance(timerEvent, document.querySelector(".timer__display"));
-    timerModules.add(program.id, timerModule);
+    currentTimer().init();
   }
 
   if (currentTimer().paused) {
@@ -50,6 +50,10 @@ function loadTimer(program) {
   document.querySelector("#descriptionText").innerHTML = program.description;
 }
 
+function newTimerModule(program) {
+  let timerEvent = convertEvent(program.mainEvent);
+  return TimerModule.newInstance(timerEvent, document.querySelector(".timer__display"));
+}
 
 function currentTimer() {
   return timerModules.current;
@@ -64,8 +68,8 @@ let screen = {
     return `${program.title}`;
   },
   cmp: timerScreen,
-  onShow(program) {
-    loadTimer(program);
+  onShow(program, recreateTimer) {
+    loadTimer(program, recreateTimer);
     currentProgram = program;
   }
 };

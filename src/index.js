@@ -5,9 +5,7 @@ import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
 
-let programs = loadProgramsFromLocalStorage();
-
-Drawer.init(programs);
+Drawer.init(loadProgramsFromLocalStorage());
 
 function loadProgramsFromLocalStorage() {
   let stored = window.localStorage.getItem("programs");
@@ -27,8 +25,6 @@ eventBus.globalInstance.bindListener(EditScreen.NEW_PROGRAM_SAVED_EVENT,
 eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT,
   program => {
     Drawer.init(loadProgramsFromLocalStorage());
-    Routing.toTimerScreen(program);
+    Routing.toTimerScreen(program, true);
   }
 );
-
-export { programs };
