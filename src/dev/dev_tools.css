@@ -37,3 +37,8 @@
 .dtbtn:hover {
     box-shadow: 1px 1px 3px 1px black;
 }
+
+.debug_point {
+    position: absolute;
+    z-index: 9999;
+}
