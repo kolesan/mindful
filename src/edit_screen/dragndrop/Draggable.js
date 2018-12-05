@@ -35,19 +35,19 @@ function makeDraggable(cmp) {
   });
 
   function onMouseDown(event) {
-    console.log("Mouse down");
+    // console.log("Mouse down");
     event.stopPropagation();
 
     onStart(event.currentTarget, event.x, event.y)
   }
   function onMouseMove(event) {
-    console.log("Mouse move");
+    // console.log("Mouse move");
 
     onMove(event.x, event.y);
   }
 
   function onTouchStart(event) {
-    console.log("Touch start");
+    // console.log("Touch start");
     event.stopPropagation();
     event.preventDefault();
 
@@ -56,14 +56,14 @@ function makeDraggable(cmp) {
   }
   function onTouchMove(event) {
     event.preventDefault();
-    console.log("Touch move");
+    // console.log("Touch move");
 
     let {x, y} = touchPoint(event);
     onMove(x, y)
   }
 
   function onStart(target, x, y) {
-    console.log("Drag start", {target, x, y});
+    // console.log("Drag start", {target, x, y});
     dragging = true;
     dragImage = makeDragImage(target, x, y);
 
@@ -74,7 +74,7 @@ function makeDraggable(cmp) {
   }
   function onMove(x, y) {
     if (dragging) {
-      console.log("Drag move", {x, y});
+      // console.log("Drag move", {x, y});
       dragImage.move(x, y);
       dropZones.forEach((zone, i) => {
         // console.log("dragging over", i, zone, zone.zone);
@@ -93,7 +93,7 @@ function makeDraggable(cmp) {
   function onEnd(event) {
     event.preventDefault();
     if (dragging) {
-      console.log("Drag end");
+      // console.log("Drag end");
       dropZones.forEach(zone => {
         if (dragImage.over(zone.zone)) {
           zone.drop(dragImage);
@@ -191,7 +191,7 @@ function makeDragImage(cmp, x, y) {
   }
 
   function move(x, y) {
-    console.log({offsetX, offsetY});
+    // console.log({offsetX, offsetY});
     img.style.left = px(x - offsetX);
     img.style.top = px(y - offsetY);
   }
