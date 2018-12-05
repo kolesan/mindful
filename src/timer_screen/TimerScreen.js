@@ -14,6 +14,7 @@ let currentProgram = null;
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
 editBtn.addEventListener("click", event => {
+  currentTimer().pause();
   Routing.toEditScreen(currentProgram);
 });
 
