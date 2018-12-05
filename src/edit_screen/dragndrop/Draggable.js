@@ -35,19 +35,25 @@ function makeDraggable(cmp) {
   });
 
   function onMouseDown(event) {
+    console.log("Mouse down");
     event.stopPropagation();
     onStart(event.currentTarget, event.x, event.y)
   }
   function onMouseMove(event) {
+    console.log("Mouse move");
     onMove(event.x, event.y);
   }
 
   function onTouchStart(event) {
+    console.log("Touch start");
     event.stopPropagation();
+    event.preventDefault();
     let {x, y} = touchPoint(event);
     onStart(event.currentTarget, x, y);
   }
   function onTouchMove(event) {
+    event.preventDefault();
+    console.log("Touch move");
     let {x, y} = touchPoint(event);
     onMove(x, y)
   }
@@ -81,7 +87,9 @@ function makeDraggable(cmp) {
     }
   }
   function onEnd() {
+    event.preventDefault();
     if (dragging) {
+      console.log("Drag end");
       dropZones.forEach(zone => {
         if (dragImage.over(zone.zone)) {
           zone.drop(dragImage);

@@ -14,15 +14,18 @@ const MOUSE_UP_ON_SEEKING_INDICATOR = "MOUSE_UP_ON_SEEKING_INDICATOR";
 function create(level) {
   let cmp = createComponent("div", [`timer__bar__seeking_indicator`]);
 
-  cmp.addEventListener("touchstart", event =>
+  cmp.addEventListener("touchstart", event => {
+    event.preventDefault();
     eventBus.globalInstance.fire(TOUCH_START_ON_SEEKING_INDICATOR, level, event)
-  );
-  cmp.addEventListener("touchmove", event =>
+  });
+  cmp.addEventListener("touchmove", event => {
+    event.preventDefault();
     eventBus.globalInstance.fire(TOUCH_MOVE_ON_SEEKING_INDICATOR, level, event)
-  );
-  cmp.addEventListener("touchend", event =>
+  });
+  cmp.addEventListener("touchend", event => {
+    event.preventDefault();
     eventBus.globalInstance.fire(TOUCH_END_ON_SEEKING_INDICATOR, level, event)
-  );
+  });
 
   cmp.addEventListener("mousemove", event =>
     eventBus.globalInstance.fire(MOUSE_MOVE_ON_SEEKING_INDICATOR, level, event)
