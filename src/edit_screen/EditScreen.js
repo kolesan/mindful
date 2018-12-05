@@ -132,6 +132,7 @@ function load(program) {
 // }
 
 function onShow(program) {
+  programEventsEditor.init();
   load(program || newProgram());
   programTitles = loadProgramTitles();
   markValid(programTitleInput);

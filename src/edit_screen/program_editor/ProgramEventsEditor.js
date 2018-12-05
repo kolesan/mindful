@@ -33,7 +33,7 @@ function inst(containerCmp) {
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
-      this.load(newMainEvent());
+      programEditorDropZone.init();
     },
     load(mainEvent) {
       mainEventNameInput.value = mainEvent.name;
