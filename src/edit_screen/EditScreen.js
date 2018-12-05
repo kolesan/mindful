@@ -2,7 +2,6 @@ import './edit_screen.css';
 
 import { setIcon } from '../utils/HtmlUtils';
 import * as Storage from '../Storage';
-import * as Drawer from '../drawer/DrawerMenu';
 import * as EventBus from '../utils/EventBus';
 import * as InputValidator from "../text_input/InputValidator";
 import { makeDraggable } from "./dragndrop/Draggable";
@@ -26,14 +25,17 @@ let programEditorContainer = editScreen.querySelector(".program_events");
 let programEventsEditor = ProgramEventsEditor.inst(programEditorContainer);
 let programTitles;
 let programTitleInput = editScreen.querySelector(".basic_program_data input[name=programTitle]");
-let currentProgram = newProgram();
+let currentProgram;
 
 let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
   uniqueTitle, "Program with such name already exists"
 );
 function uniqueTitle(title) {
   let titleWithoutSpaces = noSpaces(title);
-  return !programTitles.find(it => noSpaces(it) == titleWithoutSpaces);
+  let didNotChange = title == currentProgram.title;
+  let sameTitleExists = !programTitles.find(it => noSpaces(it) == titleWithoutSpaces);
+
+  return didNotChange || sameTitleExists;
 }
 
 let titleValidator = InputValidator.inst(programTitleInput)
@@ -67,10 +69,17 @@ makeToolDraggable(event, ToolNames.event);
 
 let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", event => {
-  if (!titleValidator.validate() || !programEventsEditor.validate()) {
+  let editingProgram = !!currentProgram.id;
+  let programTitleChanged = currentProgram.title != programTitleInput.value;
+  if (editingProgram && programTitleChanged) {
+    if (!titleValidator.validate()) {
+      return;
+    }
+  }
+  if (!programEventsEditor.validate()) {
     return;
   }
-  save();
+  save(currentProgram.id);
 });
 
 function loadProgramTitles() {
@@ -78,10 +87,7 @@ function loadProgramTitles() {
 }
 
 let programIconInput = editScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
-function save() {
-  if (currentProgram.id) {
-
-  }
+function save(oldId) {
   let title = programTitleInput.value;
   let program = {
     id: noSpaces(title),
@@ -90,10 +96,10 @@ function save() {
     description: "",
     mainEvent: programEventsEditor.save()
   };
-  console.log(program);
-  if (program.id) {
-    Storage.saveProgram(program);
-    EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
+  console.log("saving", program);
+  if (oldId) {
+    Storage.overrideProgram(oldId, program);
+    EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, program);
   } else {
     Storage.saveProgram(program);
     EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);

@@ -18,6 +18,13 @@
     width: 100%;
 }
 
+.drawer_menu__section__programs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
 .drawer_menu__item {
     border: 0;
     background: transparent;

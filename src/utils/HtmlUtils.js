@@ -31,9 +31,11 @@ export function appendAsFirstChild(child, parent) {
   parent.insertBefore(child, parent.firstChild);
 }
 
-export function removeAllChildNodes(parent) {
+export function removeAllChildNodes(parent, predicate = ()=>true) {
   while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
+    if (predicate(parent.firstChild)) {
+      parent.removeChild(parent.firstChild);
+    }
   }
 }
 

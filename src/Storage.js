@@ -1,12 +1,18 @@
 import { isArray } from "./utils/Utils";
-import * as TreeUtils from "./utils/TreeUtils";
-import { callbackDictionary } from "./EventCallbacks";
 
 const PROGRAMS_KEY = "programs";
 
 function saveProgram(program) {
   let programs = loadPrograms();
   programs.push(program);
+  putProgramsInToStorage(programs);
+}
+
+function overrideProgram(oldId, program) {
+  console.log("Overriding program", {oldId, program});
+  let programs = loadPrograms();
+  let oldProgram = programs.find(it => it.id == oldId);
+  Object.assign(oldProgram, program);
   putProgramsInToStorage(programs);
 }
 
@@ -27,4 +33,4 @@ function putProgramsInToStorage(programs) {
 }
 
 
-export { saveProgram, loadPrograms, loadProgram };
+export { saveProgram, overrideProgram, loadPrograms, loadProgram };

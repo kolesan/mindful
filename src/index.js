@@ -1,18 +1,13 @@
 import './style.css';
 
 import * as Drawer from './drawer/DrawerMenu';
-import './timer_screen/TimerScreen';
-import './edit_screen/EditScreen';
-import './Routing';
-
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
-import { screens } from './Screens';
+import * as Routing from "./Routing";
 
 let programs = loadProgramsFromLocalStorage();
-let currentProgram = programs.find(program => program.default) || programs[0];
 
-Drawer.init();
+Drawer.init(programs);
 
 function loadProgramsFromLocalStorage() {
   let stored = window.localStorage.getItem("programs");
@@ -25,21 +20,15 @@ function loadProgramsFromLocalStorage() {
 
 eventBus.globalInstance.bindListener(EditScreen.NEW_PROGRAM_SAVED_EVENT,
   program => {
-    programs.push(program);
-    currentProgram = program;
-    screens.timer.show(program.id);
+    Routing.toTimerScreen(program);
   }
 );
 
 eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT,
   program => {
-    screens.timer.show(program.id);
+    Drawer.init(loadProgramsFromLocalStorage());
+    Routing.toTimerScreen(program);
   }
 );
 
-function setCurrentProgram(program) {
-  currentProgram = program;
-  // screens.current.init(program.id);
-}
-
-export { programs, currentProgram, setCurrentProgram };
+export { programs };

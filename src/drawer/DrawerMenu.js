@@ -20,9 +20,9 @@ closeDrawerBtn.addEventListener("click", toggleDrawerState);
 
 // let shown = window.innerWidth > 1000;
 let shown = false;
-function init() {
+function init(programs) {
   toggleDrawer();
-  ProgramsSection.init();
+  ProgramsSection.init(programs);
 }
 
 function toggleDrawerState(event) {
