@@ -30,6 +30,8 @@ function inst(containerCmp) {
     .triggerOn("input");
   showDragHereTxt();
 
+  initScrollBarStyleSheet();
+
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
@@ -49,6 +51,7 @@ function inst(containerCmp) {
       } else {
         showDragHereTxt();
       }
+      setScrollbarWidth();
     },
     save() {
       return {
@@ -64,6 +67,14 @@ function inst(containerCmp) {
     }
   });
 
+  function setScrollbarWidth() {
+    if (childEventsEditorCmp.scrollHeight > childEventsEditorCmp.clientHeight) {
+      setScrollbarStyles(10, 8);
+    } else {
+      removeScrollbarStyles();
+    }
+  }
+
   function makeEditorDropZone() {
     return makeDropZone(childEventsEditorCmp)
       .onDragEnter(draggable => {
@@ -72,6 +83,7 @@ function inst(containerCmp) {
           setPlaceholderHeight(draggable.dragImage);
           showPlaceholder(draggable, childEventsEditorCmp);
         }
+        setScrollbarWidth();
       })
       .onDragOver(draggable => {
         showPlaceholder(draggable, childEventsEditorCmp);
@@ -81,6 +93,7 @@ function inst(containerCmp) {
         if (childEventsEditorCmp.childElementCount == 0) {
           showDragHereTxt();
         }
+        setScrollbarWidth();
       })
       .onDrop(draggable => {
         handleDrop(draggable);
@@ -186,5 +199,37 @@ function newMainEvent() {
     children: []
   };
 }
+
+
+const SCROLLBAR_STYLESHEET_ID = "scrollbarStyleSheet";
+
+function initScrollBarStyleSheet() {
+  let style = document.createElement("style");
+  style.setAttribute("type", "text/css");
+  style.setAttribute("id", SCROLLBAR_STYLESHEET_ID);
+  document.querySelector("head").appendChild(style);
+}
+
+function setScrollbarStyles(scrollBarWidth, mobileScrollBarMarginWidth) {
+  let styleSheet = document.getElementById(SCROLLBAR_STYLESHEET_ID);
+  styleSheet.innerHTML = `
+    .program_events__children__editor::-webkit-scrollbar {
+      width: ${scrollBarWidth}px;
+    }
+
+    @media(min-resolution: 200dpi) {
+        .program__element {
+            width: calc(100% - ${mobileScrollBarMarginWidth+1}rem);
+            margin-right: ${mobileScrollBarMarginWidth}rem;
+        }
+    }
+  `;
+}
+
+function removeScrollbarStyles() {
+  let styleSheet = document.getElementById(SCROLLBAR_STYLESHEET_ID);
+  styleSheet.innerHTML = ``;
+}
+
 
 export { inst, newMainEvent }
