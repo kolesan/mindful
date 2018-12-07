@@ -1,4 +1,3 @@
-import { formatTime, parseTime } from "../../utils/TimeUtils";
 import { fgong } from "../../EventCallbacks";
 import { Tools, ToolNames } from "../tools/Tools";
 
@@ -15,7 +14,7 @@ function viewToProgram(viewChildren) {
         break;
       case ToolNames.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;
-        let duration = parseTime(viewElement.querySelector("[name=eventDurationInput").value);
+        let duration = viewElement.querySelector("[name=eventDurationInput").value;
         Object.assign(programElement, {name, duration, callback: fgong});
         break;
     }
@@ -32,7 +31,7 @@ function programToView(parent, afterToolCreationHook) {
     let tool = Tools.get(programElement.element);
     switch(tool.name) {
       case ToolNames.event:
-        viewElement = tool.create(programElement.name, formatTime(programElement.duration));
+        viewElement = tool.create(programElement.name, programElement.duration);
         break;
       case ToolNames.loop:
         viewElement = tool.create(programElement.iterations);

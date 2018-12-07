@@ -40,9 +40,7 @@ function nameInputCmp(name = `TimerEvent`) {
 }
 
 function durationInputCmp(duration = `00:00:00`) {
-  let input = createComponent("input", "text_input peeh__duration_input");
-  input.setAttribute("type", "time");
-  input.setAttribute("step", "1000");
+  let input = createComponent("duration-input", "text_input peeh__duration_input");
   input.setAttribute("name", "eventDurationInput");
   input.value = duration;
   input.addEventListener("mousedown", event => event.stopPropagation());

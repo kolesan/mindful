@@ -4,7 +4,6 @@ import { makeDropZone } from "../dragndrop/DropZone";
 import { createComponent, iconCmp, removeAllChildNodes, removeComponent } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
-import { formatTime, parseTime } from "../../utils/TimeUtils";
 import { sgong } from "../../EventCallbacks";
 import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
@@ -39,7 +38,7 @@ function inst(containerCmp) {
     },
     load(mainEvent) {
       mainEventNameInput.value = mainEvent.name;
-      mainEventDurationCmp.value = formatTime(mainEvent.duration);
+      mainEventDurationCmp.value = mainEvent.duration;
 
       markValid(mainEventNameInput);
 
@@ -54,9 +53,11 @@ function inst(containerCmp) {
       setScrollbarWidth();
     },
     save() {
+      console.log(mainEventDurationCmp);
+      console.log(mainEventDurationCmp.value);
       return {
         name: mainEventNameInput.value,
-        duration: parseTime(mainEventDurationCmp.value),
+        duration: mainEventDurationCmp.value,
         callback: sgong,
         children: ModelViewConverter.viewToProgram(childEventsEditorCmp.children)
       };
