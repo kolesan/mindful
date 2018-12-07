@@ -48,3 +48,10 @@ export function setIcon(cmp, iconClasses) {
   let oldIcon = cmp.querySelector("i");
   cmp.replaceChild(newIcon, oldIcon);
 }
+
+export function focusOnTouch(input) {
+  input.addEventListener("touchstart", event => {
+    event.stopPropagation();
+    event.target.focus();
+  });
+}

@@ -1,4 +1,4 @@
-import { createComponent, iconCmp } from "../../utils/HtmlUtils";
+import { createComponent, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";
@@ -28,6 +28,8 @@ function nameInputCmp(name = `TimerEvent`) {
   input.value = name;
   input.addEventListener("mousedown", event => event.stopPropagation());
 
+  focusOnTouch(input);
+
   InputValidator.inst(input)
     .bindValidation(alphanumericValidation)
     .onFail(markInvalid)
@@ -44,6 +46,9 @@ function durationInputCmp(duration = `00:00:00`) {
   input.setAttribute("name", "eventDurationInput");
   input.value = duration;
   input.addEventListener("mousedown", event => event.stopPropagation());
+
+  focusOnTouch(input);
+
   return input;
 }
 

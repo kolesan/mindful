@@ -1,4 +1,4 @@
-import {createComponent, iconCmp} from "../../utils/HtmlUtils";
+import { createComponent, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
 
 const LOOP_ICON = "fas fa-undo-alt";
@@ -23,6 +23,8 @@ function loopIterationsInputCmp(iterations = 2) {
   input.setAttribute("name", "iterationsInput");
   input.value = iterations;
   input.addEventListener("mousedown", event => event.stopPropagation());
+
+  focusOnTouch(input);
 
   let label = createComponent("label", "", "x");
   label.appendChild(input);
