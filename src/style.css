@@ -5,7 +5,6 @@ html {
     --font-family: Share Tech Mono, serif;
     --font-color: rgba(255, 255, 255, 0.85);
     --font-size: 2rem;
-
 }
 *, *::before, *::after {
     box-sizing: inherit;
@@ -24,6 +23,8 @@ body {
     align-items: center;
 
     background-color: #242626;
+
+    overflow: hidden;
 }
 
 .main_screen {
