@@ -173,11 +173,20 @@ function inst(containerCmp) {
   function makeElementDraggable(elem) {
     makeDraggable(elem)
       .onDragStart((dragged, element) => {
+        //Shadow dom values are not cloned with cloneNode() call for some reason
+        copyDurationInputValue(element, dragged.dragImage);
         dragged.data.put("element", element);
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
       .allowTouch();
+  }
+
+  function copyDurationInputValue(from, to) {
+    durationInputOf(to).value = durationInputOf(from).value;
+  }
+  function durationInputOf(cmp) {
+    return cmp.querySelector("duration-input");
   }
 
   function showPlaceholderInsteadOf(elem) {
