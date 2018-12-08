@@ -13,7 +13,7 @@ function inst(msg = "Error") {
       // fade(3000, 220, () => removeComponent(errorMsg));
     },
     showAt(x, y, w) {
-      document.querySelector("body").appendChild(errorMsg);
+      document.body.appendChild(errorMsg);
       errorMsg.style.position = "absolute";
       errorMsg.style.left = px(x);
       errorMsg.style.top = px(y);

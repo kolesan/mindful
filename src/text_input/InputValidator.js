@@ -76,7 +76,7 @@ function inst(input) {
   }
 
   function appendContainer() {
-    document.querySelector("body").appendChild(errorContainer);
+    document.body.appendChild(errorContainer);
   }
 
   function positionErrorContainer() {

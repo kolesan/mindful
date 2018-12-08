@@ -24,7 +24,7 @@ function initDevTools() {
   panel.appendChild(clearStorageBtn);
   panel.appendChild(toggleLoggingBtn);
   panel.appendChild(toggleTracingBtn);
-  document.querySelector("body").appendChild(panel)
+  document.body.appendChild(panel)
 }
 
 function loadTestProgramsToStorage() {

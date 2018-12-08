@@ -179,7 +179,7 @@ function makeDragImage(cmp, x, y) {
     img = newImg;
     img.style.position = "absolute";
     img.style.margin = "0";
-    document.querySelector("body").appendChild(img);
+    document.body.appendChild(img);
   }
 
   function center(elem) {
