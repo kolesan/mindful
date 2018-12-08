@@ -66,7 +66,7 @@ function initSliderStyleSheet(val) {
   style.setAttribute("type", "text/css");
   style.setAttribute("id", SLIDER_STYLESHEET_ID);
   setSliderStyles(style, val);
-  document.querySelector("head").appendChild(style);
+  document.head.appendChild(style);
 }
 
 function setSliderStyles(styleSheet, val) {

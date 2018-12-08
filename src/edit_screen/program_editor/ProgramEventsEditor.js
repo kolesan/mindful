@@ -217,7 +217,7 @@ function initScrollBarStyleSheet() {
   let style = document.createElement("style");
   style.setAttribute("type", "text/css");
   style.setAttribute("id", SCROLLBAR_STYLESHEET_ID);
-  document.querySelector("head").appendChild(style);
+  document.head.appendChild(style);
 }
 
 function setScrollbarStyles(scrollBarWidth, mobileScrollBarMarginWidth) {
