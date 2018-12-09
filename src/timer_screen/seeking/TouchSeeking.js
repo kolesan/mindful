@@ -23,6 +23,6 @@ function widthPercentage(event) {
   return Seeking.widthPercentage(cmpRect.width, event.touches[0].clientX - cmpRect.left);
 }
 
-eventBus.globalInstance.bindListener(TOUCH_START_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onTouchStart));
-eventBus.globalInstance.bindListener(TOUCH_MOVE_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onTouchMove));
-eventBus.globalInstance.bindListener(TOUCH_END_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onTouchEnd));
+eventBus.globalInstance.bindListener(TOUCH_START_ON_SEEKING_INDICATOR, onTouchStart);
+eventBus.globalInstance.bindListener(TOUCH_MOVE_ON_SEEKING_INDICATOR, onTouchMove);
+eventBus.globalInstance.bindListener(TOUCH_END_ON_SEEKING_INDICATOR, onTouchEnd);

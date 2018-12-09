@@ -14,18 +14,18 @@ let mouseOut = false;
 let seekingIndicator;
 let currentSeekingIndicatorLevel;
 
-window.addEventListener("mouseup", Seeking.ifNotLocked(function() {
+window.addEventListener("mouseup", function() {
   if (seeking && mouseOut) {
     seeking = false;
     seeker.endSeeking(seekingIndicator);
   }
-}));
-window.addEventListener("mousemove", Seeking.ifNotLocked(function(event) {
+});
+window.addEventListener("mousemove", function(event) {
   if (seeking && mouseOut) {
     let rect = seekingIndicator.getBoundingClientRect();
     seeker.seekTimer(currentSeekingIndicatorLevel, Seeking.widthPercentage(rect.width, event.clientX - rect.left));
   }
-}));
+});
 
 function onMouseOut(level, event) {
   if (level == currentSeekingIndicatorLevel) {
@@ -73,7 +73,7 @@ function widthPercentage(event) {
   return Seeking.widthPercentage(event.target.clientWidth, event.offsetX);
 }
 
-eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onMouseMove));
-eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onMouseDown));
-eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onMouseUp));
-eventBus.globalInstance.bindListener(MOUSE_OUT_ON_SEEKING_INDICATOR, Seeking.ifNotLocked(onMouseOut));
+eventBus.globalInstance.bindListener(MOUSE_MOVE_ON_SEEKING_INDICATOR, onMouseMove);
+eventBus.globalInstance.bindListener(MOUSE_DOWN_ON_SEEKING_INDICATOR, onMouseDown);
+eventBus.globalInstance.bindListener(MOUSE_UP_ON_SEEKING_INDICATOR, onMouseUp);
+eventBus.globalInstance.bindListener(MOUSE_OUT_ON_SEEKING_INDICATOR, onMouseOut);

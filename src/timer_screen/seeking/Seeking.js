@@ -1,6 +1,4 @@
-import * as log from '../../utils/Logging';
 import { minmax } from '../../utils/Utils';
-import { seekingLocked } from '../TimerDisplayControls';
 import { currentTimer } from '../TimerScreen';
 import { TimerStates } from '../Timer';
 
@@ -14,14 +12,6 @@ function markIndicatorInactive(indicator) {
 
 function widthPercentage(width, x) {
   return minmax(0, 100)((x / width) * 100);
-}
-
-function ifNotLocked(fn) {
-  return function(...args) {
-    if (!seekingLocked) {
-      fn(...args);
-    }
-  }
 }
 
 function inst() {
@@ -54,4 +44,4 @@ function inst() {
     return timerStateBeforePause == TimerStates.running;
   }
 }
-export { inst, widthPercentage, ifNotLocked };
+export { inst, widthPercentage };
