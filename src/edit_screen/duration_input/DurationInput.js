@@ -55,7 +55,7 @@ function numberInput(max) {
     } else if (v > max) {
       input.value = max;
     } else {
-      //To remove trailing zeroes, etc.
+      //To remove leading zeroes
       input.value = v;
     }
   });
