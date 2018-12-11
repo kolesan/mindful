@@ -46,5 +46,5 @@ export function last(arr) {
 }
 
 export function noSpaces(s) {
-  return s.replace(" ", "");
+  return s.replace(/\s/g, "");
 }

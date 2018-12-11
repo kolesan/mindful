@@ -100,14 +100,25 @@ function save(oldId) {
   programTitles = loadProgramTitles();
 }
 
-function newProgram() {
+function newProgram(programTitles) {
   return {
     id: null,
-    title: "",
+    title: generateNewProgramTitle(programTitles),
     icon: "fas fa-heartbeat",
     description: "",
     mainEvent: newMainEvent()
   };
+}
+
+function generateNewProgramTitle(programTitles) {
+  return programTitles
+    .filter(title => /^New Program.*/.test(title))
+    .reduce((a, b) => a != b ? a : appendCounter(a), "New Program");
+
+  function appendCounter(s) {
+    let counter = Number(s.charAt(s.length - 1)) || 1;
+    return `New Program ${counter + 1}`;
+  }
 }
 
 function load(program) {
@@ -133,8 +144,8 @@ function load(program) {
 
 function onShow(program) {
   programEventsEditor.init();
-  load(program || newProgram());
   programTitles = loadProgramTitles();
+  load(program || newProgram(programTitles));
   markValid(programTitleInput);
 }
 
