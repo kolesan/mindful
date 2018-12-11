@@ -103,7 +103,7 @@ function save(oldId) {
 function newProgram() {
   return {
     id: null,
-    title: "New Program",
+    title: "",
     icon: "fas fa-heartbeat",
     description: "",
     mainEvent: newMainEvent()

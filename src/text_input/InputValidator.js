@@ -61,7 +61,7 @@ function inst(input) {
   });
 
   function showContainer() {
-    if (!showingContainer) {
+    if (!showingContainer && errorContainer.childElementCount > 0) {
       appendContainer();
       fade(errorContainer, 0, 1, 0, 150, "ease-out");
       showingContainer = true;
