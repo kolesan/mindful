@@ -1,7 +1,7 @@
 import { createComponent } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 
-class DurationInput extends HTMLElement {
+export class DurationInput extends HTMLElement {
   constructor() {
     super();
 
@@ -78,5 +78,3 @@ function style() {
     }`
   )
 }
-
-customElements.define('duration-input', DurationInput);

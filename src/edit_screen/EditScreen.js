@@ -1,7 +1,5 @@
 import './edit_screen.css';
 
-import './duration_input/DurationInput';
-
 import { setIcon } from '../utils/HtmlUtils';
 import * as Storage from '../Storage';
 import * as EventBus from '../utils/EventBus';

@@ -1,5 +1,7 @@
 import './style.css';
 
+import './custom_elements/CustomElementsRegistry';
+
 import * as Drawer from './drawer/DrawerMenu';
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
