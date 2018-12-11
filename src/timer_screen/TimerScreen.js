@@ -2,6 +2,7 @@ import './timer_screen.css';
 
 import './seeking/TouchSeeking';
 import './seeking/MouseSeeking';
+import './TimerControls';
 
 import * as Routing from '../Routing';
 import * as TimerModule from './TimerToDisplayBinder';

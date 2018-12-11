@@ -1,7 +1,6 @@
 import './timer_controls.css';
 
 import { toggleMuted, setVolume } from './volume/Volume';
-import * as log from '../utils/Logging';
 import * as eventBus from '../utils/EventBus';
 
 const Events = {
