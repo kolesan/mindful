@@ -129,7 +129,7 @@ let Timer = {
     this.fire(this.Events.SEEK, time, calculateStackDiff(stackBeforeSeeking, this.eventStack.snapshot()));
   },
   pause: function pauseTimer() {
-    if (this.paused) return;
+    if (!this.running) return;
 
     this.pauseTime = Date.now();
     this.msLeftoversOnPause = 1000 - (this.pauseTime - this.startTime) % 1000;
