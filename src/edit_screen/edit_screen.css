@@ -80,6 +80,8 @@
     outline: none;
 
     height: 100%;
+
+    transition: border ease-in-out 200ms;
 }
 .text_input:hover {
 }
