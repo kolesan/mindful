@@ -63,14 +63,19 @@ function inst(input) {
   function showContainer() {
     if (!showingContainer && errorContainer.childElementCount > 0) {
       appendContainer();
-      fade(errorContainer, 0, 1, 0, 150, "ease-out");
+      fade({cmp: errorContainer, from: 0, to: 1, duration: 150, easing: "ease-out"});
       showingContainer = true;
     }
   }
 
   function hideContainer() {
     if (showingContainer) {
-      fade(errorContainer, 1, 0, 0, 150, "ease-in", () => removeComponent(errorContainer));
+      fade({
+        cmp: errorContainer,
+        from: 1, to: 0,
+        duration: 150, easing: "ease-in",
+        onFinish: cmp => removeComponent(cmp)
+      });
       showingContainer = false;
     }
   }

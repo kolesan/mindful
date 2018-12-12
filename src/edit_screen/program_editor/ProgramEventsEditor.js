@@ -105,7 +105,7 @@ function inst(containerCmp) {
   function hideRemovalMark(draggable) {
     let overlay = draggable.dragImage.querySelector(".program__element__removal_overlay");
     if (overlay) {
-      fade(overlay, 1, 0, 0, 150, "ease-in-out", cmp => removeComponent(cmp));
+      fade({cmp: overlay, from: 1, to: 0, duration: 150, onFinish: cmp => removeComponent(cmp)});
     }
     draggable.dragImage.classList.remove("program__element__removal_mark");
   }
@@ -113,7 +113,7 @@ function inst(containerCmp) {
     let notATool = !draggable.data.get("tool");
     if (notATool) {
       let overlay = createElement("div", "program__element__removal_overlay", "Remove");
-      fade(overlay, 0, 1, 0, 150, "ease-in-out");
+      fade({cmp: overlay, from: 0, to: 1, duration: 150});
       draggable.dragImage.appendChild(overlay);
     }
     draggable.dragImage.classList.add("program__element__removal_mark");

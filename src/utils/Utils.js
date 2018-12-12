@@ -26,7 +26,7 @@ export function px(v) {
 
 export function noop() {}
 
-export function fade(cmp, from, to, delay, duration, easing, onFinish = noop) {
+export function fade({cmp, from, to, delay = 0, duration, easing = "ease-in-out", onFinish = noop}) {
   cmp.style.opacity = from;
   let animation = cmp.animate(
     [
