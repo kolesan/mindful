@@ -53,8 +53,6 @@ function inst(containerCmp) {
       setScrollbarWidth();
     },
     save() {
-      console.log(mainEventDurationCmp);
-      console.log(mainEventDurationCmp.value);
       return {
         name: mainEventNameInput.value,
         duration: mainEventDurationCmp.value,
@@ -83,7 +81,7 @@ function inst(containerCmp) {
         if (!showingPlaceholder) {
           showPlaceholder(draggable, childEventsEditorCmp);
         }
-        console.log({placeholder});
+        hideRemovalMark(draggable);
         setScrollbarWidth();
       })
       .onDragOver(draggable => {
@@ -91,10 +89,11 @@ function inst(containerCmp) {
       })
       .onDragLeave(draggable => {
         removePlaceholder();
+        setScrollbarWidth();
+        showRemovalMark(draggable);
         if (childEventsEditorCmp.childElementCount == 0) {
           showDragHereTxt();
         }
-        setScrollbarWidth();
       })
       .onDrop(draggable => {
         handleDrop(draggable);
@@ -102,7 +101,18 @@ function inst(containerCmp) {
       })
       .build();
   }
-
+  function hideRemovalMark(draggable) {
+    removeComponent(draggable.dragImage.querySelector(".program__element__removal_overlay"));
+    draggable.dragImage.classList.remove("program__element__removal_mark");
+  }
+  function showRemovalMark(draggable) {
+    let notATool = !draggable.data.get("tool");
+    if (notATool) {
+      let overlay = createElement("div", "program__element__removal_overlay", "Remove");
+      draggable.dragImage.appendChild(overlay);
+    }
+    draggable.dragImage.classList.add("program__element__removal_mark");
+  }
   function createDragHereTextCmp() {
     let wrapper = createElement("div", "program__drag_here_txt_wrapper");
     wrapper.appendChild(createElement("div", "program__drag_here_txt", "Drag items here to construct program"));
@@ -137,7 +147,6 @@ function inst(containerCmp) {
   function removePlaceholder() {
     if (showingPlaceholder) {
       removeComponent(placeholder);
-      // placeholder = null;
       showingPlaceholder = false;
     }
   }
@@ -165,7 +174,6 @@ function inst(containerCmp) {
 
   function addTool(toolName) {
     let cmp = Tools.create(toolName);
-    log({cmp});
     makeCmpDraggable(cmp);
     placeholder.parentNode.insertBefore(cmp.element, placeholder);
   }
