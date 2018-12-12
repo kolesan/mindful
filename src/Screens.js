@@ -14,9 +14,6 @@ let screens = Object.freeze({
 
 function wrap(screen) {
   return Object.freeze({
-    init(...args) {
-      screen.onShow(...args);
-    },
     show(...args) {
       hide(currentScreen);
       currentScreen = screen;
@@ -34,8 +31,8 @@ function hide(screen) {
   }
 }
 function show(screen, ...args) {
-  screen.onShow(...args);
   screen.cmp.classList.remove("hidden");
+  screen.onShow(...args);
 }
 
 export { screens };
