@@ -55,3 +55,9 @@ export function focusOnTouch(input) {
     event.target.focus();
   });
 }
+
+export function replaceWithClone(node) {
+  let clone = node.cloneNode(true);
+  node.parentNode.replaceChild(clone, node);
+  return clone;
+}
