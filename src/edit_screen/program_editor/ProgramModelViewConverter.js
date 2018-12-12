@@ -27,18 +27,10 @@ function viewToProgram(viewChildren) {
 function programToView(parent, afterToolCreationHook) {
   let elements = [];
   parent.children.forEach(programElement => {
-    let viewElement = null;
-    let tool = Tools.get(programElement.element);
-    switch(tool.name) {
-      case ToolNames.event:
-        viewElement = tool.create(programElement.name, programElement.duration);
-        break;
-      case ToolNames.loop:
-        viewElement = tool.create(programElement.iterations);
-        break;
-    }
+    let toolCmp = Tools.create(programElement.element, programElement);
+    let viewElement = toolCmp.element;
     programToView(programElement, afterToolCreationHook).forEach(it => viewElement.appendChild(it));
-    afterToolCreationHook(viewElement);
+    afterToolCreationHook(toolCmp);
     elements.push(viewElement)
   });
   return elements;

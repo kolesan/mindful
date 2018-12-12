@@ -1,5 +1,5 @@
 import * as log from '../utils/Logging';
-import { createComponent } from '../utils/HtmlUtils';
+import { createElement } from '../utils/HtmlUtils';
 import * as Component from '../utils/Component';
 import * as eventBus from '../utils/EventBus';
 
@@ -12,7 +12,7 @@ const MOUSE_DOWN_ON_SEEKING_INDICATOR = "MOUSE_DOWN_ON_SEEKING_INDICATOR";
 const MOUSE_UP_ON_SEEKING_INDICATOR = "MOUSE_UP_ON_SEEKING_INDICATOR";
 
 function create(level) {
-  let cmp = createComponent("div", [`timer__bar__seeking_indicator`]);
+  let cmp = createElement("div", [`timer__bar__seeking_indicator`]);
 
   cmp.addEventListener("touchstart", event => {
     event.preventDefault();

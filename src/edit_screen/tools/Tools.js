@@ -7,12 +7,18 @@ const ToolNames = {
   event: "event"
 };
 
-let Tools = Map.inst()
-  .put(ToolNames.event, newTool(ToolNames.event, Event.create))
-  .put(ToolNames.loop, newTool(ToolNames.loop, Loop.create));
+let ToolMap = Map.inst()
+  .put(ToolNames.event, newTool(ToolNames.event, Event))
+  .put(ToolNames.loop, newTool(ToolNames.loop, Loop));
 
-function newTool(name, createFn) {
-  return {name, create: createFn};
+let Tools = Object.freeze({
+  create(name, props) {
+    return ToolMap.get(name).create(props);
+  }
+});
+
+function newTool(name, tool) {
+  return {name, create: tool.create};
 }
 
 export { ToolNames, Tools }

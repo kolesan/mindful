@@ -1,6 +1,6 @@
 import './input_validator.css';
 
-import {createComponent, removeComponent} from "../utils/HtmlUtils";
+import {createElement, removeComponent} from "../utils/HtmlUtils";
 import * as ErrorMessage from "../utils/ErrorMessage";
 import { fade, noop, px } from "../utils/Utils";
 import * as log from "../utils/Logging";
@@ -8,7 +8,7 @@ import * as log from "../utils/Logging";
 function inst(input) {
   let validations = [];
 
-  let errorContainer = createComponent("div", "text_input__error_container");
+  let errorContainer = createElement("div", "text_input__error_container");
   let showingContainer = false;
 
   let onFailCb = noop;

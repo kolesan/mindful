@@ -1,4 +1,4 @@
-import { createComponent, removeAllChildNodes } from "../../utils/HtmlUtils";
+import { createElement, removeAllChildNodes } from "../../utils/HtmlUtils";
 import * as eventBus from "../../utils/EventBus";
 import { NEW_PROGRAM_SAVED_EVENT } from "../../edit_screen/EditScreen";
 import * as Routing from "../../Routing";
@@ -28,8 +28,8 @@ function deselectAllSelectOne(item) {
 }
 
 function addButton(program) {
-  let btn = createComponent("button", "drawer_menu__item");
-  btn.appendChild(createComponent("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
+  let btn = createElement("button", "drawer_menu__item");
+  btn.appendChild(createElement("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
   btn.appendChild(document.createTextNode(program.title));
   btn.addEventListener("click", () => {
     Drawer.toggleDrawerState();

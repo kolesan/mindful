@@ -1,5 +1,5 @@
 import './dev_tools.css';
-import { createComponent } from '../utils/HtmlUtils';
+import { createElement } from '../utils/HtmlUtils';
 import { programs } from './TestData';
 import * as TreeUtils from '../utils/TreeUtils';
 import { toggleLogging, toggleTracing } from '../utils/Logging';
@@ -8,16 +8,16 @@ import { callbackDictionary } from '../EventCallbacks';
 initDevTools();
 
 function initDevTools() {
-  let panel = createComponent("div", ["dev_tools_panel"]);
-  let loadStorageBtn = createComponent("button", ["dtbtn"], "Load storage");
+  let panel = createElement("div", ["dev_tools_panel"]);
+  let loadStorageBtn = createElement("button", ["dtbtn"], "Load storage");
   loadStorageBtn.addEventListener("click", loadTestProgramsToStorage);
-  let printStorageBtn = createComponent("button", ["dtbtn"], "Print storage");
+  let printStorageBtn = createElement("button", ["dtbtn"], "Print storage");
   printStorageBtn.addEventListener("click", printStoredPrograms);
-  let clearStorageBtn = createComponent("button", ["dtbtn"], "Clear storage");
+  let clearStorageBtn = createElement("button", ["dtbtn"], "Clear storage");
   clearStorageBtn.addEventListener("click", clearTestProgramsFromStorage);
-  let toggleLoggingBtn = createComponent("button", ["dtbtn"], "Toggle logging");
+  let toggleLoggingBtn = createElement("button", ["dtbtn"], "Toggle logging");
   toggleLoggingBtn.addEventListener("click", toggleLogging);
-  let toggleTracingBtn = createComponent("button", ["dtbtn"], "Toggle tracing");
+  let toggleTracingBtn = createElement("button", ["dtbtn"], "Toggle tracing");
   toggleTracingBtn.addEventListener("click", toggleTracing);
   panel.appendChild(loadStorageBtn);
   panel.appendChild(printStorageBtn);

@@ -1,9 +1,9 @@
-import { createComponent } from "../utils/HtmlUtils";
+import { createElement } from "../utils/HtmlUtils";
 import { px } from "../utils/Utils";
 
 export function markPoint({x, y, d = 5, color = "red", opacity = 1}) {
   console.log("Marking point", {x, y, d, color});
-  let point = createComponent("div", "debug_point");
+  let point = createElement("div", "debug_point");
   point.style.top = px(y);
   point.style.left = px(x);
   point.style.width = px(d);

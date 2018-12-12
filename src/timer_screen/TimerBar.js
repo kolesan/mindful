@@ -1,13 +1,13 @@
-import { createComponent } from '../utils/HtmlUtils';
+import { createElement } from '../utils/HtmlUtils';
 import { formatTime } from '../utils/TimeUtils';
 import * as SeekingIndicator from './TimerBarSeekingIndicator';
 import * as Component from '../utils/Component';
 
 function create(level, event) {
-  let time = createComponent("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));
-  let bar = createComponent("div", [`timer__bar`, `timer__bar_l${level}`]);
-  let barName = createComponent("span", [`timer_bar__name`], event.name);
-  let duration = createComponent("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
+  let time = createElement("div", [`timer__current_time`, `timer__current_time_l${level}`], formatTime(0));
+  let bar = createElement("div", [`timer__bar`, `timer__bar_l${level}`]);
+  let barName = createElement("span", [`timer_bar__name`], event.name);
+  let duration = createElement("div", [`timer__duration`, `timer_duration_l${level}`], formatTime(event.duration));
 
   bar.style.backgroundSize = "0% 100%";
   bar.appendChild(barName);

@@ -1,8 +1,8 @@
-import { createComponent, removeComponent, appendAsFirstChild } from "./HtmlUtils";
+import { createElement, removeComponent, appendAsFirstChild } from "./HtmlUtils";
 import { px } from "./Utils";
 
 function inst(msg = "Error") {
-  let errorMsg = createComponent("div", "error_msg", msg);
+  let errorMsg = createElement("div", "error_msg", msg);
   errorMsg.addEventListener("click", event => {
     // fade(0, 150, () => removeComponent(errorMsg));
   });

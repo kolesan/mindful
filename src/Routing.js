@@ -27,7 +27,7 @@ function loadProgram(id) {
 function editProgram(id) {
   ifProgramExistsGoTo(id, screens.edit);
 }
-function toNotFound(msg) {
+function notFound(msg) {
   screens.notFound.show(msg);
 }
 
@@ -48,7 +48,7 @@ function route(path) {
   let matchingRoute = findRoute(path);
 
   if (!matchingRoute) {
-    toNotFound(`Sorry but I do not know where ${inRed(path)} lies`);
+    notFound(`Sorry but I do not know where ${inRed(path)} lies`);
     return;
   }
 

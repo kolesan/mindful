@@ -1,6 +1,6 @@
-import { createComponent } from "../utils/HtmlUtils";
+import { createElement } from "../utils/HtmlUtils";
 
-let notFoundScreen = createComponent("section", "not_found_screen hidden", `
+let notFoundScreen = createElement("section", "not_found_screen hidden", `
     <section class="title section">
       <button name="menuBtn" class="icon-button" title="Menu"><i class="fas fa-bars"></i></button>
       <span class="">¯\\_(ツ)_/¯</span>

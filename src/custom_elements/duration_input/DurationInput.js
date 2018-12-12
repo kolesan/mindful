@@ -1,4 +1,4 @@
-import { createComponent } from "../../utils/HtmlUtils";
+import { createElement } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 
 export class DurationInput extends HTMLElement {
@@ -40,7 +40,7 @@ function semicolon() {
   return document.createTextNode(":");
 }
 function numberInput(max) {
-  let input = createComponent("input");
+  let input = createElement("input");
   input.setAttribute("type", "number");
   input.setAttribute("min", 0);
   input.setAttribute("max", max);
@@ -63,7 +63,7 @@ function numberInput(max) {
   return input;
 }
 function style() {
-  return createComponent("style", "", `
+  return createElement("style", "", `
     input {
         font-family: var(--font-family);
         font-size: var(--font-size);

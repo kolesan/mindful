@@ -1,7 +1,7 @@
 function isArray(o) {
   return Array.prototype.isPrototypeOf(o);
 }
-export function createComponent(tag, classes, content) {
+export function createElement(tag, classes, content) {
   let elem = document.createElement(tag);
 
   if (classes) {
@@ -40,7 +40,7 @@ export function removeAllChildNodes(parent, predicate = ()=>true) {
 }
 
 export function iconCmp(classes) {
-  return createComponent("i", classes);
+  return createElement("i", classes);
 }
 
 export function setIcon(cmp, iconClasses) {

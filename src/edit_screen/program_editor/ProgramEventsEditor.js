@@ -1,7 +1,7 @@
 import './program_events_editor.css';
 
 import { makeDropZone } from "../dragndrop/DropZone";
-import { createComponent, iconCmp, removeAllChildNodes, removeComponent } from "../../utils/HtmlUtils";
+import { createElement, iconCmp, removeAllChildNodes, removeComponent } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
 import { sgong } from "../../EventCallbacks";
@@ -10,6 +10,7 @@ import * as ModelViewConverter from "./ProgramModelViewConverter";
 import { Tools } from "../tools/Tools";
 import { px } from "../../utils/Utils";
 import * as TreeUtils from "../../utils/TreeUtils";
+import { log } from "../../utils/Logging";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -43,7 +44,7 @@ function inst(containerCmp) {
       markValid(mainEventNameInput);
 
       removeAllChildNodes(childEventsEditorCmp);
-      let viewElements = ModelViewConverter.programToView(mainEvent, makeElementDraggable);
+      let viewElements = ModelViewConverter.programToView(mainEvent, makeCmpDraggable);
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
         hideDragHereTxt();
@@ -104,13 +105,13 @@ function inst(containerCmp) {
   }
 
   function createDragHereTextCmp() {
-    let wrapper = createComponent("div", "program__drag_here_txt_wrapper");
-    wrapper.appendChild(createComponent("div", "program__drag_here_txt", "Drag items here to construct program"));
+    let wrapper = createElement("div", "program__drag_here_txt_wrapper");
+    wrapper.appendChild(createElement("div", "program__drag_here_txt", "Drag items here to construct program"));
     return wrapper;
   }
 
   function createPlaceholder() {
-    return createComponent("div", `program__element program__element__placeholder`);
+    return createElement("div", `program__element program__element__placeholder`);
   }
 
   function setPlaceholderHeight(elem) {
@@ -164,29 +165,22 @@ function inst(containerCmp) {
     }
   }
 
-  function addTool(tool) {
-    let elem = Tools.get(tool).create();
-    makeElementDraggable(elem);
-    placeholder.parentNode.insertBefore(elem, placeholder);
+  function addTool(toolName) {
+    let cmp = Tools.create(toolName);
+    log({cmp});
+    makeCmpDraggable(cmp);
+    placeholder.parentNode.insertBefore(cmp.element, placeholder);
   }
 
-  function makeElementDraggable(elem) {
+  function makeCmpDraggable({element: elem, onDrag}) {
     makeDraggable(elem)
       .onDragStart((dragged, element) => {
-        //Shadow dom values are not cloned with cloneNode() call for some reason
-        copyDurationInputValue(element, dragged.dragImage);
+        onDrag && onDrag(dragged);
         dragged.data.put("element", element);
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
       .allowTouch();
-  }
-
-  function copyDurationInputValue(from, to) {
-    durationInputOf(to).value = durationInputOf(from).value;
-  }
-  function durationInputOf(cmp) {
-    return cmp.querySelector("duration-input");
   }
 
   function showPlaceholderInsteadOf(elem) {

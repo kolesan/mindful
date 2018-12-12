@@ -1,19 +1,33 @@
-import { createComponent, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
+import { createElement, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";
+import * as Component from "../../utils/Component";
 
 const EVENT_ICON = "fas fa-bell";
 
-function create(name, duration) {
-  let event = createComponent("div", `program__element program__element__${ToolNames.event}`);
-  event.appendChild(eventHeadingCmp(name, duration));
-  event.dataset.element = ToolNames.event;
-  return event;
+function create({name, duration} = {}) {
+  let elem = createElement("div", `program__element program__element__${ToolNames.event}`);
+  elem.appendChild(eventHeadingCmp(name, duration));
+  elem.dataset.element = ToolNames.event;
+
+  return Component.create([elem], {
+    onDrag(dragged) {
+      //Shadow dom values are not cloned with cloneNode() call for some reason
+      copyDurationInputValue(elem, dragged.dragImage);
+    }
+  });
+}
+
+function copyDurationInputValue(from, to) {
+  durationInputOf(to).value = durationInputOf(from).value;
+}
+function durationInputOf(cmp) {
+  return cmp.querySelector("duration-input");
 }
 
 function eventHeadingCmp(name, duration) {
-  let heading = createComponent("div", "pee__heading");
+  let heading = createElement("div", "pee__heading");
   heading.appendChild(iconCmp(EVENT_ICON));
   heading.appendChild(nameInputCmp(name));
   heading.appendChild(durationInputCmp(duration));
@@ -21,7 +35,7 @@ function eventHeadingCmp(name, duration) {
 }
 
 function nameInputCmp(name = `TimerEvent`) {
-  let input = createComponent("input", "text_input peh__name_input");
+  let input = createElement("input", "text_input peh__name_input");
   input.setAttribute("type", "text");
   input.setAttribute("spellcheck", "false");
   input.setAttribute("name", "eventNameInput");
@@ -40,7 +54,7 @@ function nameInputCmp(name = `TimerEvent`) {
 }
 
 function durationInputCmp(duration = `00:00:00`) {
-  let input = createComponent("duration-input", "text_input peeh__duration_input");
+  let input = createElement("duration-input", "text_input peeh__duration_input");
   input.setAttribute("name", "eventDurationInput");
   input.value = duration;
   input.addEventListener("mousedown", event => event.stopPropagation());

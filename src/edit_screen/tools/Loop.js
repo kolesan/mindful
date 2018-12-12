@@ -1,24 +1,26 @@
-import { createComponent, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
+import { createElement, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
+import * as Component from "../../utils/Component";
 
 const LOOP_ICON = "fas fa-undo-alt";
 
-function create(iterations) {
-  let loop = createComponent("div", `program__element program__element__loop`);
-  loop.appendChild(loopHeadingCmp(iterations));
-  loop.dataset.element = ToolNames.loop;
-  return loop;
+function create({iterations} = {}) {
+  let elem = createElement("div", `program__element program__element__loop`);
+  elem.appendChild(loopHeadingCmp(iterations));
+  elem.dataset.element = ToolNames.loop;
+
+  return Component.create([elem]);
 }
 
 function loopHeadingCmp(iterations) {
-  let heading = createComponent("div", "pel__heading");
+  let heading = createElement("div", "pel__heading");
   heading.appendChild(iconCmp(LOOP_ICON));
   heading.appendChild(loopIterationsInputCmp(iterations));
   return heading;
 }
 
 function loopIterationsInputCmp(iterations = 2) {
-  let input = createComponent("input", "text_input peh__iterations_input");
+  let input = createElement("input", "text_input peh__iterations_input");
   input.setAttribute("type", "number");
   input.setAttribute("name", "iterationsInput");
   input.value = iterations;
@@ -26,7 +28,7 @@ function loopIterationsInputCmp(iterations = 2) {
 
   focusOnTouch(input);
 
-  let label = createComponent("label", "", "x");
+  let label = createElement("label", "", "x");
   label.appendChild(input);
   return label;
 }

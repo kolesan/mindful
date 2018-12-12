@@ -1,14 +1,17 @@
 import { removeComponent } from './HtmlUtils';
 
-function create(components, customPropertiesObj) {
-  return Object.assign(Object.create(Component), {components, ...customPropertiesObj});
+function create(elements, customPropertiesObj = {}) {
+  return Object.assign(Object.create(Component), {elements, ...customPropertiesObj});
 }
 let Component = {
   attach(container) {
-    this.components.forEach(it => container.appendChild(it));
+    this.elements.forEach(it => container.appendChild(it));
   },
   detach() {
-    this.components.forEach(it => removeComponent(it));
+    this.elements.forEach(it => removeComponent(it));
+  },
+  get element() {
+    return this.elements[0];
   }
 };
 
