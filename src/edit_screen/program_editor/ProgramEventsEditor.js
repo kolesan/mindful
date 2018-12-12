@@ -10,6 +10,7 @@ import * as ModelViewConverter from "./ProgramModelViewConverter";
 import { ToolNames, Tools } from "../tools/Tools";
 import * as TreeUtils from "../../utils/TreeUtils";
 import { log } from "../../utils/Logging";
+import { fade } from "../../utils/Utils";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -102,13 +103,17 @@ function inst(containerCmp) {
       .build();
   }
   function hideRemovalMark(draggable) {
-    removeComponent(draggable.dragImage.querySelector(".program__element__removal_overlay"));
+    let overlay = draggable.dragImage.querySelector(".program__element__removal_overlay");
+    if (overlay) {
+      fade(overlay, 1, 0, 0, 150, "ease-in-out", cmp => removeComponent(cmp));
+    }
     draggable.dragImage.classList.remove("program__element__removal_mark");
   }
   function showRemovalMark(draggable) {
     let notATool = !draggable.data.get("tool");
     if (notATool) {
       let overlay = createElement("div", "program__element__removal_overlay", "Remove");
+      fade(overlay, 0, 1, 0, 150, "ease-in-out");
       draggable.dragImage.appendChild(overlay);
     }
     draggable.dragImage.classList.add("program__element__removal_mark");

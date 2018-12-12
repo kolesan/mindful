@@ -37,7 +37,7 @@ export function fade(cmp, from, to, delay, duration, easing, onFinish = noop) {
   );
   animation.onfinish = () => {
     cmp.style.opacity = to;
-    onFinish();
+    onFinish(cmp);
   }
 }
 

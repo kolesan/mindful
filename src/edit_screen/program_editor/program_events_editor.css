@@ -140,6 +140,7 @@
 }
 .program__element__removal_mark {
     opacity: 0.9;
+    transition: opacity ease-in-out 150ms;
 }
 .program__element__removal_overlay {
     position: absolute;
