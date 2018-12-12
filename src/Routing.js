@@ -22,18 +22,34 @@ function newProgram() {
   screens.edit.show();
 }
 function loadProgram(id) {
-  screens.timer.show(Storage.loadProgram(id));
+  ifProgramExistsGoTo(id, screens.timer);
 }
 function editProgram(id) {
-  screens.edit.show(Storage.loadProgram(id));
+  ifProgramExistsGoTo(id, screens.edit);
+}
+function toNotFound(msg) {
+  screens.notFound.show(msg);
+}
+
+function ifProgramExistsGoTo(id, screen) {
+  let program = Storage.loadProgram(id);
+  if (program) {
+    screen.show(program);
+  } else {
+    screens.notFound.show(`Sorry but program ${inRed(id)} was not found`);
+  }
+}
+
+function inRed(s) {
+  return `<span style="background-color: rgb(219, 86, 96); border-radius: 3px;">'${s}'</span>`
 }
 
 function route(path) {
   let matchingRoute = findRoute(path);
 
   if (!matchingRoute) {
-    titleScreen();
-    throw new Error(`No route for '${path}' exists`);
+    toNotFound(`Sorry but I do not know where ${inRed(path)} lies`);
+    return;
   }
 
   let pathParams = extractParams(path, matchingRoute);
