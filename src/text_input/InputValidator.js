@@ -54,9 +54,6 @@ function inst(input) {
     triggerOn(eventName) {
       input.addEventListener(eventName, this.validate);
       return this;
-    },
-    hideErrors() {
-      hideContainer();
     }
   });
 

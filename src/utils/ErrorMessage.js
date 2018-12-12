@@ -1,5 +1,5 @@
 import { createElement, removeComponent, appendAsFirstChild } from "./HtmlUtils";
-import { px } from "./Utils";
+import { fade, px } from "./Utils";
 
 function inst(msg = "Error") {
   let errorMsg = createElement("div", "error_msg", msg);
@@ -22,7 +22,7 @@ function inst(msg = "Error") {
     },
     hide() {
       removeComponent(errorMsg);
-        // fade(0, 150, () => removeComponent(errorMsg));
+      // fade({cmp: errorMsg, from: 1, to: 0, duration: 150, onFinish: cmp => removeComponent(cmp)});
     }
   });
 }
