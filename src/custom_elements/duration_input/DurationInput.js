@@ -19,7 +19,7 @@ export class DurationInput extends HTMLElement {
   }
 
   set value(v) {
-    console.log("SETTING VALUE", v);
+    console.log("SETTING DURATION VALUE", v);
     let { h, m, s } = timestampToTimeObject(v);
     this.hInput.value = h;
     this.mInput.value = m;
@@ -27,7 +27,6 @@ export class DurationInput extends HTMLElement {
   }
 
   get value() {
-    console.log("GETTING VALUE");
     let h = this.hInput.value;
     let m = this.mInput.value;
     let s = this.sInput.value;

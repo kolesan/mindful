@@ -53,7 +53,7 @@ function nameInputCmp(name = `TimerEvent`) {
   return input;
 }
 
-function durationInputCmp(duration = `00:00:00`) {
+function durationInputCmp(duration = 0) {
   let input = createElement("duration-input", "text_input peeh__duration_input");
   input.setAttribute("name", "eventDurationInput");
   input.value = duration;
