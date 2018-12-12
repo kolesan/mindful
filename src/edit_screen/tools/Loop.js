@@ -13,7 +13,7 @@ function create({iterations} = {}) {
 }
 
 function loopHeadingCmp(iterations) {
-  let heading = createElement("div", "pel__heading");
+  let heading = createElement("div", "pe__heading pel__heading");
   heading.appendChild(iconCmp(LOOP_ICON));
   heading.appendChild(loopIterationsInputCmp(iterations));
   return heading;

@@ -27,7 +27,7 @@ function durationInputOf(cmp) {
 }
 
 function eventHeadingCmp(name, duration) {
-  let heading = createElement("div", "pee__heading");
+  let heading = createElement("div", "pe__heading pee__heading");
   heading.appendChild(iconCmp(EVENT_ICON));
   heading.appendChild(nameInputCmp(name));
   heading.appendChild(durationInputCmp(duration));

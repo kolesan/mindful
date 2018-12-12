@@ -7,8 +7,7 @@ import * as InputValidator from "../../text_input/InputValidator";
 import { sgong } from "../../EventCallbacks";
 import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
-import { Tools } from "../tools/Tools";
-import { px } from "../../utils/Utils";
+import { ToolNames, Tools } from "../tools/Tools";
 import * as TreeUtils from "../../utils/TreeUtils";
 import { log } from "../../utils/Logging";
 
@@ -82,9 +81,9 @@ function inst(containerCmp) {
       .onDragEnter(draggable => {
         hideDragHereTxt();
         if (!showingPlaceholder) {
-          setPlaceholderHeight(draggable.dragImage);
           showPlaceholder(draggable, childEventsEditorCmp);
         }
+        console.log({placeholder});
         setScrollbarWidth();
       })
       .onDragOver(draggable => {
@@ -111,11 +110,9 @@ function inst(containerCmp) {
   }
 
   function createPlaceholder() {
-    return createElement("div", `program__element program__element__placeholder`);
-  }
-
-  function setPlaceholderHeight(elem) {
-    placeholder.style.height = px(elem.getBoundingClientRect().height);
+    let clone = Tools.create(ToolNames.event).element;
+    clone.classList.add("program__element__placeholder");
+    return clone;
   }
 
   function showPlaceholder(draggable, parent) {
@@ -140,6 +137,7 @@ function inst(containerCmp) {
   function removePlaceholder() {
     if (showingPlaceholder) {
       removeComponent(placeholder);
+      // placeholder = null;
       showingPlaceholder = false;
     }
   }
@@ -175,6 +173,7 @@ function inst(containerCmp) {
   function makeCmpDraggable({element: elem, onDrag}) {
     makeDraggable(elem)
       .onDragStart((dragged, element) => {
+        leaveOnlyHeadingVisible(dragged.dragImage);
         onDrag && onDrag(dragged);
         dragged.data.put("element", element);
         showPlaceholderInsteadOf(element);
@@ -183,8 +182,15 @@ function inst(containerCmp) {
       .allowTouch();
   }
 
+  function leaveOnlyHeadingVisible(elem) {
+    Array.from(elem.children).forEach(child => {
+      if (!child.classList.contains("pe__heading")) {
+        child.style.display = "none";
+      }
+    })
+  }
+
   function showPlaceholderInsteadOf(elem) {
-    setPlaceholderHeight(elem);
     elem.parentNode.insertBefore(placeholder, elem);
     removeComponent(elem);
     showingPlaceholder = true;

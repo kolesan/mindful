@@ -1,5 +1,5 @@
 let logging = true;
-let tracing = true;
+let tracing = false;
 
 function log(...args) {
   if (logging) {

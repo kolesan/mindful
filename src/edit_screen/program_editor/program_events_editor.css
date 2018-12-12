@@ -94,10 +94,14 @@
 }
 
 .program__element__placeholder {
-    height: 3rem;
+    height: 4rem !important;
     border: 2px dashed gray;
     opacity: 1;
     background: transparent !important;
+}
+
+.program__element__placeholder > *{
+    visibility: hidden;
 }
 
 .program__element {
@@ -122,15 +126,13 @@
 .program__element:last-child {
     margin-bottom: 1rem;
 }
-.pel__heading {
+.pe__heading {
     height: 3rem;
     display: flex;
     align-items: center;
 }
+.pel__heading {
+}
 .pee__heading {
-    height: 3rem;
-
-    display: flex;
-    align-items: center;
     justify-content: space-between;
 }
