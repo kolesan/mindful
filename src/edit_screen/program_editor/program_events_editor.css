@@ -128,16 +128,34 @@
 .program__element:last-child {
     margin-bottom: 1rem;
 }
+.pe_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .pe__heading {
     height: 3rem;
+    display: grid;
+    grid-template-columns: 3rem 10fr 6rem;
+}
+.pel__heading {
     display: flex;
     align-items: center;
 }
-.pel__heading {
-}
 .pee__heading {
-    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
+.pe__drag_anchor {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0.3;
+    padding-right: 1.5rem;
+}
+
 .program__element__removal_mark {
     opacity: 0.9;
     transition: opacity ease-in-out 150ms;

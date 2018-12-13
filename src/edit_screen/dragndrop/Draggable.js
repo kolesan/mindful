@@ -2,7 +2,7 @@ import { noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
 import * as Map from '../../utils/Map';
 
-function makeDraggable(cmp) {
+function makeDraggable(cmp, dragAnchorCmp) {
   let dragging = false;
   let dragImage = null;
   let dragStartCb = noop;
@@ -10,7 +10,7 @@ function makeDraggable(cmp) {
   let dropZones = [];
   let originalCmpStyle = null;
 
-  cmp.addEventListener("mousedown", onMouseDown);
+  initDragStartEvent("mousedown", onMouseDown);
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onEnd);
 
@@ -28,16 +28,27 @@ function makeDraggable(cmp) {
       return this;
     },
     allowTouch() {
-      cmp.addEventListener("touchstart", onTouchStart);
+      initDragStartEvent("touchstart", onTouchStart);
       cmp.addEventListener("touchmove", onTouchMove);
       cmp.addEventListener("touchend", onEnd);
     }
   });
 
+  function initDragStartEvent(eventName, listener) {
+    if (dragAnchorCmp) {
+      if (!cmp.contains(dragAnchorCmp)) {
+        throw new Error("Drag anchor component has to be a descendant of component to be dragged");
+      }
+      dragAnchorCmp.addEventListener(eventName, listener);
+    } else {
+      cmp.addEventListener(eventName, listener);
+    }
+  }
+
   function onMouseDown(event) {
     // console.log("Mouse down");
 
-    onStart(event.currentTarget, event.x, event.y)
+    onStart(cmp, event.x, event.y);
   }
   function onMouseMove(event) {
     // console.log("Mouse move");
@@ -47,18 +58,15 @@ function makeDraggable(cmp) {
 
   function onTouchStart(event) {
     // console.log("Touch start");
-    event.stopPropagation();
-    event.preventDefault();
 
     let {x, y} = touchPoint(event);
-    onStart(event.currentTarget, x, y);
+    onStart(cmp, x, y);
   }
   function onTouchMove(event) {
-    event.preventDefault();
     // console.log("Touch move");
 
     let {x, y} = touchPoint(event);
-    onMove(x, y)
+    onMove(x, y);
   }
 
   function onStart(target, x, y) {
@@ -90,7 +98,6 @@ function makeDraggable(cmp) {
     }
   }
   function onEnd(event) {
-    event.preventDefault();
     if (dragging) {
       // console.log("Drag end");
       dropZones.forEach(zone => {

@@ -184,10 +184,10 @@ function inst(containerCmp) {
   }
 
   function makeCmpDraggable({element: elem, onDrag}) {
-    makeDraggable(elem)
+    makeDraggable(elem, elem.querySelector("[name=dragAnchor]"))
       .onDragStart((dragged, element) => {
         leaveOnlyHeadingVisible(dragged.dragImage);
-        onDrag && onDrag(dragged);
+        onDrag && onDrag(dragged, element);
         dragged.data.put("element", element);
         showPlaceholderInsteadOf(element);
       })
