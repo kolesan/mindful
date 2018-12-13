@@ -69,7 +69,7 @@ function inst(containerCmp) {
 
   function setScrollbarWidth() {
     if (childEventsEditorCmp.scrollHeight > childEventsEditorCmp.clientHeight) {
-      setScrollbarStyles(10, 8);
+      setScrollbarStyles(10);
     } else {
       removeScrollbarStyles();
     }
@@ -233,18 +233,11 @@ function initScrollBarStyleSheet() {
   document.head.appendChild(style);
 }
 
-function setScrollbarStyles(scrollBarWidth, mobileScrollBarMarginWidth) {
+function setScrollbarStyles(scrollBarWidth) {
   let styleSheet = document.getElementById(SCROLLBAR_STYLESHEET_ID);
   styleSheet.innerHTML = `
     .program_events__children__editor::-webkit-scrollbar {
       width: ${scrollBarWidth}px;
-    }
-
-    @media(min-resolution: 200dpi) {
-        .program__element {
-            width: calc(100% - ${mobileScrollBarMarginWidth+1}rem);
-            margin-right: ${mobileScrollBarMarginWidth}rem;
-        }
     }
   `;
 }
