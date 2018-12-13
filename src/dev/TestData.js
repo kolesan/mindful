@@ -162,7 +162,7 @@ let chestProgram = {
                      .event( `Preparation`,         s(5),  fsgong ).end()
                      .event( `Dumbbell press fast`, s(30), fgong  ).end()
                      .event( `Preparation`,         s(5),  fsgong ).end()
-                     .event( `Spiderman pushups`,   s(30), fgong  )
+                     .event( `Spiderman pushups`,   s(30), sgong  )
                      .build()
 };
 
