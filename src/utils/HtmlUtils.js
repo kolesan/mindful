@@ -15,7 +15,13 @@ export function createElement(tag, classes, content) {
   }
 
   if (content) {
-    elem.innerHTML = content;
+    if (isArray(content)) {
+      content.forEach(it => {
+        elem.appendChild(it);
+      });
+    } else {
+      elem.innerHTML = content;
+    }
   }
 
   return elem;
