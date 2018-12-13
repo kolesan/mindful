@@ -51,9 +51,20 @@ export class DurationInput extends HTMLElement {
   hideAllEmptyFieldsLeaveSecondsIfZero() {
     let hoursHidden = this.hideEmpty(this.h);
     let minutesHidden = this.hideEmpty(this.m);
+    let secondsHidden = false;
     if (!hoursHidden || !minutesHidden) {
-      this.hideEmpty(this.s);
+      secondsHidden = this.hideEmpty(this.s);
     }
+
+    if (hoursHidden && secondsHidden) {
+      this.removeMargin(this.m);
+    } else if (minutesHidden && secondsHidden) {
+      this.removeMargin(this.h);
+    }
+  }
+
+  removeMargin(input) {
+    input.elem.style.marginRight = 0;
   }
 
   hideEmpty({elem, value}) {
@@ -69,6 +80,7 @@ export class DurationInput extends HTMLElement {
 
   show(elem) {
     elem.classList.remove("hidden");
+    elem.style.marginRight = "";
   }
 
   hide(elem) {
