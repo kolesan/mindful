@@ -118,7 +118,7 @@
     margin-left: 1rem;
     margin-right: 1rem;
 
-    cursor: pointer;
+    /*cursor: pointer;*/
 
     user-select: none;
     -moz-user-select: none;
@@ -154,6 +154,8 @@
     justify-content: flex-end;
     opacity: 0.3;
     padding-right: 1.5rem;
+
+    cursor: pointer;
 }
 
 .program__element__removal_mark {
