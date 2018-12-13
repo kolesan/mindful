@@ -24,7 +24,9 @@ body {
 
     background-color: #242626;
 
+    /*Needed for dragged elements not to expand viewport on mobile*/
     overflow: hidden;
+    position: fixed;
 }
 
 .main_screen {
