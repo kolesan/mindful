@@ -136,7 +136,7 @@
 .pe__heading {
     height: 3rem;
     display: grid;
-    grid-template-columns: 3rem 10fr 6rem;
+    grid-template-columns: 3rem 10fr 5rem;
 }
 .pel__heading {
     display: flex;
