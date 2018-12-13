@@ -36,7 +36,6 @@ function makeDraggable(cmp) {
 
   function onMouseDown(event) {
     // console.log("Mouse down");
-    event.stopPropagation();
 
     onStart(event.currentTarget, event.x, event.y)
   }
