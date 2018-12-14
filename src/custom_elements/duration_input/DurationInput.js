@@ -140,7 +140,7 @@ function style() {
         outline: none;
     
         height: 100%;
-        width: calc(2rem);
+        width: 2rem;
     }
     
     input::-webkit-inner-spin-button {

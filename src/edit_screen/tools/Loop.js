@@ -1,6 +1,7 @@
 import { createElement } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
 import * as ToolComponent from "./ToolComponent";
+import { log } from "../../utils/Logging";
 
 const LOOP_ICON = "fas fa-undo-alt";
 
@@ -19,10 +20,18 @@ function loopIterationsInputCmp(iterations = 2) {
   input.setAttribute("type", "number");
   input.setAttribute("name", "iterationsInput");
   input.value = iterations;
+  setWidth(iterations);
+  input.addEventListener("input", event => setWidth(input.value));
 
   let label = createElement("label", "", "x");
   label.appendChild(input);
+
   return label;
+
+  function setWidth(v) {
+    log("setting width", v);
+    input.style.width = v.length + 1 + "rem";
+  }
 }
 
 export { create };

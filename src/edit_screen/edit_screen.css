@@ -88,7 +88,11 @@
 .text_input:focus {
 }
 .peh__iterations_input {
-    width: 4rem;
+    width: 2rem;
+    text-align: center;
+}
+.peh__iterations_input::-webkit-inner-spin-button {
+    display: none;
 }
 .peh__name_input {
 }
