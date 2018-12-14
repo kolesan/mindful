@@ -1,6 +1,7 @@
 import { noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
 import * as Map from '../../utils/Map';
+import { log } from "../../utils/Logging";
 
 function makeDraggable(cmp, dragAnchorCmp) {
   let dragging = false;
@@ -58,6 +59,12 @@ function makeDraggable(cmp, dragAnchorCmp) {
 
   function onTouchStart(event) {
     // console.log("Touch start");
+    if (event.touches.length > 1) {
+      //User is probably doing some other gesture
+      return;
+    }
+    //To stop user from starting a gesture while already dragging
+    event.preventDefault();
 
     let {x, y} = touchPoint(event);
     onStart(cmp, x, y);
