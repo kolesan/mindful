@@ -7,23 +7,18 @@ export class DurationInput extends HTMLElement {
   constructor() {
     super();
 
-    this.h = numberInput(24, "h")
-      .onBlur(this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this))
-      .onFocus(this.showAllOtherFields.bind(this));
-
-    this.m = numberInput(60, "m")
-      .onBlur(this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this))
-      .onFocus(this.showAllOtherFields.bind(this));
-
-    this.s = numberInput(60, "s")
-      .onBlur(this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this))
-      .onFocus(this.showAllOtherFields.bind(this));
+    this.h = numberInput(24, "h");
+    this.m = numberInput(60, "m");
+    this.s = numberInput(60, "s");
 
     let shadow = this.attachShadow({mode: 'open'});
     shadow.appendChild(this.h.elem);
     shadow.appendChild(this.m.elem);
     shadow.appendChild(this.s.elem);
     shadow.appendChild(style());
+
+    this.addEventListener("blur", this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this));
+    this.addEventListener("focus", this.showAllFields.bind(this));
   }
 
   set value(v) {
@@ -42,7 +37,7 @@ export class DurationInput extends HTMLElement {
     return timeObject(h, m, s).timestamp;
   }
 
-  showAllOtherFields() {
+  showAllFields() {
     this.show(this.h.elem);
     this.show(this.m.elem);
     this.show(this.s.elem);
@@ -84,11 +79,7 @@ export class DurationInput extends HTMLElement {
   }
 
   hide(elem) {
-    setTimeout(() => !this.focusWithin() && elem.classList.add("hidden"), 10);
-  }
-
-  focusWithin() {
-    return document.activeElement.isSameNode(this);
+    elem.classList.add("hidden");
   }
 }
 
@@ -96,14 +87,8 @@ function numberInput(max, labelTxt) {
   let input = createInput(max);
   let section = createElement("label", "input_section", [input, createText(labelTxt)]);
   let minmax = Utils.minmax(0, max);
-  let onInputCb = Utils.noop;
-  let onBlurCb = Utils.noop;
-  let onFocusCb = Utils.noop;
 
   return Object.freeze({
-    onInput(cb) { onInputCb = cb; return this; },
-    onBlur(cb) { onBlurCb = cb; return this; },
-    onFocus(cb) { onFocusCb = cb; return this; },
     get elem() { return section },
     get input() { return input },
     get value() { return input.value },
@@ -115,11 +100,9 @@ function numberInput(max, labelTxt) {
     input.setAttribute("type", "number");
     input.setAttribute("min", 0);
     input.setAttribute("max", max);
-    input.value = 0;
+    input.value = "00";
 
     input.addEventListener("input", event => setInputValue(event.target.value));
-    input.addEventListener("blur", event => onBlurCb(section, event.target.value));
-    input.addEventListener("focus", event => onFocusCb(section, event.target.value));
 
     return input;
   }
@@ -131,7 +114,6 @@ function numberInput(max, labelTxt) {
   function setInputValue(value) {
     let v = Number(value) || 0;
     input.value = String(minmax(v)).padStart(2, "0");
-    onInputCb(section, value);
   }
 }
 
@@ -154,15 +136,10 @@ function style() {
         color: var(--font-color);
         background: transparent;
         border: none;
-        /*border-bottom: 2px solid gray;*/
     
         outline: none;
     
         height: 100%;
-        // text-align: end;
-        
-         -webkit-appearance: none;
-        /*margin-right: -16px;*/
         width: calc(2rem);
     }
     
