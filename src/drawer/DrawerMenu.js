@@ -46,6 +46,9 @@ function hideDrawer() {
 }
 
 let newProgramBtn = document.querySelector("#newProgramBtn");
-newProgramBtn.addEventListener("click", Routing.toNewProgramScreen);
+newProgramBtn.addEventListener("click", () => {
+  Routing.toNewProgramScreen();
+  toggleDrawerState();
+});
 
 export { init, toggleDrawerState };
