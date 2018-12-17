@@ -16,21 +16,16 @@ function loopHeadingCmp(iterations) {
 }
 
 function loopIterationsInputCmp(iterations = 2) {
-  let input = createElement("input", "text_input peh__iterations_input");
+  let input = createElement("dynamic-size-input", "text_input peh__iterations_input");
   input.setAttribute("type", "number");
+  input.setAttribute("maxsize", "4");
   input.setAttribute("name", "iterationsInput");
   input.value = iterations;
-  setWidth(String(iterations));
-  input.addEventListener("input", event => setWidth(input.value));
 
   let label = createElement("label", "", "x");
   label.appendChild(input);
 
   return label;
-
-  function setWidth(v) {
-    input.style.width = Math.min(v.length + 1, 5) + "rem";
-  }
 }
 
 export { create };

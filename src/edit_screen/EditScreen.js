@@ -24,7 +24,7 @@ let event = editScreen.querySelector("#eventTool");
 let programEditorContainer = editScreen.querySelector(".program_events");
 let programEventsEditor = ProgramEventsEditor.inst(programEditorContainer);
 let programTitles;
-let programTitleInput = editScreen.querySelector(".basic_program_data input[name=programTitle]");
+let programTitleInput = editScreen.querySelector(".basic_program_data [name=programTitleInput]");
 let currentProgram;
 
 let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
@@ -79,7 +79,7 @@ function loadProgramTitles() {
   return Storage.loadPrograms().map(program => program.title);
 }
 
-let programIconInput = editScreen.querySelector(".basic_program_data button[name=selectIconBtn]");
+let programIconInput = editScreen.querySelector(".basic_program_data [name=selectIconBtn]");
 function save(oldId) {
   let title = programTitleInput.value;
   let program = {
@@ -131,16 +131,6 @@ function load(program) {
 
   currentProgram = program;
 }
-
-// let trashcan = editScreen.querySelector(".tools__trash_can");
-// let trashImage = trashImageElement();
-// function trashImageElement() {
-//   let elem = createComponent("div", `program__element`);
-//   elem.appendChild(iconCmp(TRASH_ICON));
-//   elem.style.width = "3rem";
-//   elem.style.height = "3rem";
-//   return elem;
-// }
 
 function onShow(program) {
   programEventsEditor.init();

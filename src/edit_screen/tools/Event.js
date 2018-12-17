@@ -28,7 +28,7 @@ function eventHeadingCmp(name, duration) {
 }
 
 function nameInputCmp(name = `TimerEvent`) {
-  let input = createElement("input", "text_input peh__name_input");
+  let input = createElement("dynamic-size-input", "text_input peh__name_input");
   input.setAttribute("type", "text");
   input.setAttribute("spellcheck", "false");
   input.setAttribute("name", "eventNameInput");
