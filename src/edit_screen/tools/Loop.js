@@ -29,7 +29,7 @@ function loopIterationsInputCmp(iterations = 2) {
   return label;
 
   function setWidth(v) {
-    input.style.width = v.length + 1 + "rem";
+    input.style.width = Math.min(v.length + 1, 5) + "rem";
   }
 }
 
