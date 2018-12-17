@@ -20,7 +20,7 @@ function loopIterationsInputCmp(iterations = 2) {
   input.setAttribute("type", "number");
   input.setAttribute("name", "iterationsInput");
   input.value = iterations;
-  setWidth(iterations);
+  setWidth(String(iterations));
   input.addEventListener("input", event => setWidth(input.value));
 
   let label = createElement("label", "", "x");
@@ -29,7 +29,6 @@ function loopIterationsInputCmp(iterations = 2) {
   return label;
 
   function setWidth(v) {
-    log("setting width", v);
     input.style.width = v.length + 1 + "rem";
   }
 }

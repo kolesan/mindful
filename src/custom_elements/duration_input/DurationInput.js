@@ -63,8 +63,8 @@ export class DurationInput extends HTMLElement {
   }
 
   hideEmpty({elem, value}) {
+    //Implicit coercion needed here because value will sometimes be string and sometimes number
     let empty = value == 0;
-    //Implicit coercion needed here
     if (empty) {
       this.hide(elem);
     } else {
