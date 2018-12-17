@@ -26,6 +26,19 @@ export function createElement(tag, classes, content) {
 
   return elem;
 }
+export function element({tag, classes, children = [], attributes = {}, listeners = {}, value}) {
+  let elem = createElement(tag, classes);
+
+  children.forEach(it => elem.appendChild(it));
+  Object.keys(attributes).forEach(k => elem.setAttribute(k, attributes[k]));
+  Object.keys(listeners).forEach(k => elem.addEventListener(k, listeners[k]));
+  elem.value = value;
+
+  return elem;
+}
+export function text(v) {
+  return document.createTextNode(v);
+}
 
 export function removeComponent(node) {
   if (node && node.parentNode) {

@@ -1,5 +1,12 @@
 import { DurationInput } from "./duration_input/DurationInput";
 import { DynamicSizeInput } from "./duration_input/DynamicSizeInput";
 
-customElements.define('duration-input', DurationInput);
-customElements.define('dynamic-size-input', DynamicSizeInput);
+const CustomElements = {
+  durationInput: "duration-input",
+  dynamicSizeInput: "dynamic-size-input"
+};
+
+customElements.define(CustomElements.durationInput, DurationInput);
+customElements.define(CustomElements.dynamicSizeInput, DynamicSizeInput);
+
+export { CustomElements }

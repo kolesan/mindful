@@ -1,4 +1,4 @@
-import { createElement } from "../../utils/HtmlUtils";
+import { createElement, element, text } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 import * as Utils from "../../utils/Utils";
 import { log } from "../../utils/Logging";
@@ -12,9 +12,9 @@ export class DurationInput extends HTMLElement {
     this.s = numberInput(60, "s");
 
     let shadow = this.attachShadow({mode: 'open'});
-    shadow.appendChild(this.h.elem);
-    shadow.appendChild(this.m.elem);
-    shadow.appendChild(this.s.elem);
+    shadow.appendChild(this.h.input);
+    shadow.appendChild(this.m.input);
+    shadow.appendChild(this.s.input);
     shadow.appendChild(style());
 
     this.addEventListener("blur", this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this));
@@ -38,9 +38,9 @@ export class DurationInput extends HTMLElement {
   }
 
   showAllFields() {
-    this.show(this.h.elem);
-    this.show(this.m.elem);
-    this.show(this.s.elem);
+    this.show(this.h.input);
+    this.show(this.m.input);
+    this.show(this.s.input);
   }
 
   hideAllEmptyFieldsLeaveSecondsIfZero() {
@@ -52,23 +52,23 @@ export class DurationInput extends HTMLElement {
     }
 
     if (hoursHidden && secondsHidden) {
-      this.removeMargin(this.m);
+      this.removeMargin(this.m.input);
     } else if (minutesHidden && secondsHidden) {
-      this.removeMargin(this.h);
+      this.removeMargin(this.h.input);
     }
   }
 
   removeMargin(input) {
-    input.elem.style.marginRight = 0;
+    input.style.marginRight = 0;
   }
 
-  hideEmpty({elem, value}) {
+  hideEmpty({input, value}) {
     //Implicit coercion needed here because value will sometimes be string and sometimes number
     let empty = value == 0;
     if (empty) {
-      this.hide(elem);
+      this.hide(input);
     } else {
-      this.show(elem);
+      this.show(input);
     }
     return empty;
   }
@@ -85,35 +85,46 @@ export class DurationInput extends HTMLElement {
 
 function numberInput(max, labelTxt) {
   let input = createInput(max);
-  let section = createElement("label", "input_section", [input, createText(labelTxt)]);
   let minmax = Utils.minmax(0, max);
 
   return Object.freeze({
-    get elem() { return section },
     get input() { return input },
     get value() { return input.value },
     set value(v) { setInputValue(v) }
   });
 
   function createInput(max) {
-    let input = createElement("input");
-    input.setAttribute("type", "number");
-    input.setAttribute("min", 0);
-    input.setAttribute("max", max);
-    input.value = "00";
 
-    input.addEventListener("input", event => setInputValue(event.target.value));
+    let label = element({
+      tag: "span",
+      attributes: {
+        slot: "right"
+      },
+      children: [text(labelTxt)]
+    });
 
-    return input;
-  }
-
-  function createText(t) {
-    return document.createTextNode(t);
+    return element({
+      tag: "dynamic-size-input",
+      classes: "text_input input_section",
+      value: 0,
+      attributes: {
+        type: "number",
+        maxsize: 4,
+        min: 0,
+        max: max
+      },
+      children: [
+        label
+      ],
+      listeners: {
+        input: event => setInputValue(event.target.value)
+      }
+    });
   }
 
   function setInputValue(value) {
     let v = Number(value) || 0;
-    input.value = String(minmax(v)).padStart(2, "0");
+    input.value = String(minmax(v));
   }
 }
 
@@ -128,23 +139,6 @@ function style() {
     }
     .input_section:last-of-type {
         margin-right: 0rem;
-    }
-    
-    input {
-        font-family: var(--font-family);
-        font-size: var(--font-size);
-        color: var(--font-color);
-        background: transparent;
-        border: none;
-    
-        outline: none;
-    
-        height: 100%;
-        width: 2rem;
-    }
-    
-    input::-webkit-inner-spin-button {
-        display: none;
     }`
   )
 }
