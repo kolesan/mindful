@@ -1,7 +1,7 @@
-import { fgong } from "../../EventCallbacks";
+import { fgong, fsgong } from "../../EventCallbacks";
 import { Tools, ToolNames } from "../tools/Tools";
 
-function viewToProgram(viewChildren) {
+function viewToProgram(viewChildren, depth = 0) {
   let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
   let programElements = [];
   viewElements.forEach(viewElement => {
@@ -15,10 +15,11 @@ function viewToProgram(viewChildren) {
       case ToolNames.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;
         let duration = viewElement.querySelector("[name=eventDurationInput").value;
-        Object.assign(programElement, {name, duration, callback: fgong});
+        let callback = depth == 0 ? fgong : fsgong;
+        Object.assign(programElement, {name, duration, callback});
         break;
     }
-    programElement.children = viewToProgram(viewElement.children);
+    programElement.children = viewToProgram(viewElement.children, tool == ToolNames.event ? depth + 1 : depth);
     programElements.push(programElement);
   });
   return programElements;
