@@ -1,10 +1,8 @@
 import { createElement, element } from "../../utils/HtmlUtils";
 import { log } from "../../utils/Logging";
+import { DISABLED_ATTR, MAX_ATTR, MIN_ATTR, TYPE_ATTR } from "../../utils/AttributeConstants";
 
 const MAX_SIZE_ATTR = "maxsize";
-const TYPE_ATTR = "type";
-const MIN_ATTR = "min";
-const MAX_ATTR = "max";
 
 const DEFAULT_SIZE = 20;
 const DEFAULT_TYPE = "text";
@@ -37,10 +35,14 @@ export class DynamicSizeInput extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return [TYPE_ATTR, MIN_ATTR, MAX_ATTR];
+    return [TYPE_ATTR, MIN_ATTR, MAX_ATTR, DISABLED_ATTR];
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    this.input.setAttribute(name, newValue);
+    if (newValue == null) {
+      this.input.removeAttribute(name);
+    } else {
+      this.input.setAttribute(name, newValue);
+    }
   }
 
 

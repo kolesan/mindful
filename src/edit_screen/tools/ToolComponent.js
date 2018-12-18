@@ -1,5 +1,6 @@
 import * as Component from "../../utils/Component";
 import { createElement, iconCmp } from "../../utils/HtmlUtils";
+import { log } from "../../utils/Logging";
 
 function create(toolIcon, toolName, toolHeading) {
   let elem = createElement("div", `program__element program__element__${toolName}`);

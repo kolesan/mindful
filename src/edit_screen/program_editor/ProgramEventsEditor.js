@@ -9,14 +9,14 @@ import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
 import { ToolNames, Tools } from "../tools/Tools";
 import * as TreeUtils from "../../utils/TreeUtils";
-import { log } from "../../utils/Logging";
 import { fade } from "../../utils/Utils";
+import { log } from "../../utils/Logging";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
-  let headingSection = containerCmp.querySelector(".program_events__main");
-  let mainEventDurationCmp = headingSection.querySelector("[name=mainEventDurationInput");
-  let mainEventNameInput = headingSection.querySelector("[name=mainEventNameInput");
+  let mainEventHeadingSection = containerCmp.querySelector(".program_events__main__heading");
+  let mainEventDurationCmp = mainEventHeadingSection.querySelector("[name=mainEventDurationInput");
+  let mainEventNameInput = mainEventHeadingSection.querySelector("[name=mainEventNameInput");
 
   let dragHereCmp = createDragHereTextCmp();
   let programEditorDropZone = makeEditorDropZone();
@@ -165,34 +165,57 @@ function inst(containerCmp) {
   }
 
   function handleDrop(movable) {
-    let tool = movable.data.get("tool");
-    if (tool) {
-      addTool(tool);
-      return;
+    let toolName = movable.data.get("tool");
+    let element = null;
+
+    if (toolName) {
+      element = newProgramElement(toolName);
+    } else {
+      element = movable.data.get("element");
     }
 
-    let element = movable.data.get("element");
-    if (element) {
-      drop(element);
+    if (!element) {
+      throw new Error(`Can not drop unknown element '${element}'`);
+    }
+
+    let parent = placeholder.parentNode;
+    parent.insertBefore(element, placeholder);
+
+    if (element.dataset.element == ToolNames.event) {
+      disableDurationInput(closestEvent(parent));
     }
   }
-
-  function addTool(toolName) {
+  function newProgramElement(toolName) {
     let cmp = Tools.create(toolName);
     makeCmpDraggable(cmp);
-    placeholder.parentNode.insertBefore(cmp.element, placeholder);
+    return cmp.element;
   }
-
   function makeCmpDraggable({element: elem, onDrag}) {
     makeDraggable(elem, elem.querySelector("[name=dragAnchor]"))
       .onDragStart((dragged, element) => {
         leaveOnlyHeadingVisible(dragged.dragImage);
         onDrag && onDrag(dragged, element);
         dragged.data.put("element", element);
+        enableDurationInput(closestEvent(element.parentNode));
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
       .allowTouch();
+  }
+  function closestEvent(parent) {
+    while (parent.dataset.element != ToolNames.event) {
+      if (parent.isSameNode(childEventsEditorCmp)) {
+        return mainEventHeadingSection;
+      }
+      parent = parent.parentNode;
+    }
+    return parent;
+  }
+  function enableDurationInput(event) {
+    event.querySelector("duration-input").removeAttribute("disabled");
+  }
+  function disableDurationInput(event) {
+    event.querySelector("duration-input").setAttribute("disabled", "true");
   }
 
   function leaveOnlyHeadingVisible(elem) {
@@ -207,10 +230,6 @@ function inst(containerCmp) {
     elem.parentNode.insertBefore(placeholder, elem);
     removeComponent(elem);
     showingPlaceholder = true;
-  }
-
-  function drop(element) {
-    placeholder.parentNode.insertBefore(element, placeholder);
   }
 }
 

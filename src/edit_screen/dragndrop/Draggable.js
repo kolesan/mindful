@@ -7,6 +7,7 @@ function makeDraggable(cmp, dragAnchorCmp) {
   let dragging = false;
   let dragImage = null;
   let dragStartCb = noop;
+  let dragEndCb = noop;
   let stylePlaceholderCb = noop;
   let dropZones = [];
   let originalCmpStyle = null;
@@ -18,6 +19,10 @@ function makeDraggable(cmp, dragAnchorCmp) {
   return Object.freeze({
     onDragStart(fn) {
       dragStartCb = fn;
+      return this;
+    },
+    onDragEnd(fn) {
+      dragEndCb = fn;
       return this;
     },
     stylePlaceholder(fn) {
@@ -32,6 +37,7 @@ function makeDraggable(cmp, dragAnchorCmp) {
       initDragStartEvent("touchstart", onTouchStart);
       cmp.addEventListener("touchmove", onTouchMove);
       cmp.addEventListener("touchend", onEnd);
+      return this;
     }
   });
 
@@ -112,6 +118,7 @@ function makeDraggable(cmp, dragAnchorCmp) {
           zone.drop(dragImage);
         }
       });
+      dragEndCb(dragImage);
 
       dragImage.destroy();
       dragImage = null;

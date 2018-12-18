@@ -2,6 +2,7 @@ import { createElement, element, text } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 import * as Utils from "../../utils/Utils";
 import { log } from "../../utils/Logging";
+import { DISABLED_ATTR } from "../../utils/AttributeConstants";
 
 export class DurationInput extends HTMLElement {
   constructor() {
@@ -19,6 +20,40 @@ export class DurationInput extends HTMLElement {
 
     this.addEventListener("blur", this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this));
     this.addEventListener("focus", this.showAllFields.bind(this));
+    log("FINISHED CONSTRUCTION OF DURATION INPUT");
+  }
+
+  connectedCallback() {
+    if (!(this.getAttribute(DISABLED_ATTR) == "true")) {
+      this.title = "Event duration";
+    }
+  }
+
+
+  static get observedAttributes() {
+    return [DISABLED_ATTR];
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (newValue == "true") {
+      log("DISABLED THE DURATION INPUT DUE TO ATTRIBUTE CHANGE");
+      this.applyToAll(this.disable);
+      this.title = "Can not set duration of event that has children";
+    } else {
+      this.applyToAll(this.enable);
+      this.title = "Event duration";
+    }
+  }
+
+  applyToAll(fn) {
+    fn(this.h.input);
+    fn(this.m.input);
+    fn(this.s.input);
+  }
+  disable(elem) {
+    elem.setAttribute("disabled", "true");
+  }
+  enable(elem) {
+    elem.removeAttribute("disabled");
   }
 
   set value(v) {
@@ -29,7 +64,6 @@ export class DurationInput extends HTMLElement {
     this.s.value = s;
     this.hideAllEmptyFieldsLeaveSecondsIfZero();
   }
-
   get value() {
     let h = this.h.value;
     let m = this.m.value;
@@ -38,9 +72,7 @@ export class DurationInput extends HTMLElement {
   }
 
   showAllFields() {
-    this.show(this.h.input);
-    this.show(this.m.input);
-    this.show(this.s.input);
+    this.applyToAll(this.show);
   }
 
   hideAllEmptyFieldsLeaveSecondsIfZero() {
