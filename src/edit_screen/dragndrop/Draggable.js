@@ -148,9 +148,6 @@ function makeDragImage(cmp, x, y) {
     get style() { return img.style },
     set style(style) { img.style = style },
     get dragImage() { return img },
-    set dragImage(img) {
-      setDragImage(img)
-    },
     move,
     offsetBy(x, y) {
       offsetX = x;

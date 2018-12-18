@@ -115,8 +115,8 @@ function inst(containerCmp) {
       let overlay = createElement("div", "program__element__removal_overlay", "Remove");
       fade({cmp: overlay, from: 0, to: 1, duration: 150});
       draggable.dragImage.appendChild(overlay);
+      draggable.dragImage.classList.add("program__element__removal_mark");
     }
-    draggable.dragImage.classList.add("program__element__removal_mark");
   }
   function createDragHereTextCmp() {
     let wrapper = createElement("div", "program__drag_here_txt_wrapper");
