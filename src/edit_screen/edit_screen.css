@@ -75,17 +75,27 @@
     color: var(--font-color);
     background: transparent;
     border: none;
-    border-bottom: 2px solid gray;
+    border-bottom: 2px solid transparent;
 
     outline: none;
 
     height: 100%;
 
-    transition: border ease-in-out 200ms;
+    transition: border ease-in-out 150ms;
 }
 .text_input:hover {
+    border-bottom: 2px solid gray;
 }
-.text_input:focus {
+.text_input:focus-within {
+    border-bottom: 2px solid gray;
+}
+/*
+  :disabled pseudo class does not work here since we are trying to stile custom element which is just a HTML element
+  while this pseudo class only works for inputs and etc
+*/
+.text_input[disabled] {
+    border-bottom: none;
+    opacity: 0.6;
 }
 .peh__name_input {
 }
