@@ -21,9 +21,11 @@ function convertProgramElementChildren(programElement, startTime, i) {
         startTime += it.duration;
         break;
       case ToolNames.loop:
-        let childrenDurationSum = it.children.reduce((a, b) => a + b.duration, 0);
         for(let i = 0; i < it.iterations; i++) {
-          children.push(...convertProgramElementChildren(it, startTime, i+1));
+          let convertedLoopChildren = convertProgramElementChildren(it, startTime, i+1);
+          let childrenDurationSum = convertedLoopChildren.reduce((a, b) => a + b.duration, 0);
+
+          children.push(...convertedLoopChildren);
           startTime += childrenDurationSum;
         }
         break;
