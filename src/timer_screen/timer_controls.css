@@ -1,7 +1,6 @@
 .controls__playback {
     display: flex;
     flex: 0 0 25%;
-    border-right: 2px solid var(--font-color);
 }
 
 .controls__button__play {
@@ -28,8 +27,5 @@
     }
     .controls__button__pause {
         font-size: 12rem;
-    }
-    .controls__playback {
-        border-right: none;
     }
 }

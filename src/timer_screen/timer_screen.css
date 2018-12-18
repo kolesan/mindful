@@ -27,7 +27,6 @@
     display: flex;
     align-items: center;
     flex: 0 0 25%;
-    border-left: 2px solid var(--font-color);
     padding-left: 2rem;
 }
 
@@ -50,11 +49,5 @@
 @media(min-resolution: 200dpi) {
     .timer__seeking_lock_button {
         width: 20rem;
-    }
-}
-@media(max-width: 1000px){
-    .controls__volume {
-        border-left: none;
-        padding: 0 2rem;
     }
 }
