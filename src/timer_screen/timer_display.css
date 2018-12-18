@@ -7,8 +7,6 @@
     justify-content: center;
     font-size: calc(var(--font-size) - 0.5rem);
 
-    align-self: start;
-
     user-select: none;
     -moz-user-select: none;
 }

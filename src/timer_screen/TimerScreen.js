@@ -43,7 +43,6 @@ function loadTimer(program, recreateTimer = false) {
   }
 
   document.querySelector("#titleText").innerHTML = program.title;
-  document.querySelector("#descriptionText").innerHTML = program.description;
 }
 
 function newTimerModule(program) {

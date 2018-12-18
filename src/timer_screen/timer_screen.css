@@ -4,23 +4,14 @@
 
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: calc(var(--font-size) + 2rem) 12rem 1fr 16rem calc(var(--font-size) + 2rem);
+    grid-template-rows: calc(var(--font-size) + 2rem) 1fr 16rem calc(var(--font-size) + 2rem);
 
     justify-content: center;
 }
 
-.description {
+.timer {
     display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    justify-content: space-between;
     align-items: center;
-}
-
-.description_program_controls {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
 }
 
 .controls__volume {
