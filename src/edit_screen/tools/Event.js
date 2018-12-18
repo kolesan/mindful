@@ -1,4 +1,4 @@
-import { createElement, focusOnTouch, iconCmp } from "../../utils/HtmlUtils";
+import { createElement } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";

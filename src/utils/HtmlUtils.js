@@ -68,13 +68,6 @@ export function setIcon(cmp, iconClasses) {
   cmp.replaceChild(newIcon, oldIcon);
 }
 
-export function focusOnTouch(input) {
-  input.addEventListener("touchstart", event => {
-    event.stopPropagation();
-    event.target.focus();
-  });
-}
-
 export function replaceWithClone(node) {
   let clone = node.cloneNode(true);
   node.parentNode.replaceChild(clone, node);
