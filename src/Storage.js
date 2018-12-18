@@ -1,4 +1,5 @@
 import { isArray } from "./utils/Utils";
+import { log } from "./utils/Logging";
 
 const PROGRAMS_KEY = "programs";
 
@@ -17,6 +18,7 @@ function overrideProgram(oldId, program) {
 }
 
 function loadPrograms() {
+  log("loading programs");
   let programs = JSON.parse(window.localStorage.getItem(PROGRAMS_KEY)) || [];
   if (!isArray(programs)) {
     throw new Error(`Program deserialization error. Serialized object '${programs}' is not an array.`);
