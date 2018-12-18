@@ -38,3 +38,5 @@ function printStoredPrograms() {
 function clearTestProgramsFromStorage() {
   window.localStorage.removeItem("programs");
 }
+
+export { loadTestProgramsToStorage };
