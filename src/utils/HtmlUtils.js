@@ -1,3 +1,5 @@
+import { log } from "./Logging";
+
 function isArray(o) {
   return Array.prototype.isPrototypeOf(o);
 }
@@ -50,12 +52,12 @@ export function appendAsFirstChild(child, parent) {
   parent.insertBefore(child, parent.firstChild);
 }
 
-export function removeAllChildNodes(parent, predicate = ()=>true) {
-  while (parent.firstChild) {
-    if (predicate(parent.firstChild)) {
-      parent.removeChild(parent.firstChild);
+export function removeChildNodes(parent, predicate = ()=>true) {
+  Array.from(parent.children).forEach(child => {
+    if (predicate(child)) {
+      parent.removeChild(child);
     }
-  }
+  });
 }
 
 export function iconCmp(classes) {

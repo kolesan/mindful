@@ -59,9 +59,9 @@ export class DurationInput extends HTMLElement {
   set value(v) {
     console.log("SETTING DURATION VALUE", v);
     let { h, m, s } = timestampToTimeObject(v);
-    this.h.value = h;
-    this.m.value = m;
-    this.s.value = s;
+    this.h.input.value = h;
+    this.m.input.value = m;
+    this.s.input.value = s;
     this.hideAllEmptyFieldsLeaveSecondsIfZero();
   }
   get value() {
@@ -89,11 +89,6 @@ export class DurationInput extends HTMLElement {
       this.removeMargin(this.h.input);
     }
   }
-
-  removeMargin(input) {
-    input.style.marginRight = 0;
-  }
-
   hideEmpty({input, value}) {
     //Implicit coercion needed here because value will sometimes be string and sometimes number
     let empty = value == 0;
@@ -103,6 +98,9 @@ export class DurationInput extends HTMLElement {
       this.show(input);
     }
     return empty;
+  }
+  removeMargin(input) {
+    input.style.marginRight = 0;
   }
 
   show(elem) {
@@ -121,8 +119,7 @@ function numberInput(max, labelTxt) {
 
   return Object.freeze({
     get input() { return input },
-    get value() { return input.value },
-    set value(v) { setInputValue(v) }
+    get value() { return input.value }
   });
 
   function createInput(max) {
@@ -149,13 +146,13 @@ function numberInput(max, labelTxt) {
         label
       ],
       listeners: {
-        input: event => setInputValue(event.target.value)
+        input: event => setInputValue(event.target)
       }
     });
   }
 
-  function setInputValue(value) {
-    let v = Number(value) || 0;
+  function setInputValue(input) {
+    let v = Number(input.value) || 0;
     input.value = String(minmax(v));
   }
 }

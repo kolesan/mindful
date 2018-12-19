@@ -4,6 +4,7 @@ import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";
 import * as ToolComponent from "./ToolComponent";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
+import { log } from "../../utils/Logging";
 
 const EVENT_ICON = "fas fa-bell";
 

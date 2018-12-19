@@ -1,7 +1,7 @@
 import './program_events_editor.css';
 
 import { makeDropZone } from "../dragndrop/DropZone";
-import { createElement, iconCmp, removeAllChildNodes, removeComponent } from "../../utils/HtmlUtils";
+import { createElement, removeChildNodes, removeComponent } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
 import { sgong } from "../../EventCallbacks";
@@ -43,7 +43,7 @@ function inst(containerCmp) {
 
       markValid(mainEventNameInput);
 
-      removeAllChildNodes(childEventsEditorCmp);
+      removeChildNodes(childEventsEditorCmp, it => it.dataset.element);
       let viewElements = ModelViewConverter.programToView(mainEvent, makeCmpDraggable);
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
@@ -161,7 +161,9 @@ function inst(containerCmp) {
   }
 
   function showDragHereTxt() {
-    childEventsEditorCmp.appendChild(dragHereCmp);
+    if (!dragHereCmp.parentNode) {
+      childEventsEditorCmp.appendChild(dragHereCmp);
+    }
   }
 
   function handleDrop(movable) {

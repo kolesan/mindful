@@ -1,4 +1,4 @@
-import { createElement, removeAllChildNodes } from "../../utils/HtmlUtils";
+import { createElement, removeChildNodes } from "../../utils/HtmlUtils";
 import * as eventBus from "../../utils/EventBus";
 import { NEW_PROGRAM_SAVED_EVENT } from "../../edit_screen/EditScreen";
 import * as Routing from "../../Routing";
@@ -8,7 +8,7 @@ const ITEM_SELECTED_CLASS = "drawer_menu__item_selected";
 let drawerProgramsSection = document.querySelector("#drawerProgramsSection");
 
 function init(programs) {
-  removeAllChildNodes(drawerProgramsSection);
+  removeChildNodes(drawerProgramsSection);
   programs.forEach(addButton);
 }
 
