@@ -81,7 +81,7 @@
 
     height: 100%;
 
-    transition: border ease-in-out 150ms;
+    transition: border ease-in-out 150ms, opacity ease-in-out 150ms;
 }
 .text_input:hover {
     border-bottom: 2px solid gray;
