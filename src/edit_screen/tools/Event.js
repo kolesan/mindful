@@ -1,4 +1,4 @@
-import { createElement } from "../../utils/HtmlUtils";
+import { createElement, disable, enable } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";
@@ -7,7 +7,7 @@ import { log } from "../../utils/Logging";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
-import { arr } from "../../utils/Utils";
+import { programElemChildren } from "./ToolComponent";
 
 const EVENT_ICON = "fas fa-bell";
 
@@ -20,19 +20,31 @@ function create({name, duration} = {}) {
 
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
-  // new MutationObserver(reactToChildElements).observe(cmp.element, {childList: true});
+  initChildMutationCallbacks(cmp.element, durationInput);
 
   return cmp;
-
-  // function reactToChildElements(mutations) {
-  //   let sortedMutations = sortMutations(mutations);
-  //   log("Mutations detected in:", cmp.element, sortedMutations);
-  //   let childElems = children(cmp.element).filter(ToolComponent.isProgramElement);
-  //   if (childElems.length > 0) {
-  //     disable(durationInput);
-  //   }
-  // }
 }
+
+function initChildMutationCallbacks(element, durationInput) {
+  let observer = new MutationObserver(() => {
+    let children = programElemChildren(element);
+    if (children.length > 0) {
+      disable(durationInput);
+    } else {
+      enable(durationInput);
+    }
+  });
+  observer.observe(element, {childList: true});
+}
+
+// function reactToChildElements(mutations) {
+//   let sortedMutations = sortMutations(mutations);
+//   log("Mutations detected in:", cmp.element, sortedMutations);
+//   let childElems = children(cmp.element).filter(ToolComponent.isProgramElement);
+//   if (childElems.length > 0) {
+//     disable(durationInput);
+//   }
+// }
 
 // function sortMutations(mutations) {
 //   let added = [];

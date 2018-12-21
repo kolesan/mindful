@@ -2,7 +2,7 @@ import './program_events_editor.css';
 
 import { makeDropZone } from "../dragndrop/DropZone";
 import {
-  children, createElement, disable, enable, path, removeChildNodes, removeComponent
+  createElement, disable, path, removeChildNodes, removeComponent
 } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
@@ -42,8 +42,6 @@ function inst(containerCmp) {
 
   initScrollBarStyleSheet();
 
-  // new MutationObserver(mutations => log("editor", mutations)).observe(childEventsEditorCmp, {childList: true, subtree: true});
-
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
@@ -58,10 +56,6 @@ function inst(containerCmp) {
       removeChildNodes(childEventsEditorCmp, it => it.dataset.element);
       let viewElements = ModelViewConverter.programToView(mainEvent, cmp => {
         makeCmpDraggable(cmp);
-        log(cmp);
-        if (hasChildProgramElements(cmp.element)) {
-          disable(durationInputOf(cmp.element));
-        }
       });
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
@@ -208,7 +202,6 @@ function inst(containerCmp) {
     parent.insertBefore(element, placeholder);
 
     if (element.dataset.element == ToolNames.event) {
-      disable(durationInputOf(closestEvent(element)));
       recalculateParentDuration(element);
     }
   }
@@ -242,7 +235,6 @@ function inst(containerCmp) {
         leaveOnlyHeadingVisible(dragged.dragImage);
         onDrag && onDrag(dragged, element);
         dragged.data.put("element", element);
-        enable(durationInputOf(closestEvent(element)));
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
