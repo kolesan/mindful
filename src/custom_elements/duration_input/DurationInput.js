@@ -1,6 +1,6 @@
+import { log } from "../../utils/Logging";
 import { createElement, element, text, disable, enable } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
-import { log } from "../../utils/Logging";
 import { DISABLED_ATTR } from "../../utils/AttributeConstants";
 import { noop } from "../../utils/Utils";
 

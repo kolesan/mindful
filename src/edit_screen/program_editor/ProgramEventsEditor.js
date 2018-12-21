@@ -15,7 +15,10 @@ import { fade } from "../../utils/Utils";
 import { log } from "../../utils/Logging";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
-import { isToolComponentElement } from "../tools/ToolComponent";
+import {
+  durationInputOf, elemDurationSum, isEvent,
+  programElemChildren
+} from "../tools/ToolComponent";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -143,6 +146,11 @@ function inst(containerCmp) {
   function createPlaceholder() {
     let clone = Tools.create(ToolNames.event).element;
     clone.classList.add("program__element__placeholder");
+    /*
+      TODO this should not be needed when implementation of duration recalculation is finished properly
+      this is done so that placeholder is not detected as a program element (e.g. not to mess with duration calculation)
+    */
+    clone.dataset.element = "";
     return clone;
   }
 
@@ -221,24 +229,9 @@ function inst(containerCmp) {
       // log("Recalculating duration for main", mainEventDurationInput);
       mainEventDurationInput.value = elemDurationSum(programElemChildren(childEventsEditorCmp));
     }
-    function elemDurationSum(children) {
-      return children.reduce((duration, child) => duration + elemDuration(child), 0);
-    }
-    function elemDuration(elem) {
-      return isEvent(elem) ? eventDuration(elem) : loopDuration(elem);
-    }
-    function loopDuration(loop) {
-      return elemDurationSum(programElemChildren(loop)) * loop.dataset.iterations;
-    }
-    function eventDuration(event) {
-      return durationInputOf(event).value;
-    }
   }
   function hasChildProgramElements(elem) {
     return programElemChildren(elem).length > 0;
-  }
-  function programElemChildren(elem) {
-    return children(elem).filter(isToolComponentElement);
   }
 
   function newProgramElement(toolName) {
@@ -262,12 +255,6 @@ function inst(containerCmp) {
     return path(element)
       .fnFind(isEvent)
       .or(mainEventHeadingSection);
-  }
-  function isEvent(elem) {
-    return elem && elem.dataset && elem.dataset.element == ToolNames.event;
-  }
-  function durationInputOf(event) {
-    return event.querySelector("duration-input");
   }
 
   function leaveOnlyHeadingVisible(elem) {

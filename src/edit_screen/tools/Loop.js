@@ -1,22 +1,46 @@
 import { createElement, element, text } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
-import * as ToolComponent from "./ToolComponent";
+import { create as createTool, programElemChildren, loopDuration } from "./ToolComponent";
 import { log } from "../../utils/Logging";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
 
 const LOOP_ICON = "fas fa-undo-alt";
 
 function create({iterations} = {}) {
-  let cmp = ToolComponent.create(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterations));
+  let durationDisplay = durationDisplayCmp(0);
+  let iterationsInput = loopIterationsInputCmp(iterations);
+
+  let cmp = createTool(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterationsInput, durationDisplay));
   //Shadow dom values are not cloned with cloneNode() call for some reason
   cmp.onDrag = (dragged, elem) => copyValuesOfCustomElements(elem, dragged.dragImage);
+
+  initChildMutationCallbacks(cmp.element, durationDisplay, iterationsInput);
+
   return cmp;
 }
 
-function loopHeadingCmp(iterations) {
+function initChildMutationCallbacks(element, durationDisplay, iterationsInput) {
+  let observer = new MutationObserver(() => {
+    let iterations = iterationsInput.value;
+    log("Loop children mutated. Duration: ", programElemChildren(element), calculateDuration(element, iterations));
+    durationDisplay.value = calculateDuration(element, iterations)
+  });
+  observer.observe(element, {childList: true});
+}
+
+function calculateDuration(element, iterations) {
+  // let children = programElemChildren(element);
+  // if (children.length > 0) {
+  //   log("Setting duration of = to * by:", element, elemDurationSum(children), iterations);
+  //   return elemDurationSum(children) * iterations;
+  // }
+  return loopDuration(element);
+}
+
+function loopHeadingCmp(iterationsInput, durationDisplay) {
   let heading = createElement("div", "pel__heading");
-  heading.appendChild(loopIterationsInputCmp(iterations));
-  heading.appendChild(durationDisplayCmp(0));
+  heading.appendChild(iterationsInput);
+  heading.appendChild(durationDisplay);
   return heading;
 }
 
@@ -53,7 +77,7 @@ function durationDisplayCmp() {
     attributes: {
       name: "eventDurationInput",
       disabled: true,
-      title: ""
+      title: "Loop duration"
     },
     value: 0
   });
