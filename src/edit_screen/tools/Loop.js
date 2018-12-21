@@ -3,6 +3,8 @@ import { ToolNames } from "./Tools";
 import { create as createTool, programElemChildren, loopDuration } from "./ToolComponent";
 import { log } from "../../utils/Logging";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
+import * as EventBus from "../../utils/EventBus";
+import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 
 const LOOP_ICON = "fas fa-undo-alt";
 
@@ -13,6 +15,11 @@ function create({iterations} = {}) {
   let cmp = createTool(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterationsInput, durationDisplay));
   //Shadow dom values are not cloned with cloneNode() call for some reason
   cmp.onDrag = (dragged, elem) => copyValuesOfCustomElements(elem, dragged.dragImage);
+
+  durationDisplay.onDurationChange(() => {
+    log("AMMA FIRING MAH LASER c LOOP");
+    EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);
+  });
 
   initChildMutationCallbacks(cmp.element, durationDisplay, iterationsInput);
 

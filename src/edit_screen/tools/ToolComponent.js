@@ -25,13 +25,8 @@ function dragAnchor() {
   return dragAnchor;
 }
 
-export function isToolComponentElement(elem) {
-  log("Is tool component?", elem, elem && elem.dataset && elem.dataset.element);
-  return elem && elem.dataset && elem.dataset.element;
-}
-
 export function programElemChildren(elem) {
-  return children(elem).filter(isToolComponentElement);
+  return children(elem).filter(isProgramElement);
 }
 export function elemDurationSum(children) {
   return children.reduce((duration, child) => duration + elemDuration(child), 0);
@@ -52,7 +47,12 @@ export function loopDuration(loop) {
 }
 export function eventDuration(event) {
   log("Duration input value of", event, durationInputOf(event).value);
-  return durationInputOf(event).value;
+  let children = programElemChildren(event);
+  return children.length > 0 ? elemDurationSum(children) : durationInputOf(event).value;
+}
+export function isProgramElement(elem) {
+  log("Is tool component?", elem, elem && elem.dataset && elem.dataset.element);
+  return elem && elem.dataset && elem.dataset.element;
 }
 export function isEvent(elem) {
   return elem && elem.dataset && elem.dataset.element == ToolNames.event;

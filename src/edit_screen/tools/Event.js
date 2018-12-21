@@ -27,7 +27,7 @@ function create({name, duration} = {}) {
   // function reactToChildElements(mutations) {
   //   let sortedMutations = sortMutations(mutations);
   //   log("Mutations detected in:", cmp.element, sortedMutations);
-  //   let childElems = children(cmp.element).filter(ToolComponent.isToolComponentElement);
+  //   let childElems = children(cmp.element).filter(ToolComponent.isProgramElement);
   //   if (childElems.length > 0) {
   //     disable(durationInput);
   //   }
@@ -38,8 +38,8 @@ function create({name, duration} = {}) {
 //   let added = [];
 //   let removed = [];
 //   mutations.forEach(mutation => {
-//     added.push(arr(mutation.addedNodes).filter(ToolComponent.isToolComponentElement));
-//     removed.push(arr(mutation.removedNodes).filter(ToolComponent.isToolComponentElement));
+//     added.push(arr(mutation.addedNodes).filter(ToolComponent.isProgramElement));
+//     removed.push(arr(mutation.removedNodes).filter(ToolComponent.isProgramElement));
 //   });
 //   return {added, removed};
 // }

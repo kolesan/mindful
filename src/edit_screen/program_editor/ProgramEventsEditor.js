@@ -16,7 +16,7 @@ import { log } from "../../utils/Logging";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import {
-  durationInputOf, elemDurationSum, isEvent,
+  durationInputOf, elemDurationSum, eventDuration, isEvent, isLoop, loopDuration,
   programElemChildren
 } from "../tools/ToolComponent";
 
@@ -214,20 +214,17 @@ function inst(containerCmp) {
   }
 
   function recalculateParentDuration(element) {
-    // log("Recalculating duration for", element);
-
-    path(element)
-      .fnFind(isEvent)
-      .ifPresent(recalculateDuration)
-      .ifEmpty(recalculateMainEventDuration);
-
-    function recalculateDuration(event) {
-      // log("Recalculating duration for parent", durationInputOf(event));
-      durationInputOf(event).value = elemDurationSum(programElemChildren(event));
-    }
-    function recalculateMainEventDuration() {
-      // log("Recalculating duration for main", mainEventDurationInput);
+    log("After event REcalculating duration for", element);
+    let parent = element.parentNode;
+    if (isEvent(parent)) {
+      durationInputOf(parent).value = eventDuration(parent);
+    } else if (isLoop(parent)) {
+      durationInputOf(parent).value = loopDuration(parent);
+    } else if (parent.isSameNode(childEventsEditorCmp)) {
       mainEventDurationInput.value = elemDurationSum(programElemChildren(childEventsEditorCmp));
+    } else {
+      log(parent);
+      throw Error("Program element not supported");
     }
   }
   function hasChildProgramElements(elem) {
