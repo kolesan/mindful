@@ -16,6 +16,7 @@ function create({iterations} = {}) {
 function loopHeadingCmp(iterations) {
   let heading = createElement("div", "pel__heading");
   heading.appendChild(loopIterationsInputCmp(iterations));
+  heading.appendChild(durationDisplayCmp(0));
   return heading;
 }
 
@@ -42,6 +43,19 @@ function loopIterationsInputCmp(iterations = 2) {
     children: [
       label
     ]
+  });
+}
+
+function durationDisplayCmp() {
+  return element({
+    tag: "duration-input",
+    classes: "text_input peeh__duration_input",
+    attributes: {
+      name: "eventDurationInput",
+      disabled: true,
+      title: ""
+    },
+    value: 0
   });
 }
 

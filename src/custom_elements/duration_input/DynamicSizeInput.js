@@ -1,6 +1,7 @@
 import { createElement, element } from "../../utils/HtmlUtils";
-import { log } from "../../utils/Logging";
 import { DISABLED_ATTR, MAX_ATTR, MIN_ATTR, TYPE_ATTR } from "../../utils/AttributeConstants";
+import { log } from "../../utils/Logging";
+import { minmax, noop } from "../../utils/Utils";
 
 const MAX_SIZE_ATTR = "maxsize";
 
@@ -12,26 +13,24 @@ export class DynamicSizeInput extends HTMLElement {
     super();
 
     this.input = this.inputCmp();
+    this.onInputCb = noop;
 
     let shadow = this.attachShadow({mode: 'open'});
     shadow.appendChild(
       element({
         tag: "label",
         children: [
-          this.slot("left"),
+          slot("left"),
           this.input,
-          this.slot("right")
+          slot("right")
         ]
       })
     );
     shadow.appendChild(style());
   }
 
-  slot(name) {
-    return element({
-      tag: "slot",
-      attributes: { name }
-    })
+  onInput(cb) {
+    this.onInputCb = cb;
   }
 
   static get observedAttributes() {
@@ -48,6 +47,7 @@ export class DynamicSizeInput extends HTMLElement {
 
   set value(v) {
     this.input.value = v;
+    log("Setting value to dynamic size input", this.input);
     this.setSize(this.input);
   }
 
@@ -60,9 +60,20 @@ export class DynamicSizeInput extends HTMLElement {
     return element({
       tag: "input",
       listeners: {
-        input: event => this.setSize(event.target)
+        input: event => {
+          log("Dynamic size input listener triggered");
+          this.numberInputSpecifics(event.target);
+          this.setSize(event.target);
+          this.onInputCb();
+        }
       }
     });
+  }
+
+  numberInputSpecifics(input) {
+    if (this.type == "number") {
+      input.value = String(minmax(this.minValue, this.maxValue)(Number(input.value) || 0));
+    }
   }
 
   setSize(input) {
@@ -78,9 +89,23 @@ export class DynamicSizeInput extends HTMLElement {
     return this.getAttribute(MAX_SIZE_ATTR) || DEFAULT_SIZE;
   }
 
+  get maxValue() {
+    return this.getAttribute(MAX_ATTR);
+  }
+  get minValue() {
+    return this.getAttribute(MIN_ATTR);
+  }
+
   get type() {
     return this.getAttribute(TYPE_ATTR) || DEFAULT_TYPE;
   }
+}
+
+function slot(name) {
+  return element({
+    tag: "slot",
+    attributes: { name }
+  })
 }
 
 function style() {

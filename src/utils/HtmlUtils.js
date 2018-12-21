@@ -1,4 +1,5 @@
 import { log } from "./Logging";
+import { arr } from "./Utils";
 
 function isArray(o) {
   return Array.prototype.isPrototypeOf(o);
@@ -74,4 +75,22 @@ export function replaceWithClone(node) {
   let clone = node.cloneNode(true);
   node.parentNode.replaceChild(clone, node);
   return clone;
+}
+export function path(node) {
+  let path = [];
+  let parent = node.parentNode;
+  while(parent) {
+    path.push(parent);
+    parent = parent.parentNode;
+  }
+  return path;
+}
+export function children(node) {
+  return arr(node.children);
+}
+export function disable(elem) {
+  elem && elem.setAttribute("disabled", "true");
+}
+export function enable(elem) {
+  elem && elem.removeAttribute("disabled");
 }

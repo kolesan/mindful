@@ -146,6 +146,7 @@
 .pel__heading {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 .pee__heading {
     display: flex;

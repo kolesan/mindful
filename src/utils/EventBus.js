@@ -10,6 +10,7 @@ function instantiate() {
       if (listenersOfType) {
         listenersOfType.forEach(listener => listener(...args));
       }
+      return this;
     },
     bindListener: function(eventType, listener) {
       validateListener(listener);
@@ -19,6 +20,7 @@ function instantiate() {
       } else {
         listeners.put(eventType, [listener]);
       }
+      return this;
     }
   });
 }

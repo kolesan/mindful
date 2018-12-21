@@ -48,3 +48,11 @@ export function last(arr) {
 export function noSpaces(s) {
   return s.replace(/\s/g, "");
 }
+
+export function isFn(o) {
+  return Function.isPrototypeOf(o);
+}
+
+export function arr(o) {
+  return Array.from(o);
+}

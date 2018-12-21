@@ -1,7 +1,9 @@
 import './program_events_editor.css';
 
 import { makeDropZone } from "../dragndrop/DropZone";
-import { createElement, removeChildNodes, removeComponent } from "../../utils/HtmlUtils";
+import {
+  children, createElement, disable, enable, path, removeChildNodes, removeComponent
+} from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
 import { sgong } from "../../EventCallbacks";
@@ -11,17 +13,22 @@ import { ToolNames, Tools } from "../tools/Tools";
 import * as TreeUtils from "../../utils/TreeUtils";
 import { fade } from "../../utils/Utils";
 import { log } from "../../utils/Logging";
+import * as EventBus from "../../utils/EventBus";
+import { DURATION_CHANGED_EVENT } from "../../utils/Events";
+import { isToolComponentElement } from "../tools/ToolComponent";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
   let mainEventHeadingSection = containerCmp.querySelector(".program_events__main__heading");
-  let mainEventDurationCmp = mainEventHeadingSection.querySelector("[name=mainEventDurationInput");
+  let mainEventDurationInput = mainEventHeadingSection.querySelector("[name=mainEventDurationInput");
   let mainEventNameInput = mainEventHeadingSection.querySelector("[name=mainEventNameInput");
 
   let dragHereCmp = createDragHereTextCmp();
   let programEditorDropZone = makeEditorDropZone();
   let placeholder = createPlaceholder();
   let showingPlaceholder = false;
+
+  EventBus.globalInstance.bindListener(DURATION_CHANGED_EVENT, recalculateParentDuration);
 
   let mainEventNameValidator = InputValidator.inst(mainEventNameInput)
     .bindValidation(alphanumericValidation)
@@ -32,6 +39,8 @@ function inst(containerCmp) {
 
   initScrollBarStyleSheet();
 
+  // new MutationObserver(mutations => log("editor", mutations)).observe(childEventsEditorCmp, {childList: true, subtree: true});
+
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
@@ -39,14 +48,21 @@ function inst(containerCmp) {
     },
     load(mainEvent) {
       mainEventNameInput.value = mainEvent.name;
-      mainEventDurationCmp.value = mainEvent.duration;
+      mainEventDurationInput.value = mainEvent.duration;
 
       markValid(mainEventNameInput);
 
       removeChildNodes(childEventsEditorCmp, it => it.dataset.element);
-      let viewElements = ModelViewConverter.programToView(mainEvent, makeCmpDraggable);
+      let viewElements = ModelViewConverter.programToView(mainEvent, cmp => {
+        makeCmpDraggable(cmp);
+        log(cmp);
+        if (hasChildProgramElements(cmp.element)) {
+          disable(durationInputOf(cmp.element));
+        }
+      });
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
+        disable(mainEventDurationInput);
         hideDragHereTxt();
       } else {
         showDragHereTxt();
@@ -56,7 +72,7 @@ function inst(containerCmp) {
     save() {
       return {
         name: mainEventNameInput.value,
-        duration: mainEventDurationCmp.value,
+        duration: mainEventDurationInput.value,
         callback: sgong,
         children: ModelViewConverter.viewToProgram(childEventsEditorCmp.children)
       };
@@ -120,7 +136,7 @@ function inst(containerCmp) {
   }
   function createDragHereTextCmp() {
     let wrapper = createElement("div", "program__drag_here_txt_wrapper");
-    wrapper.appendChild(createElement("div", "program__drag_here_txt", "Drag items here to construct program"));
+    wrapper.appendChild(createElement("div", "program__drag_here_txt", "Drag items here to construct a program"));
     return wrapper;
   }
 
@@ -184,9 +200,47 @@ function inst(containerCmp) {
     parent.insertBefore(element, placeholder);
 
     if (element.dataset.element == ToolNames.event) {
-      disableDurationInput(closestEvent(parent));
+      disable(durationInputOf(closestEvent(element)));
+      recalculateParentDuration(element);
     }
   }
+
+  function recalculateParentDuration(element) {
+    // log("Recalculating duration for", element);
+
+    path(element)
+      .fnFind(isEvent)
+      .ifPresent(recalculateDuration)
+      .ifEmpty(recalculateMainEventDuration);
+
+    function recalculateDuration(event) {
+      // log("Recalculating duration for parent", durationInputOf(event));
+      durationInputOf(event).value = elemDurationSum(programElemChildren(event));
+    }
+    function recalculateMainEventDuration() {
+      // log("Recalculating duration for main", mainEventDurationInput);
+      mainEventDurationInput.value = elemDurationSum(programElemChildren(childEventsEditorCmp));
+    }
+    function elemDurationSum(children) {
+      return children.reduce((duration, child) => duration + elemDuration(child), 0);
+    }
+    function elemDuration(elem) {
+      return isEvent(elem) ? eventDuration(elem) : loopDuration(elem);
+    }
+    function loopDuration(loop) {
+      return elemDurationSum(programElemChildren(loop)) * loop.dataset.iterations;
+    }
+    function eventDuration(event) {
+      return durationInputOf(event).value;
+    }
+  }
+  function hasChildProgramElements(elem) {
+    return programElemChildren(elem).length > 0;
+  }
+  function programElemChildren(elem) {
+    return children(elem).filter(isToolComponentElement);
+  }
+
   function newProgramElement(toolName) {
     let cmp = Tools.create(toolName);
     makeCmpDraggable(cmp);
@@ -198,26 +252,22 @@ function inst(containerCmp) {
         leaveOnlyHeadingVisible(dragged.dragImage);
         onDrag && onDrag(dragged, element);
         dragged.data.put("element", element);
-        enableDurationInput(closestEvent(element.parentNode));
+        enable(durationInputOf(closestEvent(element)));
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
       .allowTouch();
   }
-  function closestEvent(parent) {
-    while (parent.dataset.element != ToolNames.event) {
-      if (parent.isSameNode(childEventsEditorCmp)) {
-        return mainEventHeadingSection;
-      }
-      parent = parent.parentNode;
-    }
-    return parent;
+  function closestEvent(element) {
+    return path(element)
+      .fnFind(isEvent)
+      .or(mainEventHeadingSection);
   }
-  function enableDurationInput(event) {
-    event.querySelector("duration-input").removeAttribute("disabled");
+  function isEvent(elem) {
+    return elem && elem.dataset && elem.dataset.element == ToolNames.event;
   }
-  function disableDurationInput(event) {
-    event.querySelector("duration-input").setAttribute("disabled", "true");
+  function durationInputOf(event) {
+    return event.querySelector("duration-input");
   }
 
   function leaveOnlyHeadingVisible(elem) {

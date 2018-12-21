@@ -24,4 +24,8 @@ function dragAnchor() {
   return dragAnchor;
 }
 
-export { create };
+function isToolComponentElement(elem) {
+  return elem && elem.dataset && elem.dataset.element;
+}
+
+export { create, isToolComponentElement };

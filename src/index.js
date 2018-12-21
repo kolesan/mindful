@@ -1,6 +1,7 @@
 import './style.css';
 
 import './custom_elements/CustomElementsRegistry';
+import './utils/PrototypeExtensions';
 
 import * as Drawer from './drawer/DrawerMenu';
 import * as eventBus from './utils/EventBus';

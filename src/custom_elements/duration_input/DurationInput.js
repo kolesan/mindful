@@ -1,68 +1,58 @@
-import { createElement, element, text } from "../../utils/HtmlUtils";
+import { createElement, element, text, disable, enable } from "../../utils/HtmlUtils";
 import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
-import * as Utils from "../../utils/Utils";
 import { log } from "../../utils/Logging";
 import { DISABLED_ATTR } from "../../utils/AttributeConstants";
+import { noop } from "../../utils/Utils";
 
 export class DurationInput extends HTMLElement {
   constructor() {
     super();
 
-    this.h = numberInput(24, "h");
-    this.m = numberInput(60, "m");
-    this.s = numberInput(60, "s");
+    this.h = this.createInnerInput(23, "h");
+    this.m = this.createInnerInput(59, "m");
+    this.s = this.createInnerInput(59, "s");
+    this.onDurationChangeCb = noop;
 
     let shadow = this.attachShadow({mode: 'open'});
-    shadow.appendChild(this.h.input);
-    shadow.appendChild(this.m.input);
-    shadow.appendChild(this.s.input);
+    shadow.appendChild(this.h);
+    shadow.appendChild(this.m);
+    shadow.appendChild(this.s);
     shadow.appendChild(style());
 
-    this.addEventListener("blur", this.hideAllEmptyFieldsLeaveSecondsIfZero.bind(this));
+    this.addEventListener("blur", this.setInnerInputVisibility.bind(this));
     this.addEventListener("focus", this.showAllFields.bind(this));
-    log("FINISHED CONSTRUCTION OF DURATION INPUT");
   }
 
-  connectedCallback() {
-    if (!(this.getAttribute(DISABLED_ATTR) == "true")) {
-      this.title = "Event duration";
-    }
+  onDurationChange(cb) {
+    this.onDurationChangeCb = cb;
   }
-
 
   static get observedAttributes() {
     return [DISABLED_ATTR];
   }
   attributeChangedCallback(name, oldValue, newValue) {
     if (newValue == "true") {
-      log("DISABLED THE DURATION INPUT DUE TO ATTRIBUTE CHANGE");
-      this.applyToAll(this.disable);
-      this.title = "Can not set duration of event that has children";
+      this.applyToInnerInputs(disable);
+      this.title = "Can not set duration of an event that has children";
     } else {
-      this.applyToAll(this.enable);
-      this.title = "Event duration";
+      this.applyToInnerInputs(enable);
+      this.title = "";
     }
   }
 
-  applyToAll(fn) {
-    fn(this.h.input);
-    fn(this.m.input);
-    fn(this.s.input);
-  }
-  disable(elem) {
-    elem.setAttribute("disabled", "true");
-  }
-  enable(elem) {
-    elem.removeAttribute("disabled");
+  applyToInnerInputs(fn) {
+    fn(this.h);
+    fn(this.m);
+    fn(this.s);
   }
 
   set value(v) {
-    console.log("SETTING DURATION VALUE", v);
     let { h, m, s } = timestampToTimeObject(v);
-    this.h.input.value = h;
-    this.m.input.value = m;
-    this.s.input.value = s;
-    this.hideAllEmptyFieldsLeaveSecondsIfZero();
+    this.h.value = h;
+    this.m.value = m;
+    this.s.value = s;
+    this.onDurationChangeCb();
+    this.setInnerInputVisibility();
   }
   get value() {
     let h = this.h.value;
@@ -72,89 +62,61 @@ export class DurationInput extends HTMLElement {
   }
 
   showAllFields() {
-    this.applyToAll(this.show);
+    this.applyToInnerInputs(show);
   }
 
-  hideAllEmptyFieldsLeaveSecondsIfZero() {
-    let hoursHidden = this.hideEmpty(this.h);
-    let minutesHidden = this.hideEmpty(this.m);
-    let secondsHidden = false;
-    if (!hoursHidden || !minutesHidden) {
-      secondsHidden = this.hideEmpty(this.s);
-    }
-
-    if (hoursHidden && secondsHidden) {
-      this.removeMargin(this.m.input);
-    } else if (minutesHidden && secondsHidden) {
-      this.removeMargin(this.h.input);
-    }
-  }
-  hideEmpty({input, value}) {
-    //Implicit coercion needed here because value will sometimes be string and sometimes number
-    let empty = value == 0;
-    if (empty) {
-      this.hide(input);
-    } else {
-      this.show(input);
-    }
-    return empty;
-  }
-  removeMargin(input) {
-    input.style.marginRight = 0;
+  setInnerInputVisibility() {
+    [this.s, this.m, this.h]
+      .fnEach(input => input.value > 0 ? show(input) : hide(input))
+      .fnFind(isVisible)
+      .ifPresent(input => removeRightMargin(input))
+      .ifEmpty(() => show(this.s));
   }
 
-  show(elem) {
-    elem.classList.remove("hidden");
-    elem.style.marginRight = "";
-  }
-
-  hide(elem) {
-    elem.classList.add("hidden");
+  createInnerInput(max, labelTxt) {
+    let input = numberInput(max, labelTxt);
+    input.onInput(() => this.onDurationChangeCb());
+    return input;
   }
 }
 
-function numberInput(max, labelTxt) {
-  let input = createInput(max);
-  let minmax = Utils.minmax(0, max);
+function show(elem) {
+  elem.classList.remove("hidden");
+  elem.style.marginRight = "";
+}
+function hide(elem) {
+  elem.classList.add("hidden");
+}
+function isVisible(elem) {
+  return !elem.classList.contains("hidden");
+}
+function removeRightMargin(elem) {
+  elem.style.marginRight = 0;
+}
 
-  return Object.freeze({
-    get input() { return input },
-    get value() { return input.value }
+function numberInput(max, labelTxt) {
+  let label = element({
+    tag: "span",
+    attributes: {
+      slot: "right"
+    },
+    children: [text(labelTxt)]
   });
 
-  function createInput(max) {
-
-    let label = element({
-      tag: "span",
-      attributes: {
-        slot: "right"
-      },
-      children: [text(labelTxt)]
-    });
-
-    return element({
-      tag: "dynamic-size-input",
-      classes: "text_input input_section",
-      value: 0,
-      attributes: {
-        type: "number",
-        maxsize: 4,
-        min: 0,
-        max: max
-      },
-      children: [
-        label
-      ],
-      listeners: {
-        input: event => setInputValue(event.target)
-      }
-    });
-  }
-
-  function setInputValue(input) {
-    let v = Number(input.value) || 0;
-    input.value = String(minmax(v));
-  }
+  return element({
+    tag: "dynamic-size-input",
+    classes: "text_input input_section",
+    value: 0,
+    attributes: {
+      type: "number",
+      maxsize: 4,
+      min: 0,
+      max: max
+    },
+    children: [
+      label
+    ]
+  });
 }
 
 function style() {

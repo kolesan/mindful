@@ -30,7 +30,8 @@ function programToView(parent, afterToolCreationHook) {
   parent.children.forEach(programElement => {
     let toolCmp = Tools.create(programElement.element, programElement);
     let viewElement = toolCmp.element;
-    programToView(programElement, afterToolCreationHook).forEach(it => viewElement.appendChild(it));
+    let children = programToView(programElement, afterToolCreationHook);
+    children.forEach(it => viewElement.appendChild(it));
     afterToolCreationHook(toolCmp);
     elements.push(viewElement)
   });
