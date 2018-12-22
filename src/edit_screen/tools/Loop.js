@@ -1,6 +1,6 @@
 import { createElement, element, text } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
-import { create as createTool, programElemChildren, loopDuration } from "./ToolComponent";
+import { create as createTool, loopDuration } from "./ToolComponent";
 import { log } from "../../utils/Logging";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
 import * as EventBus from "../../utils/EventBus";
