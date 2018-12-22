@@ -12,7 +12,7 @@ function programBuilder(name) {
       addElem(newLoop(iterations));
       return this;
     },
-    event(name, duration, callback) {
+    event(name, duration, callback = noop) {
       addElem(newEvent(name, duration, callback));
       return this;
     },
@@ -63,12 +63,13 @@ let yogaProgram = {
     01h total
   `,
   mainEvent: programBuilder( `Mindful Yoga` )
-                     .event( `Preparation`,      s(30), fsgong ).end()
+                     .event( `Preparation`,      s(30), ffgong ).end()
                      .loop(50)
-                       .event( `Hold pose {i}`, s(70), fgong  )
-                         .event( `1/2`,          s(30), ffgong ).end()
-                         .event( `2/2`,          s(30), ffgong ).end()
+                       .event( `Hold pose {i}`, s(60) )
+                         .event( `1/2`,          s(30), fsgong ).end()
+                         .event( `2/2`,          s(30), fsgong ).end()
                        .end()
+                       .event( `Change pose`,  s(10), ffgong ).end()
                      .end()
                      .event( `Chill`,            s(70), sgong  )
                      .build()
