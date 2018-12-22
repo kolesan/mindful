@@ -54,5 +54,5 @@ export function isFn(o) {
 }
 
 export function arr(o) {
-  return Array.from(o);
+  return (o && Array.from(o)) || [];
 }
