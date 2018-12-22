@@ -20,7 +20,9 @@ function create({iterations} = {}) {
     log("AMMA FIRING MAH LASER c LOOP");
     EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);
   });
-
+  iterationsInput.onInput(() => {
+    durationDisplay.value = loopDuration(cmp.element);
+  });
   initChildMutationCallbacks(cmp.element, durationDisplay, iterationsInput);
 
   return cmp;
@@ -28,20 +30,9 @@ function create({iterations} = {}) {
 
 function initChildMutationCallbacks(element, durationDisplay, iterationsInput) {
   let observer = new MutationObserver(() => {
-    let iterations = iterationsInput.value;
-    log("Loop children mutated. Duration: ", programElemChildren(element), calculateDuration(element, iterations));
-    durationDisplay.value = calculateDuration(element, iterations)
+    durationDisplay.value = loopDuration(element);
   });
   observer.observe(element, {childList: true});
-}
-
-function calculateDuration(element, iterations) {
-  // let children = programElemChildren(element);
-  // if (children.length > 0) {
-  //   log("Setting duration of = to * by:", element, elemDurationSum(children), iterations);
-  //   return elemDurationSum(children) * iterations;
-  // }
-  return loopDuration(element);
 }
 
 function loopHeadingCmp(iterationsInput, durationDisplay) {
