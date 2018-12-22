@@ -8,6 +8,7 @@ import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
 import { programElemChildren } from "./ToolComponent";
+import { eventDuration } from "./ToolComponent";
 
 const EVENT_ICON = "fas fa-bell";
 
@@ -30,6 +31,7 @@ function initChildMutationCallbacks(element, durationInput) {
     let children = programElemChildren(element);
     if (children.length > 0) {
       disable(durationInput);
+      durationInput.value = eventDuration(element);
     } else {
       enable(durationInput);
     }

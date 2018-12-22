@@ -220,9 +220,6 @@ function inst(containerCmp) {
       throw Error("Program element not supported");
     }
   }
-  function hasChildProgramElements(elem) {
-    return programElemChildren(elem).length > 0;
-  }
 
   function newProgramElement(toolName) {
     let cmp = Tools.create(toolName);
