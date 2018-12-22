@@ -23,12 +23,12 @@ function create({iterations} = {}) {
   iterationsInput.onInput(() => {
     durationDisplay.value = loopDuration(cmp.element);
   });
-  initChildMutationCallbacks(cmp.element, durationDisplay, iterationsInput);
+  initChildMutationCallbacks(cmp.element, durationDisplay);
 
   return cmp;
 }
 
-function initChildMutationCallbacks(element, durationDisplay, iterationsInput) {
+function initChildMutationCallbacks(element, durationDisplay) {
   let observer = new MutationObserver(() => {
     durationDisplay.value = loopDuration(element);
   });
