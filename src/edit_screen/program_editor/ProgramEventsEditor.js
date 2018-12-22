@@ -48,6 +48,7 @@ function inst(containerCmp) {
     let childElementsObserver = new MutationObserver(() => {
       let children = programElemChildren(childEventsEditorCmp);
       if (children.length > 0) {
+        mainEventDurationInput.value = elemDurationSum(programElemChildren(childEventsEditorCmp));
         disable(mainEventDurationInput);
         let iconElement = iconElem("fas fa-bell-slash");
         mainEventIcon.parentNode.replaceChild(iconElement, mainEventIcon);
