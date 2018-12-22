@@ -2,11 +2,11 @@ import './program_events_editor.css';
 
 import { makeDropZone } from "../dragndrop/DropZone";
 import {
-  createElement, disable, path, removeChildNodes, removeComponent
+  createElement, disable, enable, iconElem, path, removeChildNodes, removeComponent
 } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
-import { sgong } from "../../EventCallbacks";
+import { noop, sgong } from "../../EventCallbacks";
 import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
 import { ToolNames, Tools } from "../tools/Tools";
@@ -22,6 +22,7 @@ import {
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
+  let mainEventIcon = containerCmp.querySelector(".program_events__main > i");
   let mainEventHeadingSection = containerCmp.querySelector(".program_events__main__heading");
   let mainEventDurationInput = mainEventHeadingSection.querySelector("[name=mainEventDurationInput");
   let mainEventNameInput = mainEventHeadingSection.querySelector("[name=mainEventNameInput");
@@ -42,6 +43,29 @@ function inst(containerCmp) {
 
   initScrollBarStyleSheet();
 
+  //TODO make main event also a program element event so this logic would not be duplicated
+  (function initChildMutationCallbacks() {
+    let childElementsObserver = new MutationObserver(() => {
+      let children = programElemChildren(childEventsEditorCmp);
+      if (children.length > 0) {
+        disable(mainEventDurationInput);
+        let iconElement = iconElem("fas fa-bell-slash");
+        mainEventIcon.parentNode.replaceChild(iconElement, mainEventIcon);
+        mainEventIcon = iconElement;
+        mainEventIcon.style.opacity = 0.6;
+        mainEventIcon.title = "Events with children are muted";
+      } else {
+        enable(mainEventDurationInput);
+        let iconElement = iconElem("fas fa-bell");
+        mainEventIcon.parentNode.replaceChild(iconElement, mainEventIcon);
+        mainEventIcon = iconElement;
+        mainEventIcon.style.opacity = "";
+        mainEventIcon.title = "Event completion sound";
+      }
+    });
+    childElementsObserver.observe(childEventsEditorCmp, {childList: true});
+  })();
+
   return Object.freeze({
     get dropZone() { return programEditorDropZone },
     init() {
@@ -59,7 +83,14 @@ function inst(containerCmp) {
       });
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
-        disable(mainEventDurationInput);
+        // disable(mainEventDurationInput);
+        // let iconElement = iconElem("fas fa-bell-slash");
+        // log(mainEventIcon);
+        // mainEventIcon.parentNode.replaceChild(iconElement, mainEventIcon);
+        // mainEventIcon = iconElement;
+        // mainEventIcon.style.opacity = 0.6;
+        // mainEventIcon.title = "Events with children are muted";
+
         hideDragHereTxt();
       } else {
         showDragHereTxt();
@@ -67,11 +98,12 @@ function inst(containerCmp) {
       setScrollbarWidth();
     },
     save() {
+      let programElements = ModelViewConverter.viewToProgram(childEventsEditorCmp.children);
       return {
         name: mainEventNameInput.value,
         duration: mainEventDurationInput.value,
-        callback: sgong,
-        children: ModelViewConverter.viewToProgram(childEventsEditorCmp.children)
+        callback: programElements.length > 0 ? noop : sgong,
+        children: programElements
       };
     },
     validate() {
