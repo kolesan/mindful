@@ -1,7 +1,7 @@
+import { log } from "../../utils/Logging";
 import { createElement, element, text } from "../../utils/HtmlUtils";
 import { ToolNames } from "./Tools";
 import { create as createTool, loopDuration } from "./ToolComponent";
-import { log } from "../../utils/Logging";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
@@ -17,7 +17,6 @@ function create({iterations} = {}) {
   cmp.onDrag = (dragged, elem) => copyValuesOfCustomElements(elem, dragged.dragImage);
 
   durationDisplay.onDurationChange(() => {
-    log("AMMA FIRING MAH LASER c LOOP");
     EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);
   });
   iterationsInput.onInput(() => {

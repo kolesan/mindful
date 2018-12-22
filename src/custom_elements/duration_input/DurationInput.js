@@ -1,16 +1,22 @@
 import { log } from "../../utils/Logging";
 import { createElement, element, text, disable, enable } from "../../utils/HtmlUtils";
-import { timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
+import { h, m, s, timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 import { DISABLED_ATTR } from "../../utils/AttributeConstants";
-import { noop } from "../../utils/Utils";
+import { minmax, noop } from "../../utils/Utils";
+
+const MAX_H = 23;
+const MAX_M = 59;
+const MAX_S = 59;
+const MAX_T = h(MAX_H) + m(MAX_M) + s(MAX_S);
 
 export class DurationInput extends HTMLElement {
   constructor() {
     super();
 
-    this.h = this.createInnerInput(23, "h");
-    this.m = this.createInnerInput(59, "m");
-    this.s = this.createInnerInput(59, "s");
+    this.minmax = minmax(0, MAX_T);
+    this.h = this.createInnerInput(MAX_H, "h");
+    this.m = this.createInnerInput(MAX_M, "m");
+    this.s = this.createInnerInput(MAX_S, "s");
     this.onDurationChangeCb = noop;
 
     let shadow = this.attachShadow({mode: 'open'});
@@ -47,7 +53,7 @@ export class DurationInput extends HTMLElement {
   }
 
   set value(v) {
-    let { h, m, s } = timestampToTimeObject(v);
+    let { h, m, s } = timestampToTimeObject(this.minmax(v));
     this.h.value = h;
     this.m.value = m;
     this.s.value = s;

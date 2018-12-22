@@ -1,16 +1,8 @@
 import { noop, fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
 import { ToolNames } from "../edit_screen/tools/Tools";
 import { last } from "../utils/Utils";
+import { s, m } from "../utils/TimeUtils";
 
-function s(c) {
-  return c*1000;
-}
-function m(c) {
-  return s(c)*60;
-}
-function h(c) {
-  return m(c)*60;
-}
 function programBuilder(name) {
   let programDuration = 0;
   let program = newEvent(name, programDuration, noop);

@@ -2,12 +2,14 @@ const sd = 1000;
 const md = sd*60;
 const hd = md*60;
 
-export function parseTimeString(timeString) {
-  let timeArray = timeString.split(":");
-  let h = Number(timeArray[0]) || 0;
-  let m = Number(timeArray[1]) || 0;
-  let s = Number(timeArray[2]) || 0;
-  return h*1000*60*60 + m*1000*60 + s*1000;
+export function s(c) {
+  return c*1000;
+}
+export function m(c) {
+  return s(c)*60;
+}
+export function h(c) {
+  return m(c)*60;
 }
 
 export function timeObject(h, m, s) {

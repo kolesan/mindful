@@ -48,6 +48,9 @@ export class DynamicSizeInput extends HTMLElement {
   set value(v) {
     this.input.value = v;
     log("Setting value to dynamic size input", this.input);
+    if (this.type == "number") {
+      this.minmaxValue(this.input);
+    }
     this.setSize(this.input);
   }
 
@@ -62,7 +65,9 @@ export class DynamicSizeInput extends HTMLElement {
       listeners: {
         input: event => {
           log("Dynamic size input listener triggered");
-          this.numberInputSpecifics(event.target);
+          if (this.type == "number") {
+            this.minmaxValue(event.target);
+          }
           this.setSize(event.target);
           this.onInputCb();
         }
@@ -70,10 +75,8 @@ export class DynamicSizeInput extends HTMLElement {
     });
   }
 
-  numberInputSpecifics(input) {
-    if (this.type == "number") {
-      input.value = String(minmax(this.minValue, this.maxValue)(Number(input.value) || 0));
-    }
+  minmaxValue(input) {
+    input.value = String(minmax(this.minValue, this.maxValue)(Number(input.value) || 0));
   }
 
   setSize(input) {
