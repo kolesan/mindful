@@ -1,6 +1,6 @@
 import { newEventStack } from "../utils/Stack";
 import { instantiate as createEventBus } from '../utils/EventBus';
-import * as log from '../utils/Logging';
+import { log } from '../utils/Logging';
 
 let TimerEvent = {
   idCounter: 0,
@@ -89,7 +89,7 @@ let Timer = {
     this.currentTime += 1000;
     this.fire(this.Events.TICK, this.currentTime);
 
-    if (this.currentTime >= this.eventStack.head().event.endTime) {
+    while (this.currentTime >= this.eventStack.head().event.endTime) {
       this.eventStack.head().event.callback();
 
       let stackBefore = this.eventStack.snapshot();
@@ -101,6 +101,7 @@ let Timer = {
       if (this.eventStack.empty()) {
         this.stop();
         this.fire(this.Events.FINISH);
+        break;
       }
     }
   },
