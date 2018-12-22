@@ -83,14 +83,6 @@ function inst(containerCmp) {
       });
       if (viewElements.length > 0) {
         viewElements.forEach(viewElement => childEventsEditorCmp.appendChild(viewElement));
-        // disable(mainEventDurationInput);
-        // let iconElement = iconElem("fas fa-bell-slash");
-        // log(mainEventIcon);
-        // mainEventIcon.parentNode.replaceChild(iconElement, mainEventIcon);
-        // mainEventIcon = iconElement;
-        // mainEventIcon.style.opacity = 0.6;
-        // mainEventIcon.title = "Events with children are muted";
-
         hideDragHereTxt();
       } else {
         showDragHereTxt();
@@ -99,12 +91,18 @@ function inst(containerCmp) {
     },
     save() {
       let programElements = ModelViewConverter.viewToProgram(childEventsEditorCmp.children);
-      return {
+      let mainEvent = {
         name: mainEventNameInput.value,
         duration: mainEventDurationInput.value,
         callback: programElements.length > 0 ? noop : sgong,
         children: programElements
       };
+      //TODO temporary fix until user can select callback from the UI
+      let visitor = TreeUtils.postorderRightToLeftVisitor(mainEvent);
+      let lastNode = visitor.next();
+      lastNode.value.callback = sgong;
+      visitor.return();
+      return mainEvent;
     },
     validate() {
       let invalidElem = TreeUtils.flatten(childEventsEditorCmp).find(elem => elem.dataset.valid === "false");
