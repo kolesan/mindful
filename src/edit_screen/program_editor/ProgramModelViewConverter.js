@@ -1,4 +1,4 @@
-import { fgong, fsgong } from "../../EventCallbacks";
+import { fgong, fsgong, noop } from "../../EventCallbacks";
 import { Tools, ToolNames } from "../tools/Tools";
 
 function viewToProgram(viewChildren, depth = 0) {
@@ -15,7 +15,10 @@ function viewToProgram(viewChildren, depth = 0) {
       case ToolNames.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;
         let duration = viewElement.querySelector("[name=eventDurationInput").value;
-        let callback = depth == 0 ? fgong : fsgong;
+        let callback = viewElement.dataset.muted == "true" ?
+          noop :
+          depth == 0 ? fgong : fsgong;
+
         Object.assign(programElement, {name, duration, callback});
         break;
     }

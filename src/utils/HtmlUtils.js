@@ -61,14 +61,14 @@ export function removeChildNodes(parent, predicate = ()=>true) {
   });
 }
 
-export function iconCmp(classes) {
+export function iconElem(classes) {
   return createElement("i", classes);
 }
 
-export function setIcon(cmp, iconClasses) {
-  let newIcon = iconCmp(iconClasses);
-  let oldIcon = cmp.querySelector("i");
-  cmp.replaceChild(newIcon, oldIcon);
+export function setChildIcon(elem, iconClasses) {
+  let newIcon = iconElem(iconClasses);
+  let oldIcon = elem.querySelector("i");
+  elem.replaceChild(newIcon, oldIcon);
 }
 
 export function replaceWithClone(node) {

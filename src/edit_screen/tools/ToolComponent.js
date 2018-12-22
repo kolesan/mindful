@@ -1,26 +1,35 @@
 import * as Component from "../../utils/Component";
-import { children, createElement, iconCmp } from "../../utils/HtmlUtils";
+import { children, createElement, iconElem, setChildIcon } from "../../utils/HtmlUtils";
 import { log } from "../../utils/Logging";
 import { ToolNames } from "./Tools";
 
 function create(toolIcon, toolName, toolHeading) {
+  let iconElement = iconElem(toolIcon + " pe_icon");
   let elem = createElement("div", `program__element program__element__${toolName}`);
-  elem.appendChild(createHeading(toolIcon, toolHeading));
+  elem.appendChild(createHeading(iconElement, toolHeading));
   elem.dataset.element = toolName;
 
-  return Component.create([elem]);
+  return Component.create([elem], {
+    setIcon(icon) {
+      icon.classList.add("pe_icon");
+      log("Setting icon to", icon);
+      iconElement.parentNode.replaceChild(icon, iconElement);
+      iconElement = icon;
+    },
+    getIcon() { return iconElement }
+  });
 }
 
-function createHeading(toolIcon, toolHeading) {
+function createHeading(iconElement, toolHeading) {
   let heading = createElement("div", "pe__heading");
-  heading.appendChild(iconCmp(toolIcon + " pe_icon"));
+  heading.appendChild(iconElement);
   heading.appendChild(toolHeading);
   heading.appendChild(dragAnchor());
   return heading;
 }
 
 function dragAnchor() {
-  let dragAnchor = iconCmp("pe__drag_anchor fas fa-hand-pointer");
+  let dragAnchor = iconElem("pe__drag_anchor fas fa-hand-pointer");
   dragAnchor.setAttribute("name", "dragAnchor");
   return dragAnchor;
 }
@@ -42,16 +51,16 @@ export function elemDuration(elem) {
   return 0;
 }
 export function loopDuration(loop) {
-  log("Duration input value of", loop, elemDurationSum(programElemChildren(loop)) * iterationsInputOf(loop).value);
+  // log("Duration input value of", loop, elemDurationSum(programElemChildren(loop)) * iterationsInputOf(loop).value);
   return elemDurationSum(programElemChildren(loop)) * iterationsInputOf(loop).value;
 }
 export function eventDuration(event) {
-  log("Duration input value of", event, durationInputOf(event).value);
+  // log("Duration input value of", event, durationInputOf(event).value);
   let children = programElemChildren(event);
   return children.length > 0 ? elemDurationSum(children) : durationInputOf(event).value;
 }
 export function isProgramElement(elem) {
-  log("Is tool component?", elem, elem && elem.dataset && elem.dataset.element);
+  // log("Is tool component?", elem, elem && elem.dataset && elem.dataset.element);
   return elem && elem.dataset && elem.dataset.element;
 }
 export function isEvent(elem) {

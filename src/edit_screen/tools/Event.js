@@ -1,4 +1,4 @@
-import { createElement, disable, enable } from "../../utils/HtmlUtils";
+import { createElement, disable, enable, iconElem } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import { ToolNames } from "./Tools";
 import * as InputValidator from "../../text_input/InputValidator";
@@ -11,6 +11,7 @@ import { programElemChildren } from "./ToolComponent";
 import { eventDuration } from "./ToolComponent";
 
 const EVENT_ICON = "fas fa-bell";
+const EVENT_ICON_MUTED = "fas fa-bell-slash";
 
 function create({name, duration} = {}) {
   let durationInput = durationInputCmp(duration);
@@ -21,42 +22,32 @@ function create({name, duration} = {}) {
 
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
-  initChildMutationCallbacks(cmp.element, durationInput);
+  initChildMutationCallbacks();
 
   return cmp;
+
+  function initChildMutationCallbacks() {
+    let childElementsObserver = new MutationObserver(() => {
+      let children = programElemChildren(cmp.element);
+      if (children.length > 0) {
+        disable(durationInput);
+        durationInput.value = eventDuration(cmp.element);
+        //TODO should create custom component for icon and extract disable/enable || mute/unmute logic into it
+        cmp.setIcon(iconElem(EVENT_ICON_MUTED));
+        cmp.getIcon().style.opacity = 0.6;
+        cmp.getIcon().title = "Events with children are muted";
+        cmp.element.dataset.muted = "true";
+      } else {
+        enable(durationInput);
+        cmp.setIcon(iconElem(EVENT_ICON));
+        cmp.getIcon().style.opacity = "";
+        cmp.getIcon().title = "Event completion sound";
+        cmp.element.dataset.muted = "false";
+      }
+    });
+    childElementsObserver.observe(cmp.element, {childList: true});
+  }
 }
-
-function initChildMutationCallbacks(element, durationInput) {
-  let observer = new MutationObserver(() => {
-    let children = programElemChildren(element);
-    if (children.length > 0) {
-      disable(durationInput);
-      durationInput.value = eventDuration(element);
-    } else {
-      enable(durationInput);
-    }
-  });
-  observer.observe(element, {childList: true});
-}
-
-// function reactToChildElements(mutations) {
-//   let sortedMutations = sortMutations(mutations);
-//   log("Mutations detected in:", cmp.element, sortedMutations);
-//   let childElems = children(cmp.element).filter(ToolComponent.isProgramElement);
-//   if (childElems.length > 0) {
-//     disable(durationInput);
-//   }
-// }
-
-// function sortMutations(mutations) {
-//   let added = [];
-//   let removed = [];
-//   mutations.forEach(mutation => {
-//     added.push(arr(mutation.addedNodes).filter(ToolComponent.isProgramElement));
-//     removed.push(arr(mutation.removedNodes).filter(ToolComponent.isProgramElement));
-//   });
-//   return {added, removed};
-// }
 
 function eventHeadingCmp(name, durationInput) {
   let heading = createElement("div", "pee__heading");

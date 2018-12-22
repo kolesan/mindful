@@ -1,6 +1,6 @@
 import './edit_screen.css';
 
-import { setIcon } from '../utils/HtmlUtils';
+import { setChildIcon } from '../utils/HtmlUtils';
 import * as Storage from '../Storage';
 import * as EventBus from '../utils/EventBus';
 import * as InputValidator from "../text_input/InputValidator";
@@ -124,7 +124,7 @@ function generateNewProgramTitle(programTitles) {
 function load(program) {
   programTitleInput.value = program.title;
   programIconInput.dataset.icon = program.icon;
-  setIcon(programIconInput, program.icon);
+  setChildIcon(programIconInput, program.icon);
 
   console.log("loading", program);
   programEventsEditor.load(program.mainEvent);
