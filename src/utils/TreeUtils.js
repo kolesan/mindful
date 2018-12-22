@@ -1,3 +1,6 @@
+import { arr } from "./Utils";
+import { log } from "./Logging";
+
 function visit(node, fn) {
   if (node) {
     if (node.children) {
@@ -44,14 +47,22 @@ function *toNodeStackVisitor(root) {
 
 function *preorderTreeVisitor(node) {
   yield node;
-  for (let child of node.children) {
+  for (let child of arr(node.children)) {
     yield *preorderTreeVisitor(child);
   }
 }
 
 function *postorderTreeVisitor(node) {
-  for (let child of node.children) {
+  for (let child of arr(node.children)) {
     yield *postorderTreeVisitor(child);
+  }
+  yield node;
+}
+
+export function *postorderRightToLeftVisitor(node) {
+  let children = arr(node.children);
+  for (let i = children.length - 1; i >= 0; i--) {
+    yield *postorderTreeVisitor(children[i]);
   }
   yield node;
 }
