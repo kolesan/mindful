@@ -12,7 +12,6 @@ function create(toolIcon, toolName, toolHeading) {
   return Component.create([elem], {
     setIcon(icon) {
       icon.classList.add("pe_icon");
-      log("Setting icon to", icon);
       iconElement.parentNode.replaceChild(icon, iconElement);
       iconElement = icon;
     },

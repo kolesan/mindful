@@ -76,7 +76,6 @@ function durationInputCmp(duration = 0) {
   let input = createElement("duration-input", "text_input peeh__duration_input");
   input.setAttribute("name", "eventDurationInput");
   input.value = duration;
-  log("CREATED INPUT OF TYPE: ",  typeof input, input, Object.getPrototypeOf(input), Object.keys(input));
   return input;
 }
 

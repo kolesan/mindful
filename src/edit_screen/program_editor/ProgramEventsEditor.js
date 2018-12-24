@@ -238,7 +238,7 @@ function inst(containerCmp) {
   }
 
   function recalculateParentDuration(element) {
-    log("After event REcalculating duration for", element);
+    // log("After event Recalculating duration for", element);
     let parent = element.parentNode;
     if (isEvent(parent)) {
       durationInputOf(parent).value = eventDuration(parent);
@@ -267,11 +267,6 @@ function inst(containerCmp) {
       })
       .bindDropZone(programEditorDropZone)
       .allowTouch();
-  }
-  function closestEvent(element) {
-    return path(element)
-      .fnFind(isEvent)
-      .or(mainEventHeadingSection);
   }
 
   function leaveOnlyHeadingVisible(elem) {

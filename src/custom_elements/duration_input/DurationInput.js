@@ -33,6 +33,11 @@ export class DurationInput extends HTMLElement {
     this.onDurationChangeCb = cb;
   }
 
+  connectedCallback() {
+    //This allows the parent element to receive focus
+    this.setAttribute("tabindex", 0);
+  }
+
   static get observedAttributes() {
     return [DISABLED_ATTR];
   }
@@ -68,7 +73,9 @@ export class DurationInput extends HTMLElement {
   }
 
   showAllFields() {
-    this.applyToInnerInputs(show);
+    if (!this.disabled) {
+      this.applyToInnerInputs(show);
+    }
   }
 
   setInnerInputVisibility() {
@@ -83,6 +90,11 @@ export class DurationInput extends HTMLElement {
     let input = numberInput(max, labelTxt);
     input.onInput(() => this.onDurationChangeCb());
     return input;
+  }
+
+  get disabled() {
+    let attr = this.getAttribute(DISABLED_ATTR);
+    return attr == "true" || attr == "";
   }
 }
 
