@@ -1,6 +1,6 @@
+import { log } from "../../utils/Logging";
 import { createElement, element } from "../../utils/HtmlUtils";
 import { DISABLED_ATTR, MAX_ATTR, MIN_ATTR, PLACEHOLDER_ATTR, TYPE_ATTR } from "../../utils/AttributeConstants";
-import { log } from "../../utils/Logging";
 import { minmax, noop } from "../../utils/Utils";
 
 const MAX_SIZE_ATTR = "maxsize";
