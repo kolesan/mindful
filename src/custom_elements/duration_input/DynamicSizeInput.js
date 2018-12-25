@@ -136,6 +136,11 @@ function style() {
         text-align: var(--text-align);
     }
     
+    input::placeholder {
+        color: var(--font-color);
+        opacity: 0.4;
+    }
+    
     input::-webkit-inner-spin-button {
         display: none;
     }
