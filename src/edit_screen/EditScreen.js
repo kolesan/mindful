@@ -14,8 +14,6 @@ import { newMainEvent } from "./program_editor/ProgramEventsEditor";
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
 const NEW_PROGRAM_SAVED_EVENT = "NEW_PROGRAM_SAVED_EVENT";
 
-const TRASH_ICON = "fas fa-drumstick-bite";
-
 let editScreen = document.querySelector("#editScreen");
 
 let loop = editScreen.querySelector("#loopTool");
