@@ -41,4 +41,4 @@ function addButton(program) {
 
 eventBus.globalInstance.bindListener(NEW_PROGRAM_SAVED_EVENT, addButton);
 
-export { init, addButton };
+export { init, addButton, deselectAllItems };
