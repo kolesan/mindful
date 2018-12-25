@@ -78,10 +78,10 @@ function loadProgramTitles() {
 
 let programIconInput = editScreen.querySelector(".basic_program_data [name=selectIconBtn]");
 function save(oldId) {
-  let title = programTitleInput.value;
+  let title = programTitleInput.value || generateNewProgramTitle(programTitles);
   let program = {
     id: noSpaces(title),
-    title: title || generateNewProgramTitle(programTitles),
+    title: title,
     icon: programIconInput.dataset.icon,
     description: "",
     mainEvent: programEventsEditor.save()
