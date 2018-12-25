@@ -61,6 +61,7 @@ function nameInputCmp(name = `TimerEvent`) {
   input.setAttribute("type", "text");
   input.setAttribute("spellcheck", "false");
   input.setAttribute("name", "eventNameInput");
+  input.setAttribute("placeholder", "Event");
   input.value = name;
 
   InputValidator.inst(input)

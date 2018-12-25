@@ -127,7 +127,8 @@ function numberInput(max, labelTxt) {
     value: 0,
     attributes: {
       type: "number",
-      maxsize: 4,
+      minsize: 1,
+      maxsize: 2,
       min: 0,
       max: max
     },
@@ -148,6 +149,10 @@ function style() {
     }
     .input_section:last-of-type {
         margin-right: 0rem;
-    }`
-  )
+    }
+    
+    dynamic-size-input {
+      --text-align: center;
+    }
+  `)
 }

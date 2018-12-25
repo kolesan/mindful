@@ -1,11 +1,13 @@
 import { createElement, element } from "../../utils/HtmlUtils";
-import { DISABLED_ATTR, MAX_ATTR, MIN_ATTR, TYPE_ATTR } from "../../utils/AttributeConstants";
+import { DISABLED_ATTR, MAX_ATTR, MIN_ATTR, PLACEHOLDER_ATTR, TYPE_ATTR } from "../../utils/AttributeConstants";
 import { log } from "../../utils/Logging";
 import { minmax, noop } from "../../utils/Utils";
 
 const MAX_SIZE_ATTR = "maxsize";
+const MIN_SIZE_ATTR = "minsize";
 
-const DEFAULT_SIZE = 20;
+const DEFAULT_MAX_SIZE = 20;
+const DEFAULT_MIN_SIZE = 5;
 const DEFAULT_TYPE = "text";
 
 export class DynamicSizeInput extends HTMLElement {
@@ -34,7 +36,7 @@ export class DynamicSizeInput extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return [TYPE_ATTR, MIN_ATTR, MAX_ATTR, DISABLED_ATTR];
+    return [TYPE_ATTR, MIN_ATTR, MAX_ATTR, DISABLED_ATTR, PLACEHOLDER_ATTR];
   }
   attributeChangedCallback(name, oldValue, newValue) {
     if (newValue == null) {
@@ -82,14 +84,21 @@ export class DynamicSizeInput extends HTMLElement {
   setSize(input) {
     let v = input.value;
     if (this.type == "text") {
-      input.setAttribute("size", Math.min(v.length, this.maxSize));
+      input.setAttribute("size", this.minMaxSize(v));
     } else {
-      input.style.width = Math.min(v.length, this.maxSize) + 0.2 + "rem";
+      input.style.width = this.minMaxSize(v) + 0.3 + "rem";
     }
   }
 
+  minMaxSize(v) {
+    return minmax(this.minSize, this.maxSize)(v.length)
+  }
+
   get maxSize() {
-    return this.getAttribute(MAX_SIZE_ATTR) || DEFAULT_SIZE;
+    return this.getAttribute(MAX_SIZE_ATTR) || DEFAULT_MAX_SIZE;
+  }
+  get minSize() {
+    return this.getAttribute(MIN_SIZE_ATTR) || DEFAULT_MIN_SIZE;
   }
 
   get maxValue() {
@@ -119,12 +128,12 @@ function style() {
         color: var(--font-color);
         background: transparent;
         border: none;
-        
-        text-align: center;
     
         outline: none;
     
         height: 100%;
+        
+        text-align: var(--text-align);
     }
     
     input::-webkit-inner-spin-button {
