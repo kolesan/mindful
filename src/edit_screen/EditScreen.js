@@ -37,7 +37,6 @@ function uniqueTitle(title) {
 }
 
 let titleValidator = InputValidator.inst(programTitleInput)
-  .bindValidation(emptyStringValidation)
   .bindValidation(alphanumericValidation)
   .bindValidation(uniqueTitleValidation)
   .onFail(markInvalid)
@@ -82,7 +81,7 @@ function save(oldId) {
   let title = programTitleInput.value;
   let program = {
     id: noSpaces(title),
-    title,
+    title: title || generateNewProgramTitle(programTitles),
     icon: programIconInput.dataset.icon,
     description: "",
     mainEvent: programEventsEditor.save()
@@ -101,7 +100,7 @@ function save(oldId) {
 function newProgram(programTitles) {
   return {
     id: null,
-    title: generateNewProgramTitle(programTitles),
+    title: "",
     icon: "fas fa-heartbeat",
     description: "",
     mainEvent: newMainEvent()

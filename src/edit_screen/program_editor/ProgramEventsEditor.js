@@ -286,7 +286,7 @@ function inst(containerCmp) {
 
 function newMainEvent() {
   return {
-    name: "MainTimer",
+    name: "",
     duration: 0,
     callback: sgong,
     children: []
