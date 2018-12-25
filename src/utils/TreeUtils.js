@@ -62,7 +62,7 @@ function *postorderTreeVisitor(node) {
 export function *postorderRightToLeftVisitor(node) {
   let children = arr(node.children);
   for (let i = children.length - 1; i >= 0; i--) {
-    yield *postorderTreeVisitor(children[i]);
+    yield *postorderRightToLeftVisitor(children[i]);
   }
   yield node;
 }
