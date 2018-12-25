@@ -97,7 +97,7 @@ function save(oldId) {
   programTitles = loadProgramTitles();
 }
 
-function newProgram(programTitles) {
+function newProgram() {
   return {
     id: null,
     title: "",
