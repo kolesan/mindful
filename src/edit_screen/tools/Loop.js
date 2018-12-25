@@ -55,7 +55,8 @@ function loopIterationsInputCmp(iterations = 2) {
     classes: "text_input peh__iterations_input",
     attributes: {
       type: "number",
-      maxsize: 4,
+      minsize: 1,
+      maxsize: 3,
       name: "iterationsInput",
       min: 0,
       max: 999
