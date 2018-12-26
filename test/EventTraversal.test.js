@@ -1,6 +1,7 @@
 import eventTraversal from '../src/timer_screen/timer/EventTraversal';
 
 /*
+  Test events position through time
 
   0....5....10....15....20
   [..........e1..........]
