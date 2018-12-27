@@ -1,5 +1,5 @@
 import { log } from "../../utils/Logging";
-import { last } from "../../utils/Utils";
+import { isNormalNumber, last } from "../../utils/Utils";
 
 export default function inst(iterable) {
   let iterator, head, path, _diff, finished;
@@ -17,27 +17,24 @@ export default function inst(iterable) {
     },
     seek(time) {
       // log("Event traversal seeking time", time);
-      if (typeof time != "number" || Number.isNaN(time) || !Number.isFinite(time) || time < 0) {
+      if (!isNormalNumber(time) || time < 0) {
         throw Error(`Can not seek to time ${time}`);
       }
 
       let timeDuringEvent = (event) => (time >= event.startTime) && (time < event.endTime);
 
+      let pathBeforeSeeking = path;
+
       if (finished || time < head.startTime) {
         this.reset();
       }
 
-      if (timeDuringEvent(head)) {
-        _diff = diffObj();
-        return this;
-      }
-
-      let pathBeforeSeeking = path;
       while(!finished && !timeDuringEvent(head)) {
         next();
       }
       _diff = calculateDiff(pathBeforeSeeking, path);
 
+      log({path, _diff});
       return this;
     },
     get head() { return head; },
