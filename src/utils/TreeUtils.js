@@ -30,19 +30,26 @@ function reduce(node, fn) {
   return a.value;
 }
 
-function *toNodeStackVisitor(root) {
+function *pathReturningTreeIterator(root) {
   let stack = [];
-  for(let r of visitor(root)) {
+  for(let r of iterator(root)) {
     yield Array.from(r);
   }
-  function *visitor(node) {
-    stack.push(node);
-    yield stack;
-    for (let child of node.children) {
-      yield *visitor(child);
+  function *iterator(node) {
+    let { children, ...withoutChildren } = node;
+    stack.push(withoutChildren);
+    for (let child of children) {
+      yield *iterator(child);
     }
+    yield stack;
     stack.pop();
   }
+}
+
+function pathReturningTreeIterable(root) {
+  return Object.freeze({
+    [Symbol.iterator]() { return pathReturningTreeIterator(root) }
+  });
 }
 
 function *preorderTreeVisitor(node) {
@@ -67,4 +74,4 @@ export function *postorderRightToLeftVisitor(node) {
   yield node;
 }
 
-export { visit, flatten, reduce, preorderTreeVisitor, postorderTreeVisitor };
+export { visit, flatten, reduce, preorderTreeVisitor, postorderTreeVisitor, pathReturningTreeIterator, pathReturningTreeIterable };

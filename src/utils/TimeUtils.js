@@ -1,3 +1,4 @@
+import { div } from "./MathUtils";
 const sd = 1000;
 const md = sd*60;
 const hd = md*60;
@@ -29,10 +30,6 @@ export function timestampToTimeObject(timestamp) {
   let s = div(timestamp, sd);
 
   return timeObject(h, m, s);
-
-  function div(a, b) {
-    return Math.floor(a / b);
-  }
 }
 
 export function formatTime(timestamp) {

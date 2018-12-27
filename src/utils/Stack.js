@@ -81,5 +81,4 @@ function newEventStack(entryPointEvent) {
   return Object.create(EventStack).init(newEventStackElement(entryPointEvent));
 }
 
-
 export { newEventStack }

@@ -41,7 +41,14 @@ export function fade({cmp, from, to, delay = 0, duration, easing = "ease-in-out"
   }
 }
 
+export function isNormalNumber(v) {
+  return typeof v == "number" && !Number.isNaN(v) && Number.isFinite(v);
+}
+
 export function last(arr) {
+  if (!arr || arr.length == 0) {
+    return;
+  }
   return arr[arr.length - 1];
 }
 
