@@ -1,4 +1,4 @@
-import { newTimerEvent, newTimer } from '../src/timer_screen/Timer';
+import { newTimerEvent, newTimer } from '../src/timer_screen/timer/Timer';
 
 let noop = () => {};
 let mainEvent =
@@ -9,12 +9,6 @@ let mainEvent =
       newTimerEvent(`l3_timer1.2`, 5000, 3000, noop)
     ])
   ]);
-
-test('seeking sets current time', () => {
-  let timer = newTimer(noop, noop, newTimerEvent("a", 0, 10000, noop, []));
-  timer.seek(5000);
-  expect(timer.time()).toBe(5000);
-});
 
 test('seeking sets current event properly', () => {
   let timer = newTimer(noop, noop, mainEvent);
