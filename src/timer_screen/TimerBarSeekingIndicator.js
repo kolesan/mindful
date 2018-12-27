@@ -1,4 +1,4 @@
-import * as log from '../utils/Logging';
+import { log } from '../utils/Logging';
 import { createElement } from '../utils/HtmlUtils';
 import * as Component from '../utils/Component';
 import * as eventBus from '../utils/EventBus';
@@ -33,9 +33,9 @@ function create(level) {
   cmp.addEventListener("mouseout", event =>
     eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, level, event)
   );
-  cmp.addEventListener("mousedown", event =>
-    eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, level, event)
-  );
+  cmp.addEventListener("pointerdown", event => {
+    eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, level, event);
+  });
   cmp.addEventListener("mouseup", event =>
     eventBus.globalInstance.fire(MOUSE_UP_ON_SEEKING_INDICATOR, level, event)
   );
