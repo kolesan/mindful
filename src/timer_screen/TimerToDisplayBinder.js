@@ -1,11 +1,14 @@
-import { newTimer } from './Timer';
+import { log } from '../utils/Logging';
+import { newTimer } from './timer/Timer';
 import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../settings/Settings';
 import { newInstance as newTimerDisplay } from './TimerDisplay';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
+import { pathReturningTreeIterable } from "../utils/TreeUtils";
+import eventTraversal from './timer/EventTraversal';
 
-function newInstance(program, timerComponentContainer) {
-  let timer = newTimer(program);
+function newInstance(rootEvent, timerComponentContainer) {
+  let timer = newTimer(eventTraversal(pathReturningTreeIterable(rootEvent)));
   let display = newTimerDisplay(timer, timerComponentContainer);
   timer.onFinish(Controls.resetButtons);
   bindEventListeners();
@@ -25,7 +28,8 @@ function newInstance(program, timerComponentContainer) {
       let event = timer.currentEvents()[level];
       let time = event.startTime + Math.floor(event.duration * percent / 100);
       if (percent == 100) {
-        time -= 10;
+        //User should not be able to seek past the event 'he is seeking on'
+        time -= 1;
       }
       timer.seek(time);
     },

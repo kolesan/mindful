@@ -1,5 +1,5 @@
 import { ToolNames } from '../edit_screen/tools/Tools';
-import { newTimerEvent } from './Timer';
+import { newTimerEvent } from './timer/Timer';
 import { callbackDictionary } from '../EventCallbacks';
 
 function convertEvent(programEvent, startTime = 0, i = 1) {

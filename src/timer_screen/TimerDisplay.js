@@ -1,11 +1,11 @@
-import * as log from '../utils/Logging';
 import './timer_display.css';
+
+import { log } from '../utils/Logging';
 import * as TimerBar from './TimerBar';
 
 function newInstance(timer, container){
   timer.onStart(startAnimations);
   timer.onPause(pauseAnimations);
-  timer.onStop(stop);
   timer.onFinish(stop);
   timer.onSeek(seek);
   timer.onTick(updateTime);
@@ -31,7 +31,7 @@ function newInstance(timer, container){
   function seek(time, updates) {
     pauseAnimations();
     updateBars(updates);
-    updateTime();
+    updateTime(time);
     seekAnimations(time);
     if (timer.running) {
       startAnimations();
@@ -56,6 +56,7 @@ function newInstance(timer, container){
 
   function generateBars() {
     let events = timer.currentEvents();
+    log("Generating bars", events);
     bars = [];
     for(let i = 0; i < events.length; i++) {
       bars.push(createTimerBar(i, events[i]));
@@ -74,18 +75,12 @@ function newInstance(timer, container){
     bars.forEach(it => it.detach());
   }
 
-  function updateBars(eventUpdates) {
-    eventUpdates.forEach(function(it) {
-      if (it.sign == "-") {
-        bars.pop().detach();
-      }
-    });
-    eventUpdates.forEach(function(it) {
-      if (it.sign == "+") {
-        let bar = createTimerBar(it.level, it.elem.event);
-        bar.attach(container);
-        bars.push(bar);
-      }
+  function updateBars(diff) {
+    diff.removed.forEach(() => bars.pop().detach());
+    diff.added.forEach(addition => {
+      let bar = createTimerBar(bars.length, addition);
+      bar.attach(container);
+      bars.push(bar);
     });
   }
 
@@ -95,10 +90,10 @@ function newInstance(timer, container){
     });
   }
 
-  function updateTime() {
+  function updateTime(time) {
     let events = timer.currentEvents();
     for(let i = 0; i < events.length; i++) {
-      bars[i].setTime(timer.currentTime - events[i].startTime);
+      bars[i].setTime(time - events[i].startTime);
     }
   }
 

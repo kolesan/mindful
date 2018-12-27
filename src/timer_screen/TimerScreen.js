@@ -46,8 +46,7 @@ function loadTimer(program, recreateTimer = false) {
 }
 
 function newTimerModule(program) {
-  let timerEvent = convertEvent(program.mainEvent);
-  return TimerModule.newInstance(timerEvent, document.querySelector(".timer__display"));
+  return TimerModule.newInstance(convertEvent(program.mainEvent), document.querySelector(".timer__display"));
 }
 
 function currentTimer() {

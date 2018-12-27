@@ -1,6 +1,6 @@
 import { minmax } from '../../utils/Utils';
 import { currentTimer } from '../TimerScreen';
-import { TimerStates } from '../Timer';
+import { TimerStates } from '../timer/Timer';
 
 const INDICATOR_ACTIVE_CLASS = "timer__bar__seeking_indicator_active";
 function markIndicatorActive(indicator) {
