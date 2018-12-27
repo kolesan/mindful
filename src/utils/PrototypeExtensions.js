@@ -17,12 +17,6 @@ extendProto(Array.prototype, "fnLog", function() {
   return this;
 });
 
-//Object
-extendProto(Object.prototype, "applyToSelf", function(fn) {
-  fn(this);
-  return this;
-});
-
 
 function extendProto(prototype, name, fn) {
   if (!prototype[name]) {
