@@ -6,22 +6,7 @@ export default function inst(iterable) {
   init();
 
   return Object.freeze({
-    [Symbol.iterator]() {
-      return this;
-    },
-    next() {
-      if (finished) {
-        return {done: true};
-      }
-      let pathBefore = path;
-      let iteration = iterator.next();
-      path = iteration.value;
-      finished = iteration.done;
-      head = last(path);
-      _diff = calculateDiff(pathBefore, path);
-      // log("Next called:", iteration);
-      return iteration;
-    },
+    next,
     return() {
       iterator.return && iterator.return();
       finished = true;
@@ -31,15 +16,29 @@ export default function inst(iterable) {
       init();
     },
     seek(time) {
-      let predicate = (head) => (head.startTime <= time) && (head.endTime >= time);
-
-      let traversal = inst(iterable);
-      for(let iteration of traversal) {
-        if (predicate(last(iteration))) {
-          return traversal;
-        }
+      // log("Event traversal seeking time", time);
+      if (typeof time != "number" || Number.isNaN(time) || !Number.isFinite(time) || time < 0) {
+        throw Error(`Can not seek to time ${time}`);
       }
-      return inst(iterable);
+
+      let timeDuringEvent = (event) => (time >= event.startTime) && (time < event.endTime);
+
+      if (finished || time < head.startTime) {
+        this.reset();
+      }
+
+      if (timeDuringEvent(head)) {
+        _diff = diffObj();
+        return this;
+      }
+
+      let pathBeforeSeeking = path;
+      while(!finished && !timeDuringEvent(head)) {
+        next();
+      }
+      _diff = calculateDiff(pathBeforeSeeking, path);
+
+      return this;
     },
     get head() { return head; },
     get path() { return path; },
@@ -53,32 +52,32 @@ export default function inst(iterable) {
     path = [];
     _diff = null;
     finished = false;
+    next();
+  }
+
+  function next() {
+    if (finished) {
+      return {done: true};
+    }
+    let pathBefore = path;
+    let iteration = iterator.next();
+    path = iteration.value || [];
+    finished = iteration.done;
+    head = last(path);
+    _diff = calculateDiff(pathBefore, path);
+    return iteration;
   }
 
   function calculateDiff(before, after) {
-    if (!before || !after) {
-      return diff();
-    }
     //Skip the 'root' that did not change
     let i = 0;
     while(before[i] && after[i] && before[i].id == after[i].id) {
       i++;
     }
-    return diff(after.slice(i), before.slice(i));
+    return diffObj(after.slice(i), before.slice(i));
+  }
 
-    function diff(added = [], removed = []) {
-      return Object.freeze({added, removed});
-    }
+  function diffObj(added = [], removed = []) {
+    return Object.freeze({added, removed});
   }
 }
-
-// import * as TreeUtils from '../../utils/TreeUtils';
-// function seekEventStackByTime(stack, time, mainEvent) {
-//   let matchingElements = TreeUtils.flatten(mainEvent).filter(event => event.startTime <= time && event.endTime > time);
-//   if (matchingElements.length == 0) {
-//     throw new Error(`Can not seek to '${time}', it is out of bounds`);
-//   }
-//   let closestMatch = matchingElements.reduce((a, b) => time - a.startTime > time - b.startTime ? b : a);
-//   stack.reset();
-//   stack.seek(it => it.event.id == closestMatch.id);
-// }
