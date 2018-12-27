@@ -1,9 +1,7 @@
 import './dev_tools.css';
 import { createElement } from '../utils/HtmlUtils';
 import { programs } from './TestData';
-import * as TreeUtils from '../utils/TreeUtils';
 import { toggleLogging, toggleTracing } from '../utils/Logging';
-import { callbackDictionary } from '../EventCallbacks';
 
 initDevTools();
 
@@ -19,16 +17,23 @@ function initDevTools() {
   toggleLoggingBtn.addEventListener("click", toggleLogging);
   let toggleTracingBtn = createElement("button", ["dtbtn"], "Toggle tracing");
   toggleTracingBtn.addEventListener("click", toggleTracing);
+  let clearSettingsBtn = createElement("button", ["dtbtn"], "Clear settings");
+  clearSettingsBtn.addEventListener("click", clearSettingsFromStorage);
   panel.appendChild(loadStorageBtn);
   panel.appendChild(printStorageBtn);
   panel.appendChild(clearStorageBtn);
   panel.appendChild(toggleLoggingBtn);
   panel.appendChild(toggleTracingBtn);
+  panel.appendChild(clearSettingsBtn);
   document.body.appendChild(panel)
 }
 
+function clearSettingsFromStorage() {
+  localStorage.removeItem("settings");
+}
+
 function loadTestProgramsToStorage() {
-  window.localStorage.setItem("programs", JSON.stringify(programs));
+  localStorage.setItem("programs", JSON.stringify(programs));
 }
 
 function printStoredPrograms() {

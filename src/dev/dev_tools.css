@@ -16,15 +16,15 @@
     transition: width ease-out 150ms, height ease-out 150ms, opacity ease-out 250ms;
 
     width: 200px;
-    height: 50px;
-    overflow: hidden;
+    /*height: auto;*/
+    /*overflow: hidden;*/
 }
 
 .dev_tools_panel:hover,
 .dev_tools_panel:active {
     opacity: 1;
     width: 200px;
-    height: 200px;
+    /*height: 200px;*/
 }
 
 .dtbtn {
@@ -33,6 +33,10 @@
     border: none;
     border-radius: 2px;
     box-shadow: 1px 1px 1px black;
+    margin-top: 3px;
+}
+.dtbtn:last-child {
+    margin-bottom:3px;
 }
 .dtbtn:hover {
     box-shadow: 1px 1px 3px 1px black;
