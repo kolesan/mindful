@@ -1,6 +1,8 @@
 import './volume_input.css';
+
+import { log } from '../../utils/Logging';
 import * as VolumeModel from './VolumeModel';
-import * as log from '../../utils/Logging';
+import { saveSettings } from "../../Storage";
 
 const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
 
@@ -24,8 +26,14 @@ function isMuted() {
   return volumeObj.muted;
 }
 
-function setVolume(event) {
-  let val = event.target.value;
+function volumeChangeListener(event) {
+  let volume = event.target.value;
+  setVolume(volume);
+  saveSettings({volume});
+}
+
+function setVolume(val) {
+  log("Setting volume to", val);
   volumeObj.volume = val;
 
   setVolumeIcon();
@@ -81,4 +89,4 @@ function setSliderStyles(styleSheet, val) {
   `;
 }
 
-export { getVolume, isMuted, setVolume, toggleMuted };
+export { getVolume, isMuted, setVolume, volumeChangeListener, toggleMuted };

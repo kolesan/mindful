@@ -2,6 +2,7 @@ import { isArray } from "./utils/Utils";
 import { log } from "./utils/Logging";
 
 const PROGRAMS_KEY = "programs";
+const SETTINGS_KEY = "settings";
 
 function saveProgram(program) {
   let programs = loadPrograms();
@@ -19,7 +20,7 @@ function overrideProgram(oldId, program) {
 
 function loadPrograms() {
   log("loading programs");
-  let programs = JSON.parse(window.localStorage.getItem(PROGRAMS_KEY)) || [];
+  let programs = JSON.parse(localStorage.getItem(PROGRAMS_KEY)) || [];
   if (!isArray(programs)) {
     throw new Error(`Program deserialization error. Serialized object '${programs}' is not an array.`);
   }
@@ -30,9 +31,20 @@ function loadProgram(id) {
   return loadPrograms().find(it => it.id == id);
 }
 
+function loadSettings() {
+  return JSON.parse(localStorage.getItem(SETTINGS_KEY));
+}
+
+function saveSettings(settings) {
+  let oldSettings = loadSettings();
+  let combinedSettings = Object.assign({}, oldSettings, settings);
+  log("Saving settings", combinedSettings);
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(combinedSettings))
+}
+
 function putProgramsInToStorage(programs) {
-  window.localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs))
+  localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs))
 }
 
 
-export { saveProgram, overrideProgram, loadPrograms, loadProgram };
+export { saveProgram, overrideProgram, loadPrograms, loadProgram, loadSettings, saveSettings };

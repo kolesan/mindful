@@ -1,6 +1,6 @@
 import './timer_controls.css';
 
-import { toggleMuted, setVolume } from './volume/Volume';
+import { setVolume, toggleMuted, volumeChangeListener } from './volume/Volume';
 import * as eventBus from '../utils/EventBus';
 
 const Events = {
@@ -70,10 +70,15 @@ function resetButtons() {
   disable(stopBtn);
 }
 
+function setVolumeSlider(volume) {
+  volumeSlider.value = volume;
+  setVolume(volume)
+}
+
 playBtn.addEventListener("click", start);
 pauseBtn.addEventListener("click", pause);
 stopBtn.addEventListener("click", stop);
 volumeBtn.addEventListener("click", toggleMuted);
-volumeSlider.addEventListener("input", setVolume);
+volumeSlider.addEventListener("input", volumeChangeListener);
 
-export { Events, setButtonsToAfterStartState, setButtonsToAfterPauseState, resetButtons };
+export { Events, setVolumeSlider, setButtonsToAfterStartState, setButtonsToAfterPauseState, resetButtons };

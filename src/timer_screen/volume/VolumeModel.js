@@ -4,7 +4,7 @@ import * as log from '../../utils/Logging';
 const ZERO_VOLUME = 0;
 const MAX_VOLUME = 100;
 const UNMUTE_VOLUME = 15;
-const DEFAULT_VOLUME = 65;
+const DEFAULT_VOLUME = 25;
 
 const minmaxVolume = minmax(ZERO_VOLUME, MAX_VOLUME);
 
