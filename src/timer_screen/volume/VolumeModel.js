@@ -41,4 +41,6 @@ function newInstance(muted = false, volume = DEFAULT_VOLUME) {
   });
 }
 
-export { newInstance };
+const volumeObj = newInstance();
+
+export default volumeObj;

@@ -1,7 +1,7 @@
 import './volume_input.css';
 
 import { log } from '../../utils/Logging';
-import * as VolumeModel from './VolumeModel';
+import Volume from './VolumeModel';
 import { saveSettings } from "../../Storage";
 
 const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
@@ -14,21 +14,19 @@ let volumeSlider = document.getElementById("volumeSlider");
 volumeBtn.addEventListener("click", toggleMuted);
 volumeSlider.addEventListener("input", volumeChangeListener);
 
-const volumeObj = VolumeModel.newInstance();
-
 setVolumeIcon();
-setVolumeSliderValue(volumeObj.volume);
-initSliderStyleSheet(volumeObj.volume);
-setSliderBackground(volumeObj.volume);
+setVolumeSliderValue(Volume.volume);
+initSliderStyleSheet(Volume.volume);
+setSliderBackground(Volume.volume);
 
 
 
 function getVolume() {
-  return volumeObj.volume;
+  return Volume.volume;
 }
 
 function isMuted() {
-  return volumeObj.muted;
+  return Volume.muted;
 }
 
 function volumeChangeListener(event) {
@@ -39,7 +37,7 @@ function volumeChangeListener(event) {
 
 function setVolume(val) {
   log("Setting volume to", val);
-  volumeObj.volume = val;
+  Volume.volume = val;
 
   setVolumeIcon();
   setSliderBackground(val);
@@ -56,9 +54,9 @@ function setVolumeSlider(volume) {
 }
 
 function toggleMuted(event) {
-  volumeObj.muted = !volumeObj.muted;
+  Volume.muted = !Volume.muted;
 
-  let volume = volumeObj.muted ? 0 : volumeObj.volume;
+  let volume = Volume.muted ? 0 : Volume.volume;
 
   setVolumeIcon();
   setVolumeSliderValue(volume);
@@ -66,7 +64,7 @@ function toggleMuted(event) {
 }
 
 function setVolumeIcon() {
-  if (volumeObj.muted || volumeObj.volume == 0) {
+  if (Volume.muted || Volume.volume == 0) {
     icon.classList.remove("fa-volume-up");
     icon.classList.add("fa-volume-mute");
   } else {
