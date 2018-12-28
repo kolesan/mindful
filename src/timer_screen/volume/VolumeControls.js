@@ -6,8 +6,13 @@ import { saveSettings } from "../../Storage";
 
 const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
 
+//TODO cleanup this mess (same elements and etc.)
 let icon = document.querySelector(".controls__button__volume").querySelector(".fas");
 let slider = document.querySelector(".controls__volume__slider");
+let volumeBtn = document.getElementById("volumeBtn");
+let volumeSlider = document.getElementById("volumeSlider");
+volumeBtn.addEventListener("click", toggleMuted);
+volumeSlider.addEventListener("input", volumeChangeListener);
 
 const volumeObj = VolumeModel.newInstance();
 
@@ -43,6 +48,11 @@ function setVolume(val) {
 function setSliderBackground(val) {
   let style = document.getElementById(SLIDER_STYLESHEET_ID);
   setSliderStyles(style, val);
+}
+
+function setVolumeSlider(volume) {
+  setVolumeSliderValue(volume);
+  setVolume(volume)
 }
 
 function toggleMuted(event) {
@@ -89,4 +99,4 @@ function setSliderStyles(styleSheet, val) {
   `;
 }
 
-export { getVolume, isMuted, setVolume, volumeChangeListener, toggleMuted };
+export { getVolume, isMuted, setVolumeSlider, volumeChangeListener, toggleMuted };

@@ -1,6 +1,6 @@
 import slowGongFileName from '../resources/long-loud-gong.mp3';
 import fastGongFileName from '../resources/short-fast-gong.mp3';
-import { getVolume, isMuted } from './timer_screen/volume/Volume';
+import { getVolume, isMuted } from './timer_screen/volume/VolumeControls';
 import * as log from './utils/Logging';
 
 function fsgong(){

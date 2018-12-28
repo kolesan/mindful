@@ -11,7 +11,7 @@ import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
 import { loadPrograms, loadSettings, saveSettings } from "./Storage";
 import { loadTestProgramsToStorage } from "./dev/DevTools";
-import { setVolumeSlider } from "./timer_screen/TimerControls";
+import { setVolumeSlider } from "./timer_screen/volume/VolumeControls";
 
 const EXAMPLES_WERE_LOADED_KEY = "examplesWereLoaded";
 
