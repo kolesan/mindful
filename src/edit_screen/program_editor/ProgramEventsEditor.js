@@ -9,7 +9,7 @@ import * as InputValidator from "../../text_input/InputValidator";
 import { noop, sgong } from "../../EventCallbacks";
 import { makeDraggable } from "../dragndrop/Draggable";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
-import { ToolNames, Tools } from "../tools/Tools";
+import ToolNames from "../tools/ToolNames";
 import * as TreeUtils from "../../utils/TreeUtils";
 import { fade } from "../../utils/Utils";
 import { log } from "../../utils/Logging";
@@ -19,6 +19,7 @@ import {
   durationInputOf, elemDurationSum, eventDuration, isEvent, isLoop, loopDuration,
   programElemChildren
 } from "../tools/ToolComponent";
+import { Tools } from "../tools/Tools";
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");

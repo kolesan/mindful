@@ -8,7 +8,7 @@ import { makeDraggable } from "./dragndrop/Draggable";
 import * as ProgramEventsEditor from "./program_editor/ProgramEventsEditor";
 import { alphanumericValidation, emptyStringValidation, markInvalid, markValid } from "../Validation";
 import { noSpaces } from "../utils/Utils";
-import { ToolNames } from "./tools/Tools";
+import ToolNames from "./tools/ToolNames";
 import { newMainEvent } from "./program_editor/ProgramEventsEditor";
 
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";

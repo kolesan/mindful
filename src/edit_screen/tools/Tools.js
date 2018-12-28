@@ -1,11 +1,7 @@
 import * as Map from "../../utils/Map";
 import * as Loop from "../tools/Loop";
 import * as Event from "../tools/Event";
-
-const ToolNames = {
-  loop: "loop",
-  event: "event"
-};
+import ToolNames from "./ToolNames";
 
 let ToolMap = Map.inst()
   .put(ToolNames.event, newTool(ToolNames.event, Event))

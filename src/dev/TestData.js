@@ -1,5 +1,5 @@
 import { noop, fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
-import { ToolNames } from "../edit_screen/tools/Tools";
+import ToolNames from "../edit_screen/tools/ToolNames";
 import { last } from "../utils/Utils";
 import { s, m } from "../utils/TimeUtils";
 

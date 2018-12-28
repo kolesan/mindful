@@ -1,7 +1,7 @@
 import * as Component from "../../utils/Component";
 import { children, createElement, iconElem, setChildIcon } from "../../utils/HtmlUtils";
 import { log } from "../../utils/Logging";
-import { ToolNames } from "./Tools";
+import ToolNames from "./ToolNames";
 
 function create(toolIcon, toolName, toolHeading) {
   let iconElement = iconElem(toolIcon + " pe_icon");

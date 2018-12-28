@@ -1,6 +1,6 @@
 import { createElement, disable, enable, iconElem } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
-import { ToolNames } from "./Tools";
+import ToolNames from "./ToolNames";
 import * as InputValidator from "../../text_input/InputValidator";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
 import { log } from "../../utils/Logging";
