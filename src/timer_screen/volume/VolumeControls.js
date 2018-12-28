@@ -20,15 +20,6 @@ initSliderStyleSheet(Volume.volume);
 setSliderBackground(Volume.volume);
 
 
-
-function getVolume() {
-  return Volume.volume;
-}
-
-function isMuted() {
-  return Volume.muted;
-}
-
 function volumeChangeListener(event) {
   let volume = event.target.value;
   setVolume(volume);
@@ -97,4 +88,4 @@ function setSliderStyles(styleSheet, val) {
   `;
 }
 
-export { getVolume, isMuted, setVolumeSlider, volumeChangeListener, toggleMuted };
+export { setVolumeSlider, volumeChangeListener, toggleMuted };
