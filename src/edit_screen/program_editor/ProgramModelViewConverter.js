@@ -11,7 +11,8 @@ function viewToProgram(viewChildren, depth = 0) {
     switch(tool) {
       case ToolNames.loop:
         let iterations = viewElement.querySelector("[name=iterationsInput").value;
-        Object.assign(programElement, {iterations});
+        let loopDuration = viewElement.querySelector("[name=eventDurationInput").value;
+        Object.assign(programElement, {iterations, duration: loopDuration});
         break;
       case ToolNames.event:
         let name = viewElement.querySelector("[name=eventNameInput").value;

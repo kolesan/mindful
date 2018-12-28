@@ -73,6 +73,7 @@ function durationDisplayCmp() {
     tag: "duration-input",
     classes: "text_input peeh__duration_input",
     attributes: {
+      //TODO rename to durationInput since its no longer only on events
       name: "eventDurationInput",
       disabled: true,
       title: "Loop duration"
