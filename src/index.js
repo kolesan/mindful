@@ -1,4 +1,5 @@
 import './style.css';
+import './favicon.ico';
 
 import './custom_elements/CustomElementsRegistry';
 import './utils/PrototypeExtensions';
