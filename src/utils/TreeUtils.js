@@ -74,4 +74,12 @@ export function *postorderRightToLeftVisitor(node) {
   yield node;
 }
 
+export function map(root, fn) {
+  let mapped = fn(root);
+  if (mapped.children) {
+    mapped.children = mapped.children.map(child => map(child, fn));
+  }
+  return mapped;
+}
+
 export { visit, flatten, reduce, preorderTreeVisitor, postorderTreeVisitor, pathReturningTreeIterator, pathReturningTreeIterable };

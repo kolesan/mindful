@@ -79,6 +79,30 @@ test('pathReturningTreeIterable returns an iterable for provided tree', () => {
   expect(iteratorC.next().value.map(toNames)).toEqual([1, 1.1]);
 });
 
+test("Can map a tree", () => {
+  let addAToName = it => Object.assign({}, it, {name: it.name + "a"});
+  expect(TreeUtils.map(entryPoint, addAToName)).toEqual({
+    name: "1a",
+    children: [
+      { name: "1.1a", children: [] },
+      { name: "2a",
+        children: [
+          { name: "3a",
+            children: [
+              { name: "4a", children: [ { name: "5a", children: [] }]},
+              { name: "6a", children: []},
+              { name: "7a", children: [
+                { name: "8a", children: [ {name: "9a", children: []} ] },
+                { name: "10a", children: [] }
+              ]}
+            ]
+          }
+        ]
+      }
+    ]
+  })
+});
+
 function toNames(event) {
   return event.name;
 }
