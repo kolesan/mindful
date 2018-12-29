@@ -2,8 +2,8 @@ import programElement from "./ProgramElement";
 import { div } from "../utils/MathUtils";
 
 let programLoop = Object.create(programElement);
-programLoop.init = function(iterations, children, duration) {
-  programElement.init.apply(this, [children, duration]);
+programLoop.init = function(iterations, children, duration, callback) {
+  programElement.init.apply(this, [children, duration, callback]);
   this.iterations = iterations;
   this.virtualChildCount = this.iterations * this.children.length;
 };

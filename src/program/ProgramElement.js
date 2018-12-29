@@ -1,7 +1,8 @@
 let programElement = {
-  init(children, duration) {
+  init(children, duration, callback) {
     this.duration = duration;
     this.children = children;
+    this.callback = callback;
     this.currentChildIndex = 0;
   },
   nextChild() {

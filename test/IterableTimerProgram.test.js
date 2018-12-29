@@ -1,5 +1,6 @@
-import { last, logo } from "./TestUtils";
+import { last, log, logo } from "./TestUtils";
 import iterableTimerProgram from "../src/timer_screen/timer/IterableTimerProgram";
+import { ffgong, fsgong, noop, sgong } from "../src/EventCallbacks";
 
 window.customElements = {
   define() {}
@@ -142,4 +143,51 @@ test('Start times should be set', () => {
     240000,
     0  //Going down the path (to parent event)
   ]);
+});
+
+test('Zero iteration loops should be ignored', () => {
+  let program = {
+    mainEvent: {
+      element: "event",
+      name: "NoLoops",
+      duration: 310000,
+      callback: "noop",
+      children: [
+        {
+          element: "loop",
+          iterations: 0,
+          duration: 0,
+          children: [
+            {
+              element: "event",
+              name: "I exist, but I do not",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+  for (let it of iterable) {
+    result.push(last(it).name);
+  }
+
+  expect(result).toEqual([
+    "NoLoops"
+  ]);
+});
+
+test('Callbacks should be deserialized to functions', () => {
+  let iterable = iterableTimerProgram(program);
+
+  for (let it of iterable) {
+    let callback = last(it).callback;
+    expect(Function.prototype.isPrototypeOf(callback)).toEqual(true);
+  }
 });
