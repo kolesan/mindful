@@ -9,3 +9,7 @@ export function log(...args) {
 export function logo(o) {
   console.log(pp(o))
 }
+
+export function last(arr) {
+  return arr[arr.length-1];
+}
