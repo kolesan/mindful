@@ -1,33 +1,22 @@
 import programElement from "./ProgramElement";
+import { div } from "../utils/MathUtils";
 
 let programLoop = Object.create(programElement);
-programLoop.init = function(iterations, startTime, children, duration) {
-  programElement.init.apply(this, [startTime, children, duration]);
+programLoop.init = function(iterations, children, duration) {
+  programElement.init.apply(this, [children, duration]);
   this.iterations = iterations;
-  this.currentIteration = 0;
+  this.virtualChildCount = this.iterations * this.children.length;
 };
-//TODO smth about this unreadable duplicate peace of shit
 programLoop.nextChild = function() {
-  if (this.iterations === 0) {
+  if (this.children.length == 0 || this.currentChildIndex >= this.virtualChildCount) {
     return;
   }
 
-  let child = programElement.nextChild.apply(this);
-  if (child) {
-    child.iteration = this.currentIteration;
-    child.startTime *= this.currentIteration + 1;
-    return child;
-  }
+  let child = this.children[this.currentChildIndex % this.children.length];
+  child.iteration = div(this.currentChildIndex, this.children.length);
 
-  this.currentIteration++;
-  if (this.currentIteration >= this.iterations) {
-    this.currentIteration = 0;
-    return;
-  }
+  this.currentChildIndex++;
 
-  child = programElement.nextChild.apply(this);
-  child.iteration = this.currentIteration;
-  child.startTime *= this.currentIteration + 1;
   return child;
 };
 

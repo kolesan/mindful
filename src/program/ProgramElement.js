@@ -1,16 +1,14 @@
 let programElement = {
-  init(startTime, children, duration) {
-    this.startTime = startTime;
+  init(children, duration) {
     this.duration = duration;
     this.children = children;
     this.currentChildIndex = 0;
   },
   nextChild() {
-    let child = this.children[this.currentChildIndex++];
-    if (!child) {
-      this.currentChildIndex = 0;
-    }
-    return child;
+    return this.children[this.currentChildIndex++];
+  },
+  reset() {
+    this.currentChildIndex = 0;
   }
 };
 

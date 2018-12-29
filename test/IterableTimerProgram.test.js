@@ -9,11 +9,11 @@ let program = {
   id: "Yoga",
   title: "Yoga",
   icon: "fas fa-dumbbell",
-  description: "\n    30s prep\n    70s poses x 50\n    01h total\n  ",
+  description: "3 1min poses, 10s for switching",
   mainEvent: {
     element: "event",
     name: "Mindful Yoga",
-    duration: 3600000,
+    duration: 310000,
     callback: "noop",
     children: [
       {
@@ -70,34 +70,32 @@ let program = {
   }
 };
 
-// test('Created from a program and is an iterable', () => {
-//   let iterable = iterableTimerProgram(program);
-//
-//   expect(iterable[Symbol.iterator]).toBeDefined();
-// });
-//
-// test('Symbol.iterator should return a fresh unrelated instance of iterator', () => {
-//   let iterable = iterableTimerProgram(program);
-//
-//   let iteratorA = iterable[Symbol.iterator]();
-//   let iteratorB = iterable[Symbol.iterator]();
-//
-//   expect(last(iteratorA.next().value).name).toEqual("Preparation");
-//   expect(last(iteratorB.next().value).name).toEqual("Preparation");
-//   iteratorA.next();
-//   expect(last(iteratorA.next().value).name).toEqual("2/2");
-//   expect(last(iteratorB.next().value).name).toEqual("1/2");
-// });
+test('Created from a program and is an iterable', () => {
+  let iterable = iterableTimerProgram(program);
+
+  expect(iterable[Symbol.iterator]).toBeDefined();
+});
+
+test('Symbol.iterator should return a fresh unrelated instance of iterator', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let iteratorA = iterable[Symbol.iterator]();
+  let iteratorB = iterable[Symbol.iterator]();
+
+  expect(last(iteratorA.next().value).name).toEqual("Preparation");
+  expect(last(iteratorB.next().value).name).toEqual("Preparation");
+  iteratorA.next();
+  expect(last(iteratorA.next().value).name).toEqual("2/2");
+  expect(last(iteratorB.next().value).name).toEqual("1/2");
+});
 
 test('Iterating through should yield a path with current node as last element at each iteration', () => {
   let iterable = iterableTimerProgram(program);
 
   let result = [];
   for (let it of iterable) {
-    // logo(it.map(child => child.name));
     result.push(it.map(child => child.name));
   }
-  logo(result);
 
   expect(result).toEqual([
     ["Mindful Yoga", "Preparation"],
@@ -115,5 +113,33 @@ test('Iterating through should yield a path with current node as last element at
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Chill"],
     ["Mindful Yoga"]
+  ]);
+});
+
+test('Start times should be set', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+  for (let it of iterable) {
+    // logo(it.map(pathElem => { return {name: pathElem.name, start: pathElem.startTime} }));
+    result.push(last(it).startTime);
+  }
+
+  expect(result).toEqual([
+    0,
+    30000,
+    60000,
+    30000, //Going down the path (to parent event)
+    90000,
+    100000,
+    130000,
+    100000, //Going down the path (to parent event)
+    160000,
+    170000,
+    200000,
+    170000,  //Going down the path (to parent event)
+    230000,
+    240000,
+    0  //Going down the path (to parent event)
   ]);
 });

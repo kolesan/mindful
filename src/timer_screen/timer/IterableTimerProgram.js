@@ -4,80 +4,74 @@ import { newTimerEvent } from "./Timer";
 import { callbackDictionary } from '../../EventCallbacks';
 import programEvent from "../../program/ProgramEvent";
 import programLoop from "../../program/ProgramLoop";
-import * as TreeUtils from "../../utils/TreeUtils";
 
 export default function inst(program) {
   return Object.freeze({
     [Symbol.iterator]() {
-      return programIterator(program);
+      return programPathIterator(toProgramElementTree(program.mainEvent));
     }
   });
 }
 
-function toProgramElement(elem) {
-  switch(elem.element) {
+function toProgramElementTree(node) {
+  let children = [];
+  for(let child of node.children) {
+    children.push(toProgramElementTree(child));
+  }
+
+  let programElement = toProgramElement(node);
+  programElement.children = children;
+  return programElement;
+}
+
+function toProgramElement(node) {
+  switch(node.element) {
     case ToolNames.event:
       let event = Object.create(programEvent);
-      event.init(elem.name, elem.startTime, elem.children, elem.duration);
+      event.init(node.name, node.children, node.duration);
       return event;
     case ToolNames.loop:
       let loop = Object.create(programLoop);
-      loop.init(elem.iterations, elem.startTime, elem.children, elem.duration);
+      loop.init(node.iterations, node.children, node.duration);
       return loop;
   }
 }
 
-//TODO awesome name, brah
-function *specialnijGeneratorSoStakom(root) {
-  let stack = [];
+function *programPathIterator(root) {
+  let path = [];
 
-  yield *specialnijGenerator(root);
+  yield *iterator(root, 0);
 
-  function *specialnijGenerator(node) {
+  function *iterator(node, startTime) {
+    if (isEvent(node)) {
+      path.push(toTimerEvent(node, startTime));
+    }
     let child;
-    if (isEvent(node)) {
-      stack.push(toTimerEvent(node));
-    }
     while (child = node.nextChild()) {
-      yield *specialnijGenerator(child);
+      yield *iterator(child, startTime);
+      startTime += child.duration;
     }
+    node.reset();
     if (isEvent(node)) {
-      yield stack;
-      stack.pop();
+      yield path;
+      path.pop();
     }
+  }
+
+  function isEvent(node) {
+    return programEvent.isPrototypeOf(node);
   }
 }
 
-function isEvent(node) {
-  return programEvent.isPrototypeOf(node);
-}
-
-function toTimerEvent(programEvent) {
+function toTimerEvent(programEvent, startTime) {
   let name = programEvent.name;
   if (programEvent.hasOwnProperty("iteration")) {
     name = name.replace("{i}", programEvent.iteration + 1);
   }
-  //TODO remove children from timerEvent obj prototype (no longer needed)
   return newTimerEvent(
     name,
-    programEvent.startTime,
+    startTime,
     programEvent.duration,
     callbackDictionary.get(programEvent.callback)
   );
-}
-
-function setStartTime(node, startTime) {
-  node.startTime = startTime;
-  let childStartTime = startTime;
-  for(let child of node.children) {
-    setStartTime(child, childStartTime);
-    childStartTime += child.duration;
-  }
-}
-
-//TODO probably do not need whole program, only main event
-function programIterator(program) {
-  setStartTime(program.mainEvent, 0);
-  let root = TreeUtils.map(program.mainEvent, toProgramElement);
-  return specialnijGeneratorSoStakom(root);
 }

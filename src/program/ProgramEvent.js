@@ -1,8 +1,8 @@
 import programElement from "./ProgramElement";
 
 let programEvent = Object.create(programElement);
-programEvent.init = function(name, startTime, children, duration) {
-  programElement.init.apply(this, [startTime, children, duration]);
+programEvent.init = function(name, children, duration) {
+  programElement.init.apply(this, [children, duration]);
   this.name = name;
   this.duration = duration;
 };
