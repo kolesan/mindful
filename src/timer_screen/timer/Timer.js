@@ -3,20 +3,19 @@ import { instantiate as createEventBus } from '../../utils/EventBus';
 
 let TimerEvent = {
   idCounter: 0,
-  init: function initTimerEvent(name, startTime, duration, callback, children=[]) {
+  init: function initTimerEvent(name, startTime, duration, callback) {
     this.id = Object.getPrototypeOf(this).idCounter++;
     this.name = name;
     this.duration = duration;
     this.startTime = startTime;
     this.endTime = startTime + duration;
     this.callback = callback;
-    this.children = children;
 
     return this;
   }
 };
-function newTimerEvent(name, startTime, duration, callback, childEvents) {
-  return Object.create(TimerEvent).init(name, startTime, duration, callback, childEvents);
+function newTimerEvent(name, startTime, duration, callback) {
+  return Object.create(TimerEvent).init(name, startTime, duration, callback);
 }
 
 const States = {

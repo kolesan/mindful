@@ -16,14 +16,13 @@ export default function inst(iterable) {
       init();
     },
     seek(time) {
-      // log("Event traversal seeking time", time);
       if (!isNormalNumber(time) || time < 0) {
         throw Error(`Can not seek to time ${time}`);
       }
 
       let timeDuringEvent = (event) => (time >= event.startTime) && (time < event.endTime);
 
-      let pathBeforeSeeking = path;
+      let pathBeforeSeeking = Array.from(path);
 
       if (finished || time < head.startTime) {
         this.reset();
@@ -33,8 +32,6 @@ export default function inst(iterable) {
         next();
       }
       _diff = calculateDiff(pathBeforeSeeking, path);
-
-      log({path, _diff});
       return this;
     },
     get head() { return head; },
@@ -56,7 +53,7 @@ export default function inst(iterable) {
     if (finished) {
       return {done: true};
     }
-    let pathBefore = path;
+    let pathBefore = Array.from(path);
     let iteration = iterator.next();
     path = iteration.value || [];
     finished = iteration.done;

@@ -8,7 +8,6 @@ import * as Routing from '../Routing';
 import * as TimerModule from './TimerToDisplayBinder';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
-import { convertEvent } from "./ProgramEventToTimerEventConverter";
 import { replaceWithClone } from "../utils/HtmlUtils";
 
 let timerScreen = document.querySelector("#timerScreen");
@@ -46,7 +45,7 @@ function loadTimer(program, recreateTimer = false) {
 }
 
 function newTimerModule(program) {
-  return TimerModule.newInstance(convertEvent(program.mainEvent), document.querySelector(".timer__display"));
+  return TimerModule.newInstance(program, document.querySelector(".timer__display"));
 }
 
 function currentTimer() {

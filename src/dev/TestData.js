@@ -168,6 +168,7 @@ let testProgram = {
      ¯\\_(ツ)_/¯
   `,
   mainEvent: {
+    element: ToolNames.event,
     name: `MainTimer`,
     duration: 10000,
     callback: sgong,

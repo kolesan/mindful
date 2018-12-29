@@ -94,6 +94,7 @@ function inst(containerCmp) {
     save() {
       let programElements = ModelViewConverter.viewToProgram(childEventsEditorCmp.children);
       let mainEvent = {
+        element: ToolNames.event,
         name: mainEventNameInput.value,
         duration: mainEventDurationInput.value,
         callback: programElements.length > 0 ? noop : sgong,

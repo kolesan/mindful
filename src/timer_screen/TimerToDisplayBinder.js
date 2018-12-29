@@ -4,11 +4,11 @@ import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../settings/Set
 import { newInstance as newTimerDisplay } from './TimerDisplay';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
-import { pathReturningTreeIterable } from "../utils/TreeUtils";
 import eventTraversal from './timer/EventTraversal';
+import iterableTimerProgram from "./timer/IterableTimerProgram";
 
-function newInstance(rootEvent, timerComponentContainer) {
-  let timer = newTimer(eventTraversal(pathReturningTreeIterable(rootEvent)));
+function newInstance(program, timerComponentContainer) {
+  let timer = newTimer(eventTraversal(iterableTimerProgram(program)));
   let display = newTimerDisplay(timer, timerComponentContainer);
   timer.onFinish(Controls.resetButtons);
   bindEventListeners();
