@@ -14,7 +14,7 @@ programLoop.nextChild = function() {
 
   let child = this.children[this.currentChildIndex % this.children.length];
   child.iteration = div(this.currentChildIndex, this.children.length);
-
+  child.id = this.currentChildIndex * child.iteration;
   this.currentChildIndex++;
 
   return child;

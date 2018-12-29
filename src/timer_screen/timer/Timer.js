@@ -2,9 +2,8 @@ import { log } from '../../utils/Logging';
 import { instantiate as createEventBus } from '../../utils/EventBus';
 
 let TimerEvent = {
-  idCounter: 0,
-  init: function initTimerEvent(name, startTime, duration, callback) {
-    this.id = Object.getPrototypeOf(this).idCounter++;
+  init: function initTimerEvent(id, name, startTime, duration, callback) {
+    this.id = id;
     this.name = name;
     this.duration = duration;
     this.startTime = startTime;
@@ -14,8 +13,8 @@ let TimerEvent = {
     return this;
   }
 };
-function newTimerEvent(name, startTime, duration, callback) {
-  return Object.create(TimerEvent).init(name, startTime, duration, callback);
+function newTimerEvent(id, name, startTime, duration, callback) {
+  return Object.create(TimerEvent).init(id, name, startTime, duration, callback);
 }
 
 const States = {

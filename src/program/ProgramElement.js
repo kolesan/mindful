@@ -6,7 +6,12 @@ let programElement = {
     this.currentChildIndex = 0;
   },
   nextChild() {
-    return this.children[this.currentChildIndex++];
+    let child = this.children[this.currentChildIndex];
+    if (child) {
+      child.id = this.currentChildIndex;
+    }
+    this.currentChildIndex++;
+    return child;
   },
   reset() {
     this.currentChildIndex = 0;

@@ -69,6 +69,7 @@ function toTimerEvent(programEvent, startTime) {
     name = name.replace("{i}", programEvent.iteration + 1);
   }
   return newTimerEvent(
+    programEvent.id,
     name,
     startTime,
     programEvent.duration,
