@@ -33,7 +33,7 @@ function create(level) {
   cmp.addEventListener("mouseout", event =>
     eventBus.globalInstance.fire(MOUSE_OUT_ON_SEEKING_INDICATOR, level, event)
   );
-  cmp.addEventListener("pointerdown", event => {
+  cmp.addEventListener("mousedown", event => {
     eventBus.globalInstance.fire(MOUSE_DOWN_ON_SEEKING_INDICATOR, level, event);
   });
   cmp.addEventListener("mouseup", event =>
