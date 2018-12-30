@@ -191,3 +191,19 @@ test('Callbacks should be deserialized to functions', () => {
     expect(Function.prototype.isPrototypeOf(callback)).toEqual(true);
   }
 });
+
+test('Generated events have same ids every for every iterator', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let idsA = [];
+  for(let it of iterable) {
+    idsA.push(it.id);
+  }
+
+  let idsB = [];
+  for(let it of iterable) {
+    idsB.push(it.id);
+  }
+
+  expect(idsA).toEqual(idsB);
+});
