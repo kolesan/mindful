@@ -122,7 +122,7 @@ test('Start times should be set', () => {
 
   let result = [];
   for (let it of iterable) {
-    // logo(it.map(pathElem => { return {name: pathElem.name, start: pathElem.startTime} }));
+    logo(it.map(pathElem => { return {name: pathElem.name, start: pathElem.startTime} }));
     result.push(last(it).startTime);
   }
 
@@ -192,18 +192,435 @@ test('Callbacks should be deserialized to functions', () => {
   }
 });
 
-test('Generated events have same ids every for every iterator', () => {
+test('Generated events have same ids for every iterator', () => {
   let iterable = iterableTimerProgram(program);
 
   let idsA = [];
   for(let it of iterable) {
-    idsA.push(it.id);
+    idsA.push(last(it).id);
   }
 
   let idsB = [];
   for(let it of iterable) {
-    idsB.push(it.id);
+    logo(it);
+    idsB.push(last(it).id);
   }
 
   expect(idsA).toEqual(idsB);
+});
+
+test('Loop generates unique ids for all virtual children', () => {
+  let program = {
+    mainEvent: {
+      element: "event",
+      name: "Loops",
+      duration: 310000,
+      callback: "noop",
+      children: [
+        {
+          element: "loop",
+          iterations: 3,
+          duration: 0,
+          children: [
+            {
+              element: "event",
+              name: "1",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            },
+            {
+              element: "event",
+              name: "2",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            },
+            {
+              element: "event",
+              name: "3",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  let iterable = iterableTimerProgram(program);
+
+  let ids = [];
+  for(let it of iterable) {
+    ids.push(last(it).id);
+  }
+  ids.pop(); //Remove id of mainEvent, we only need the looped events
+
+  let unique = ids.reduce((a, b) => a.includes(b) ? a : a.concat(b), []);
+  expect(ids).toEqual(unique);
+});
+
+test('Can iterate backwards', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+
+  let backwardsIterator = iterable[Symbol.iterator](-1);
+  let iterationResult;
+  while((iterationResult = backwardsIterator.next(-1)) && !iterationResult.done) {
+    result.push(iterationResult.value.map(child => child.name));
+  }
+
+  expect(result).toEqual([
+    ["Mindful Yoga"],
+    ["Mindful Yoga", "Chill"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 3"],
+    ["Mindful Yoga", "Hold pose 3", "2/2"],
+    ["Mindful Yoga", "Hold pose 3", "1/2"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 2"],
+    ["Mindful Yoga", "Hold pose 2", "2/2"],
+    ["Mindful Yoga", "Hold pose 2", "1/2"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 1"],
+    ["Mindful Yoga", "Hold pose 1", "2/2"],
+    ["Mindful Yoga", "Hold pose 1", "1/2"],
+    ["Mindful Yoga", "Preparation"]
+  ]);
+});
+
+test('Start times should be set correctly when iterating backwards', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+
+  let backwardsIterator = iterable[Symbol.iterator](-1);
+  let iterationResult;
+  while((iterationResult = backwardsIterator.next(-1)) && !iterationResult.done) {
+    result.push(last(iterationResult.value).startTime);
+  }
+
+  expect(result).toEqual([
+    0,
+    240000,
+    230000,
+    170000,
+    200000,
+    170000,
+    160000,
+    100000,
+    130000,
+    100000,
+    90000,
+    30000,
+    60000,
+    30000,
+    0
+  ]);
+});
+
+test('Loop generates unique ids for all virtual children when iterating backwards', () => {
+  let program = {
+    mainEvent: {
+      element: "event",
+      name: "Loops",
+      duration: 310000,
+      callback: "noop",
+      children: [
+        {
+          element: "loop",
+          iterations: 3,
+          duration: 0,
+          children: [
+            {
+              element: "event",
+              name: "1",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            },
+            {
+              element: "event",
+              name: "2",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            },
+            {
+              element: "event",
+              name: "3",
+              duration: 60000,
+              callback: "ffgong",
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  let iterable = iterableTimerProgram(program);
+
+  let ids = [];
+
+  let backwardsIterator = iterable[Symbol.iterator](-1);
+  backwardsIterator.next(-1); //Skip id of mainEvent, we only need the looped events
+
+  let iterationResult;
+  while((iterationResult = backwardsIterator.next(-1)) && !iterationResult.done) {
+    ids.push(last(iterationResult.value).id);
+  }
+
+  let unique = ids.reduce((a, b) => a.includes(b) ? a : a.concat(b), []);
+  expect(ids).toEqual(unique);
+});
+
+test('Ids generated while going backwards are the same as when going forward', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let idsForward = [];
+  for(let it of iterable) {
+    idsForward.push(last(it).id);
+  }
+
+  let idsBacwards = [];
+
+  let backwardsIterator = iterable[Symbol.iterator](-1);
+  let iterationResult;
+  while((iterationResult = backwardsIterator.next(-1)) && !iterationResult.done) {
+    idsBacwards.push(last(iterationResult.value).id);
+  }
+
+  expect(idsForward).toEqual(idsBacwards.reverse());
+});
+
+test('Ids generated while going backwards are the same as when going forward', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let idsForward = [];
+  for(let it of iterable) {
+    idsForward.push(last(it).id);
+  }
+
+  let idsBacwards = [];
+
+  let backwardsIterator = iterable[Symbol.iterator](-1);
+  let iterationResult;
+  while((iterationResult = backwardsIterator.next(-1)) && !iterationResult.done) {
+    idsBacwards.push(last(iterationResult.value).id);
+  }
+
+  expect(idsForward).toEqual(idsBacwards.reverse());
+});
+
+test('Can change iteration direction at any time', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+
+  function toNames(path) {
+    return path.map(it => it.name);
+  }
+  let iterator = iterable[Symbol.iterator]();
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next(-1).value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+  result.push(toNames(iterator.next().value));
+
+  expect(result).toEqual([
+    ["Mindful Yoga", "Preparation"],
+    ["Mindful Yoga", "Hold pose 1", "1/2"],
+    ["Mindful Yoga", "Hold pose 1", "2/2"],
+    ["Mindful Yoga", "Hold pose 1"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 2", "1/2"],
+    ["Mindful Yoga", "Hold pose 2", "2/2"],
+    ["Mindful Yoga", "Hold pose 2"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 2"], //b
+    ["Mindful Yoga", "Hold pose 2", "2/2"], //b
+    ["Mindful Yoga", "Hold pose 2", "1/2"], //b
+    ["Mindful Yoga", "Change pose"],  //b
+    ["Mindful Yoga", "Hold pose 2", "1/2"],
+    ["Mindful Yoga", "Hold pose 2", "2/2"],
+    ["Mindful Yoga", "Hold pose 2"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Hold pose 3", "1/2"],
+    ["Mindful Yoga", "Hold pose 3", "2/2"],
+    ["Mindful Yoga", "Hold pose 3"],
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Chill"],
+    ["Mindful Yoga", "Change pose"], //b
+    ["Mindful Yoga", "Hold pose 3"], //b
+    ["Mindful Yoga", "Change pose"],
+    ["Mindful Yoga", "Chill"],
+    ["Mindful Yoga"],
+    undefined
+  ]);
+});
+
+test('Ids are always the same even when changing direction mid iteration', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+
+  function toIds(path) {
+    return path.map(it => it.id);
+  }
+  let iterator = iterable[Symbol.iterator]();
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next(-1).value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+  result.push(toIds(iterator.next().value));
+
+  expect(result).toEqual([
+    ["0", "00"],
+    ["0", "010", "0100"],
+    ["0", "010", "0101"],
+    ["0", "010"],
+    ["0", "02"],
+    ["0", "030", "0300"],
+    ["0", "031", "0310"],
+    ["0", "03"],
+    ["0", "04"],
+    ["0", "03"], //b
+    ["0", "031", "0310"], //b
+    ["0", "030", "0300"], //b
+    ["0", "02"],  //b
+    ["0", "030", "0300"],
+    ["0", "031", "0310"],
+    ["0", "03"],
+    ["0", "04"],
+    ["0", "050", "0500"],
+    ["0", "051", "0510"],
+    ["0", "05"],
+    ["0", "06"],
+    ["0", "07"],
+    ["0", "06"], //b
+    ["0", "05"], //b
+    ["0", "06"],
+    ["0", "07"],
+    ["0"],
+    undefined
+  ]);
+});
+
+test('StartTimes are always set properly even when changing direction mid iteration', () => {
+  let iterable = iterableTimerProgram(program);
+
+  let result = [];
+
+  function toStartTime(path) {
+    return path.map(it => it.startTime);
+  }
+  let iterator = iterable[Symbol.iterator]();
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next(-1).value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+  result.push(toStartTime(iterator.next().value));
+
+  expect(result).toEqual([
+    [0, 0],
+    [0, 30000, 30000],
+    [0, "010", "0101"],
+    [0, "010"],
+    [0, "02"],
+    [0, "030", "0300"],
+    [0, "031", "0310"],
+    [0, "03"],
+    [0, "04"],
+    [0, "03"], //b
+    [0, "031", "0310"], //b
+    [0, "030", "0300"], //b
+    [0, "02"],  //b
+    [0, "030", "0300"],
+    [0, "031", "0310"],
+    [0, "03"],
+    [0, "04"],
+    [0, "050", "0500"],
+    [0, "051", "0510"],
+    [0, "05"],
+    [0, "06"],
+    [0, "07"],
+    [0, "06"], //b
+    [0, "05"], //b
+    [0, "06"],
+    [0, "07"],
+    [0],
+    undefined
+  ]);
 });

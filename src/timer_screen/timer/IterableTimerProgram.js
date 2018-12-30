@@ -7,8 +7,8 @@ import programLoop from "../../program/ProgramLoop";
 
 export default function inst(program) {
   return Object.freeze({
-    [Symbol.iterator]() {
-      return programPathIterator(toProgramElementTree(program.mainEvent));
+    [Symbol.iterator](startFrom) {
+      return programPathIterator(toProgramElementTree(program.mainEvent), startFrom);
     }
   });
 }
@@ -37,27 +37,55 @@ function toProgramElement(node) {
   }
 }
 
-function *programPathIterator(root) {
+function *programPathIterator(root, startFrom = 1) {
   let path = [];
 
-  yield *iterator(root, 0);
+  root.id = "0";
+  yield *iterator(root, 0, normalizeDirection(startFrom));
 
-  function *iterator(node, startTime) {
+  function *iterator(node, startTime, direction) {
     if (isEvent(node)) {
       path.push(toTimerEvent(node, startTime));
+      if (direction === -1) {
+        direction = normalizeDirection(yield path);
+      }
     }
+
     let child;
-    while (child = node.nextChild()) {
-      yield *iterator(child, startTime);
-      startTime += child.duration;
+    if (direction === 1) {
+      node.reset();
+      child = node.nextChild();
+    } else {
+      node.skipToAfterLastChild();
+      child = node.previousChild();
+      startTime += node.duration - (child ? child.duration : 0);
     }
-    node.reset();
+
+    while (child) {
+      child.id = node.id + child.id;
+      direction = yield *iterator(child, startTime, direction);
+      if (direction === 1) {
+        startTime += child.duration;
+        child = node.nextChild();
+      } else {
+        child = node.previousChild();
+        startTime -= child ? child.duration : 0;
+      }
+    }
+
     if (isEvent(node)) {
-      yield path;
+      if (direction === 1) {
+        direction = normalizeDirection(yield path);
+      }
       path.pop();
     }
+
+    return direction;
   }
 
+  function normalizeDirection(direction) {
+    return (direction && direction < 0) ? -1 : 1;
+  }
   function isEvent(node) {
     return programEvent.isPrototypeOf(node);
   }

@@ -8,16 +8,31 @@ programLoop.init = function(iterations, children, duration, callback) {
   this.virtualChildCount = this.iterations * this.children.length;
 };
 programLoop.nextChild = function() {
-  if (this.children.length == 0 || this.currentChildIndex >= this.virtualChildCount) {
+  this.currentChildIndex++;
+  return currentChild.apply(this);
+};
+programLoop.previousChild = function() {
+  this.currentChildIndex--;
+  return currentChild.apply(this);
+};
+programLoop.skipToAfterLastChild = function () {
+  this.currentChildIndex = this.virtualChildCount;
+};
+
+
+function currentChild() {
+  if (this.currentChildIndex >= this.virtualChildCount) {
     return;
   }
 
   let child = this.children[this.currentChildIndex % this.children.length];
-  child.iteration = div(this.currentChildIndex, this.children.length);
-  child.id = this.currentChildIndex * child.iteration;
-  this.currentChildIndex++;
+  if (child) {
+    child.iteration = div(this.currentChildIndex, this.children.length);
+    child.id = this.currentChildIndex;
+  }
 
   return child;
-};
+}
+
 
 export default programLoop;
