@@ -451,7 +451,10 @@ test('Can change iteration direction at any time', () => {
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
-  result.push(toNames(iterator.next().value));
+
+  let last = iterator.next();
+  expect(last.value).toBeUndefined();
+  expect(last.done).toEqual(true);
 
   expect(result).toEqual([
     ["Mindful Yoga", "Preparation"],
@@ -480,8 +483,7 @@ test('Can change iteration direction at any time', () => {
     ["Mindful Yoga", "Hold pose 3"], //b
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Chill"],
-    ["Mindful Yoga"],
-    undefined
+    ["Mindful Yoga"]
   ]);
 });
 
@@ -521,37 +523,47 @@ test('Ids are always the same even when changing direction mid iteration', () =>
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
-  result.push(toIds(iterator.next().value));
 
+  let last = iterator.next();
+  expect(last.value).toBeUndefined();
+  expect(last.done).toEqual(true);
+
+  expect(result[9]).toEqual(result[7]);
+  expect(result[10]).toEqual(result[6]);
+  expect(result[11]).toEqual(result[5]);
+  expect(result[12]).toEqual(result[4]);
+  expect(result[22]).toEqual(result[20]);
+  expect(result[23]).toEqual(result[19]);
+
+  //Probably not needed, because this is testing exactly what the ID have to look like which might change
   expect(result).toEqual([
     ["0", "00"],
     ["0", "010", "0100"],
     ["0", "010", "0101"],
     ["0", "010"],
+    ["0", "011"],
+    ["0", "012", "0120"],
+    ["0", "012", "0121"],
+    ["0", "012"],
+    ["0", "013"],
+    ["0", "012"], //b
+    ["0", "012", "0121"], //b
+    ["0", "012", "0120"], //b
+    ["0", "011"],  //b
+    ["0", "012", "0120"],
+    ["0", "012", "0121"],
+    ["0", "012"],
+    ["0", "013"],
+    ["0", "014", "0140"],
+    ["0", "014", "0141"],
+    ["0", "014"],
+    ["0", "015"],
     ["0", "02"],
-    ["0", "030", "0300"],
-    ["0", "031", "0310"],
-    ["0", "03"],
-    ["0", "04"],
-    ["0", "03"], //b
-    ["0", "031", "0310"], //b
-    ["0", "030", "0300"], //b
-    ["0", "02"],  //b
-    ["0", "030", "0300"],
-    ["0", "031", "0310"],
-    ["0", "03"],
-    ["0", "04"],
-    ["0", "050", "0500"],
-    ["0", "051", "0510"],
-    ["0", "05"],
-    ["0", "06"],
-    ["0", "07"],
-    ["0", "06"], //b
-    ["0", "05"], //b
-    ["0", "06"],
-    ["0", "07"],
-    ["0"],
-    undefined
+    ["0", "015"], //b
+    ["0", "014"], //b
+    ["0", "015"],
+    ["0", "02"],
+    ["0"]
   ]);
 });
 
@@ -591,36 +603,15 @@ test('StartTimes are always set properly even when changing direction mid iterat
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
-  result.push(toStartTime(iterator.next().value));
 
-  expect(result).toEqual([
-    [0, 0],
-    [0, 30000, 30000],
-    [0, "010", "0101"],
-    [0, "010"],
-    [0, "02"],
-    [0, "030", "0300"],
-    [0, "031", "0310"],
-    [0, "03"],
-    [0, "04"],
-    [0, "03"], //b
-    [0, "031", "0310"], //b
-    [0, "030", "0300"], //b
-    [0, "02"],  //b
-    [0, "030", "0300"],
-    [0, "031", "0310"],
-    [0, "03"],
-    [0, "04"],
-    [0, "050", "0500"],
-    [0, "051", "0510"],
-    [0, "05"],
-    [0, "06"],
-    [0, "07"],
-    [0, "06"], //b
-    [0, "05"], //b
-    [0, "06"],
-    [0, "07"],
-    [0],
-    undefined
-  ]);
+  let last = iterator.next();
+  expect(last.value).toBeUndefined();
+  expect(last.done).toEqual(true);
+
+  expect(result[9]).toEqual(result[7]);
+  expect(result[10]).toEqual(result[6]);
+  expect(result[11]).toEqual(result[5]);
+  expect(result[12]).toEqual(result[4]);
+  expect(result[22]).toEqual(result[20]);
+  expect(result[23]).toEqual(result[19]);
 });

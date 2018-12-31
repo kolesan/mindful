@@ -48,6 +48,10 @@ function *programPathIterator(root, startFrom = 1) {
       path.push(toTimerEvent(node, startTime));
       if (direction === -1) {
         direction = normalizeDirection(yield path);
+        if (direction === 1) {
+          path.pop();
+          return direction;
+        }
       }
     }
 
