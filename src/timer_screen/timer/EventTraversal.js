@@ -6,7 +6,9 @@ export default function inst(iterable) {
   init();
 
   return Object.freeze({
-    next,
+    next() {
+      next();
+    },
     return() {
       iterator.return && iterator.return();
       finished = true;
@@ -19,19 +21,19 @@ export default function inst(iterable) {
       if (!isNormalNumber(time) || time < 0) {
         throw Error(`Can not seek to time ${time}`);
       }
-
-      let timeDuringEvent = (event) => (time >= event.startTime) && (time < event.endTime);
-
-      let pathBeforeSeeking = Array.from(path);
-
-      if (finished || time < head.startTime) {
+      if (finished) {
         this.reset();
       }
 
+      let timeDuringEvent = (event) => (time >= event.startTime) && (time < event.endTime);
+      let direction = time >= head.startTime ? 1 : -1;
+
+      let pathBeforeSeeking = Array.from(path);
       while(!finished && !timeDuringEvent(head)) {
-        next();
+        next(direction);
       }
       _diff = calculateDiff(pathBeforeSeeking, path);
+
       return this;
     },
     get head() { return head; },
@@ -49,12 +51,12 @@ export default function inst(iterable) {
     next();
   }
 
-  function next() {
+  function next(direction = 1) {
     if (finished) {
       return {done: true};
     }
     let pathBefore = Array.from(path);
-    let iteration = iterator.next();
+    let iteration = iterator.next(direction);
     path = iteration.value || [];
     finished = iteration.done;
     head = last(path);
