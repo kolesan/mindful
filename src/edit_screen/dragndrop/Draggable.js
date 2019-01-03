@@ -1,22 +1,9 @@
 import { log } from "../../utils/Logging";
-import { noop, point, px, rect } from "../../utils/Utils";
+import { noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
 import * as Map from '../../utils/Map';
+import { center, inside, point, rect } from "../../utils/GeometryUtils";
 
-function newDraggable(image = null) {
-  let data = Map.inst();
-  return {
-    get data() { return data },
-    get image() { return image },
-    over(zone) { return image.over(zone) },
-    move(x, y) { image.move(x, y) },
-    destroy() {
-      image.destroy();
-      image = null;
-      data = null;
-    }
-  };
-}
 function makeDraggable(cmp, dragAnchorCmp) {
   let dragging = false;
   let draggable = null;
@@ -154,6 +141,22 @@ function makeDraggable(cmp, dragAnchorCmp) {
 }
 
 
+function newDraggable(image = null) {
+  let data = Map.inst();
+  return {
+    get data() { return data },
+    get image() { return image },
+    over(zone) { return image.over(zone) },
+    move(x, y) { image.move(x, y) },
+    destroy() {
+      image.destroy();
+      image = null;
+      data = null;
+    }
+  };
+}
+
+
 function newDragImage(imageNode, imageNodeRect) {
   let imageRect = rect(imageNodeRect.left, imageNodeRect.top, imageNodeRect.width, imageNodeRect.height);
   let imageOffset = point(0, 0);
@@ -194,20 +197,6 @@ function newDragImage(imageNode, imageNodeRect) {
       return imageRect.centerY < center(elem).y;
     }
   });
-}
-
-function inside(point, elem, threshold = 0) {
-  let elemRect = elem.getBoundingClientRect();
-  return point.x >= (elemRect.left - threshold) && point.x <= (elemRect.right + threshold) &&
-    point.y >= (elemRect.top - threshold) && point.y <= (elemRect.bottom + threshold);
-}
-
-function center(elem) {
-  let rect = elem.getBoundingClientRect();
-  return point(
-    rect.left + rect.width / 2,
-    rect.top + rect.height / 2
-  );
 }
 
 export { makeDraggable };

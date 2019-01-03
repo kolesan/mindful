@@ -63,18 +63,3 @@ export function isFn(o) {
 export function arr(o) {
   return (o && Array.from(o)) || [];
 }
-
-export function rect(x, y, w, h) {
-  return {
-    x, y, w, h,
-    get left() { return this.x },
-    get right() { return this.x + this.w },
-    get top() { return this.y },
-    get bottom() { return this.y + this.h },
-    get centerX() { return this.x + this.w / 2 },
-    get centerY() { return this.y + this.h / 2 }
-  };
-}
-export function point(x, y) {
-  return {x, y};
-}
