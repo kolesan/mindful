@@ -16,15 +16,15 @@
     transition: width ease-out 150ms, height ease-out 150ms, opacity ease-out 250ms;
 
     width: 200px;
-    /*height: auto;*/
-    /*overflow: hidden;*/
+    height: 40px;
+    overflow: hidden;
 }
 
 .dev_tools_panel:hover,
 .dev_tools_panel:active {
     opacity: 1;
     width: 200px;
-    /*height: 200px;*/
+    height: auto;
 }
 
 .dtbtn {
