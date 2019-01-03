@@ -1,9 +1,9 @@
+import { log } from "../../utils/Logging";
 import { createElement, disable, enable, iconElem } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import ToolNames from "./ToolNames";
 import * as InputValidator from "../../text_input/InputValidator";
 import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
-import { log } from "../../utils/Logging";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
@@ -18,7 +18,7 @@ function create({name, duration} = {}) {
 
   let cmp = ToolComponent.create(EVENT_ICON, ToolNames.event, eventHeadingCmp(name, durationInput));
   //Shadow dom values are not cloned with cloneNode() call for some reason
-  cmp.onDrag = (dragged, elem) => copyValuesOfCustomElements(elem, dragged.dragImage);
+  cmp.onDrag = (draggable, elem) => copyValuesOfCustomElements(elem, draggable.image.node);
 
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 

@@ -14,7 +14,7 @@ function create({iterations} = {}) {
 
   let cmp = createTool(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterationsInput, durationDisplay));
   //Shadow dom values are not cloned with cloneNode() call for some reason
-  cmp.onDrag = (dragged, elem) => copyValuesOfCustomElements(elem, dragged.dragImage);
+  cmp.onDrag = (draggable, elem) => copyValuesOfCustomElements(elem, draggable.image.node);
 
   durationDisplay.onDurationChange(() => {
     EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);

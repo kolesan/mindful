@@ -149,19 +149,19 @@ function inst(containerCmp) {
       .build();
   }
   function hideRemovalMark(draggable) {
-    let overlay = draggable.dragImage.querySelector(".program__element__removal_overlay");
+    let overlay = draggable.image.node.querySelector(".program__element__removal_overlay");
     if (overlay) {
       fade({cmp: overlay, from: 1, to: 0, duration: 150, onFinish: cmp => removeComponent(cmp)});
     }
-    draggable.dragImage.classList.remove("program__element__removal_mark");
+    draggable.image.node.classList.remove("program__element__removal_mark");
   }
   function showRemovalMark(draggable) {
     let notATool = !draggable.data.get("tool");
     if (notATool) {
       let overlay = createElement("div", "program__element__removal_overlay", "Remove");
       fade({cmp: overlay, from: 0, to: 1, duration: 150});
-      draggable.dragImage.appendChild(overlay);
-      draggable.dragImage.classList.add("program__element__removal_mark");
+      draggable.image.node.appendChild(overlay);
+      draggable.image.node.classList.add("program__element__removal_mark");
     }
   }
   function createDragHereTextCmp() {
@@ -186,11 +186,11 @@ function inst(containerCmp) {
       if (!child.classList.contains("program__element") || child.classList.contains("program__element__placeholder")) {
         continue;
       }
-      if (draggable.centerIsInside(child, -5)) {
+      if (draggable.image.centerIsInside(child, -5)) {
         showPlaceholder(draggable, child);
         return;
       }
-      if (draggable.centerIsAbove(child)) {
+      if (draggable.image.centerIsAbove(child)) {
         parent.insertBefore(placeholder, child);
         showingPlaceholder = true;
         return;
@@ -217,14 +217,14 @@ function inst(containerCmp) {
     }
   }
 
-  function handleDrop(movable) {
-    let toolName = movable.data.get("tool");
+  function handleDrop(draggable) {
+    let toolName = draggable.data.get("tool");
     let element = null;
 
     if (toolName) {
       element = newProgramElement(toolName);
     } else {
-      element = movable.data.get("element");
+      element = draggable.data.get("element");
     }
 
     if (!element) {
@@ -261,10 +261,10 @@ function inst(containerCmp) {
   }
   function makeCmpDraggable({element: elem, onDrag}) {
     makeDraggable(elem, elem.querySelector("[name=dragAnchor]"))
-      .onDragStart((dragged, element) => {
-        leaveOnlyHeadingVisible(dragged.dragImage);
-        onDrag && onDrag(dragged, element);
-        dragged.data.put("element", element);
+      .onDragStart((draggable, element) => {
+        leaveOnlyHeadingVisible(draggable.image.node);
+        onDrag && onDrag(draggable, element);
+        draggable.data.put("element", element);
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)
