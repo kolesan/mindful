@@ -263,6 +263,7 @@ function inst(containerCmp) {
     makeDraggable(elem, elem.querySelector("[name=dragAnchor]"))
       .onDragStart((draggable, element) => {
         leaveOnlyHeadingVisible(draggable.image.node);
+        draggable.image.recalculateBoundingRectangle();
         onDrag && onDrag(draggable, element);
         draggable.data.put("element", element);
         showPlaceholderInsteadOf(element);

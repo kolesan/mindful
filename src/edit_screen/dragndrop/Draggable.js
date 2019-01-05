@@ -1,5 +1,5 @@
 import { log } from "../../utils/Logging";
-import { noop, px } from "../../utils/Utils";
+import { assignDefinedProperties, noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
 import * as Map from '../../utils/Map';
 import { center, inside, point, rect } from "../../utils/GeometryUtils";
@@ -200,6 +200,13 @@ function newDragImage(imageNode, imageNodeRect) {
     },
     centerIsAbove(elem) {
       return imageRect.centerY < center(elem).y;
+    },
+    recalculateBoundingRectangle() {
+      let newRect = imageNode.getBoundingClientRect();
+      imageRect = rect(newRect.left, newRect.top, newRect.width, newRect.height);
+    },
+    setBoundingRectangle(newRect) {
+      assignDefinedProperties(imageRect, newRect);
     }
   });
 }
