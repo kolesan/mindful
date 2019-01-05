@@ -83,6 +83,7 @@ function makeDraggable(cmp, dragAnchorCmp) {
 
   function onStart(target, x, y) {
     // console.log("Drag start", {target, x, y});
+    refreshDropZones();
     dragging = true;
 
     let targetRect = target.getBoundingClientRect();
@@ -137,6 +138,10 @@ function makeDraggable(cmp, dragAnchorCmp) {
       x: touch.clientX,
       y: touch.clientY
     };
+  }
+
+  function refreshDropZones() {
+    dropZones.forEach(zone => zone.init());
   }
 }
 
