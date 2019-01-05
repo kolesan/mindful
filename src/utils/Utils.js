@@ -63,3 +63,11 @@ export function isFn(o) {
 export function arr(o) {
   return (o && Array.from(o)) || [];
 }
+
+export function assignDefinedProperties(target, source) {
+  Object.entries(source).forEach(([k, v]) => {
+    if (v !== undefined) {
+      target[k] = v;
+    }
+  })
+}
