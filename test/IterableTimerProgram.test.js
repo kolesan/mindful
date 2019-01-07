@@ -122,7 +122,6 @@ test('Start times should be set', () => {
 
   let result = [];
   for (let it of iterable) {
-    logo(it.map(pathElem => { return {name: pathElem.name, start: pathElem.startTime} }));
     result.push(last(it).startTime);
   }
 
@@ -202,7 +201,6 @@ test('Generated events have same ids for every iterator', () => {
 
   let idsB = [];
   for(let it of iterable) {
-    logo(it);
     idsB.push(last(it).id);
   }
 
