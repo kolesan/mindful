@@ -7,7 +7,7 @@ export default function inst(iterable) {
 
   return Object.freeze({
     next() {
-      next();
+      return next();
     },
     return() {
       iterator.return && iterator.return();
