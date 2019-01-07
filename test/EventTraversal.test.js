@@ -1,5 +1,5 @@
 import eventTraversal from '../src/timer_screen/timer/EventTraversal';
-import { logo } from "./TestUtils";
+import { log, logo } from "./TestUtils";
 
 /*
   Test events position through time
@@ -22,7 +22,7 @@ let events = [
   {id: 7, name: 7, startTime: 15, endTime: 20},
 ];
 
-let iterable = [
+let data = [
   [ events[1], events[2], events[3], events[4] ],
   [ events[1], events[2], events[3], events[5] ],
   [ events[1], events[2], events[3]            ],
@@ -31,6 +31,27 @@ let iterable = [
   [ events[1], events[7]                       ],
   [ events[1]                                  ],
 ];
+
+let iterable = MockIterableWithDirectionalNext(data);
+
+function MockIterableWithDirectionalNext(array) {
+  return {
+    [Symbol.iterator]() { return MockIteratorWithDirectionalNext(array) },
+  }
+}
+function MockIteratorWithDirectionalNext(array) {
+  let currentIndex = -1;
+  return {
+    next(direction = 1) {
+      currentIndex += direction > 0 ? 1 : -1;
+      log("Next called", direction, currentIndex, array[currentIndex]);
+      return {
+        value: array[currentIndex],
+        done: currentIndex >= array.length
+      };
+    }
+  }
+}
 
 test('creates event traversal from an iterable', () => {
   let traversal = eventTraversal(iterable);
@@ -64,7 +85,7 @@ test('is an iterator', () => {
     result.push(it.value);
   }
 
-  expect(result).toEqual(iterable);
+  expect(result).toEqual(data);
 });
 
 test('provides finished status via `get finished()`', () => {
@@ -76,7 +97,7 @@ test('provides finished status via `get finished()`', () => {
     result.push(it.value);
   }
 
-  expect(result).toEqual(iterable);
+  expect(result).toEqual(data);
 });
 
 test('provides current traversal path via `get path()`', () => {
@@ -88,7 +109,7 @@ test('provides current traversal path via `get path()`', () => {
     result.push(traversal.path);
   }
 
-  expect(result).toEqual(iterable);
+  expect(result).toEqual(data);
 });
 
 test('provides current path head via `get head()`', () => {
@@ -160,7 +181,7 @@ test('allows resetting iteration to the beginning via `reset()`', () => {
     result.push(traversal.path);
   }
 
-  expect(result).toEqual(iterable);
+  expect(result).toEqual(data);
 });
 
 test('allows seeking by time via `seek(time)`', () => {
