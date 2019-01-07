@@ -1,38 +1,30 @@
 import programElement from "./ProgramElement";
 import { div } from "../utils/MathUtils";
+import { minmax } from "../utils/Utils";
 
 let programLoop = Object.create(programElement);
-programLoop.init = function(iterations, children, duration, callback) {
-  programElement.init.apply(this, [children, duration, callback]);
+programLoop.init = function(iterations, children, duration) {
+  programElement.init.call(this, children, duration);
   this.iterations = iterations;
-  this.virtualChildCount = this.iterations * this.children.length;
-};
-programLoop.nextChild = function() {
-  this.currentChildIndex++;
-  return currentChild.apply(this);
-};
-programLoop.previousChild = function() {
-  this.currentChildIndex--;
-  return currentChild.apply(this);
-};
-programLoop.skipToAfterLastChild = function () {
-  this.currentChildIndex = this.virtualChildCount;
-};
 
+  //Parent property shadowing
+  this._childCount = this.iterations * this.children.length;
+  this._minmaxIndex = minmax(-1, this._childCount);
 
-function currentChild() {
-  if (this.currentChildIndex >= this.virtualChildCount) {
+  return this;
+};
+programLoop._currentChild = function() {
+  if (this._currentChildIndex >= this._childCount) {
     return;
   }
 
-  let child = this.children[this.currentChildIndex % this.children.length];
+  let child = this.children[this._currentChildIndex % this.children.length];
   if (child) {
-    child.iteration = div(this.currentChildIndex, this.children.length);
-    child.id = this.currentChildIndex;
+    child.iteration = div(this._currentChildIndex, this.children.length);
+    child.id = this._currentChildIndex;
   }
 
   return child;
-}
-
+};
 
 export default programLoop;

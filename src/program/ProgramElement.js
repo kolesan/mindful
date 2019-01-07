@@ -1,34 +1,38 @@
+import { minmax } from "../utils/Utils";
+
 let programElement = {
-  init(children, duration, callback) {
+  init(children, duration) {
     this.children = children;
     this.duration = duration;
-    this.callback = callback;
-    this.currentChildIndex = -1;
+    this._childCount = this.children.length;
+    this._minmaxIndex = minmax(-1, this._childCount);
+    this._setCurrentChildIndex(-1);
   },
   nextChild() {
-    this.currentChildIndex++;
-    return currentChild.apply(this);
+    this._setCurrentChildIndex(this._currentChildIndex + 1);
+    return this._currentChild();
   },
   previousChild() {
-    this.currentChildIndex--;
-    return currentChild.apply(this);
+    this._setCurrentChildIndex(this._currentChildIndex - 1);
+    return this._currentChild();
   },
   reset() {
-    this.currentChildIndex = -1;
+    this._setCurrentChildIndex(-1);
   },
   skipToAfterLastChild() {
-    this.currentChildIndex = this.children.length;
+    this._setCurrentChildIndex(this._childCount);
+  },
+
+  _setCurrentChildIndex(v) {
+    this._currentChildIndex = this._minmaxIndex(v);
+  },
+  _currentChild() {
+    let child = this.children[this._currentChildIndex];
+    if (child) {
+      child.id = this._currentChildIndex;
+    }
+    return child;
   }
 };
-
-
-function currentChild() {
-  let child = this.children[this.currentChildIndex];
-  if (child) {
-    child.id = this.currentChildIndex;
-  }
-  return child;
-}
-
 
 export default programElement;

@@ -28,11 +28,11 @@ function toProgramElement(node) {
   switch(node.element) {
     case ToolNames.event:
       let event = Object.create(programEvent);
-      event.init(node.name, node.children, node.duration, node.callback);
+      event.init(node.name, node.callback, node.children, node.duration);
       return event;
     case ToolNames.loop:
       let loop = Object.create(programLoop);
-      loop.init(node.iterations, node.children, node.duration, node.callback);
+      loop.init(node.iterations, node.children, node.duration);
       return loop;
   }
 }
