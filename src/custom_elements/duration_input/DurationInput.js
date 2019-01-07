@@ -3,6 +3,7 @@ import { createElement, element, text, disable, enable } from "../../utils/HtmlU
 import { h, m, s, timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 import { DISABLED_ATTR } from "../../utils/AttributeConstants";
 import { minmax, noop } from "../../utils/Utils";
+import { fnEach, fnFind } from "../../utils/PrototypeExtensions";
 
 const MAX_H = 23;
 const MAX_M = 59;
@@ -80,8 +81,8 @@ export class DurationInput extends HTMLElement {
 
   setInnerInputVisibility() {
     [this.s, this.m, this.h]
-      .fnEach(input => input.value > 0 ? show(input) : hide(input))
-      .fnFind(isVisible)
+      [fnEach](input => input.value > 0 ? show(input) : hide(input))
+      [fnFind](isVisible)
       .ifPresent(input => removeRightMargin(input))
       .ifEmpty(() => show(this.s));
   }

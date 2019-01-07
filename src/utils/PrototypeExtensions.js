@@ -1,27 +1,27 @@
 import { optional } from "./FunctionalUtils";
 
+export const fnPush = Symbol("Push that returns the array");
+export const fnEach = Symbol("forEach that returns the array");
+export const fnFind = Symbol("Find that returns an Optional object");
+
 //Array
-extendProto(Array.prototype, "fnPush", function(...items) {
+extendProto(Array.prototype, fnPush, function(...items) {
   this.push(...items);
   return this;
 });
-extendProto(Array.prototype, "fnEach", function(fn) {
+extendProto(Array.prototype, fnEach, function(fn) {
   this.forEach(fn);
   return this;
 });
-extendProto(Array.prototype, "fnFind", function(fn) {
+extendProto(Array.prototype, fnFind, function(fn) {
   return optional(this.find(fn));
 });
-extendProto(Array.prototype, "fnLog", function() {
-  console.log("Logging array:", this);
-  return this;
-});
 
 
-function extendProto(prototype, name, fn) {
-  if (!prototype[name]) {
-    prototype[name] = fn;
+function extendProto(prototype, symbol, fn) {
+  if (!prototype[symbol]) {
+    prototype[symbol] = fn;
   } else {
-    throw Error(`Function '${name}' already defined on '${prototype}'`);
+    throw Error(`Function '${symbol}' already defined on '${prototype}'`);
   }
 }
