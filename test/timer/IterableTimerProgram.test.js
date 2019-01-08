@@ -1,6 +1,6 @@
-import { last, log, logo } from "./TestUtils";
-import iterableTimerProgram from "../src/timer_screen/timer/IterableTimerProgram";
-import { ffgong, fsgong, noop, sgong } from "../src/EventCallbacks";
+import { last, log, logo } from "../TestUtils";
+import iterableTimerProgram from "../../src/timer_screen/timer/IterableTimerProgram";
+import { ffgong, fsgong, noop, sgong } from "../../src/EventCallbacks";
 
 window.customElements = {
   define() {}
@@ -102,18 +102,14 @@ test('Iterating through should yield a path with current node as last element at
     ["Mindful Yoga", "Preparation"],
     ["Mindful Yoga", "Hold pose 1", "1/2"],
     ["Mindful Yoga", "Hold pose 1", "2/2"],
-    ["Mindful Yoga", "Hold pose 1"],
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Hold pose 2", "1/2"],
     ["Mindful Yoga", "Hold pose 2", "2/2"],
-    ["Mindful Yoga", "Hold pose 2"],
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Hold pose 3", "1/2"],
     ["Mindful Yoga", "Hold pose 3", "2/2"],
-    ["Mindful Yoga", "Hold pose 3"],
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Chill"],
-    ["Mindful Yoga"]
+    ["Mindful Yoga", "Chill"]
   ]);
 });
 
@@ -129,18 +125,14 @@ test('Start times should be set', () => {
     0,
     30000,
     60000,
-    30000, //Going down the path (to parent event)
     90000,
     100000,
     130000,
-    100000, //Going down the path (to parent event)
     160000,
     170000,
     200000,
-    170000,  //Going down the path (to parent event)
     230000,
-    240000,
-    0  //Going down the path (to parent event)
+    240000
   ]);
 });
 
@@ -177,9 +169,7 @@ test('Zero iteration loops should be ignored', () => {
     result.push(last(it).name);
   }
 
-  expect(result).toEqual([
-    "NoLoops"
-  ]);
+  expect(result).toEqual([]);
 });
 
 test('Callbacks should be deserialized to functions', () => {
@@ -271,18 +261,14 @@ test('Can iterate backwards', () => {
   }
 
   expect(result).toEqual([
-    ["Mindful Yoga"],
     ["Mindful Yoga", "Chill"],
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Hold pose 3"],
     ["Mindful Yoga", "Hold pose 3", "2/2"],
     ["Mindful Yoga", "Hold pose 3", "1/2"],
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Hold pose 2"],
     ["Mindful Yoga", "Hold pose 2", "2/2"],
     ["Mindful Yoga", "Hold pose 2", "1/2"],
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Hold pose 1"],
     ["Mindful Yoga", "Hold pose 1", "2/2"],
     ["Mindful Yoga", "Hold pose 1", "1/2"],
     ["Mindful Yoga", "Preparation"]
@@ -301,18 +287,14 @@ test('Start times should be set correctly when iterating backwards', () => {
   }
 
   expect(result).toEqual([
-    0,
     240000,
     230000,
-    170000,
     200000,
     170000,
     160000,
-    100000,
     130000,
     100000,
     90000,
-    30000,
     60000,
     30000,
     0
@@ -429,8 +411,6 @@ test('Can change iteration direction at any time', () => {
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
-  result.push(toNames(iterator.next().value));
-  result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next(-1).value));
   result.push(toNames(iterator.next(-1).value));
   result.push(toNames(iterator.next(-1).value));
@@ -443,10 +423,8 @@ test('Can change iteration direction at any time', () => {
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
-  result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next(-1).value));
   result.push(toNames(iterator.next(-1).value));
-  result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
   result.push(toNames(iterator.next().value));
 
@@ -458,41 +436,37 @@ test('Can change iteration direction at any time', () => {
     ["Mindful Yoga", "Preparation"],
     ["Mindful Yoga", "Hold pose 1", "1/2"],
     ["Mindful Yoga", "Hold pose 1", "2/2"],
-    ["Mindful Yoga", "Hold pose 1"],
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Hold pose 2", "1/2"],
     ["Mindful Yoga", "Hold pose 2", "2/2"],
-    ["Mindful Yoga", "Hold pose 2"],
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Hold pose 2"], //b
     ["Mindful Yoga", "Hold pose 2", "2/2"], //b
     ["Mindful Yoga", "Hold pose 2", "1/2"], //b
     ["Mindful Yoga", "Change pose"],  //b
+    ["Mindful Yoga", "Hold pose 1", "2/2"], //b
+    ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Hold pose 2", "1/2"],
     ["Mindful Yoga", "Hold pose 2", "2/2"],
-    ["Mindful Yoga", "Hold pose 2"],
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Hold pose 3", "1/2"],
     ["Mindful Yoga", "Hold pose 3", "2/2"],
-    ["Mindful Yoga", "Hold pose 3"],
     ["Mindful Yoga", "Change pose"],
     ["Mindful Yoga", "Chill"],
     ["Mindful Yoga", "Change pose"], //b
-    ["Mindful Yoga", "Hold pose 3"], //b
+    ["Mindful Yoga", "Hold pose 3", "2/2"], //b
     ["Mindful Yoga", "Change pose"],
-    ["Mindful Yoga", "Chill"],
-    ["Mindful Yoga"]
+    ["Mindful Yoga", "Chill"]
   ]);
 });
 
 test('Ids are always the same even when changing direction mid iteration', () => {
   let iterable = iterableTimerProgram(program);
 
-  let result = [];
-
   function toIds(path) {
     return path.map(it => it.id);
   }
+
+  let result = [];
   let iterator = iterable[Symbol.iterator]();
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
@@ -501,8 +475,6 @@ test('Ids are always the same even when changing direction mid iteration', () =>
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
-  result.push(toIds(iterator.next().value));
-  result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next(-1).value));
   result.push(toIds(iterator.next(-1).value));
   result.push(toIds(iterator.next(-1).value));
@@ -515,10 +487,8 @@ test('Ids are always the same even when changing direction mid iteration', () =>
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
-  result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next(-1).value));
   result.push(toIds(iterator.next(-1).value));
-  result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
   result.push(toIds(iterator.next().value));
 
@@ -526,43 +496,12 @@ test('Ids are always the same even when changing direction mid iteration', () =>
   expect(last.value).toBeUndefined();
   expect(last.done).toEqual(true);
 
-  expect(result[9]).toEqual(result[7]);
-  expect(result[10]).toEqual(result[6]);
-  expect(result[11]).toEqual(result[5]);
-  expect(result[12]).toEqual(result[4]);
-  expect(result[22]).toEqual(result[20]);
-  expect(result[23]).toEqual(result[19]);
-
-  //Probably not needed, because this is testing exactly what the ID have to look like which might change
-  expect(result).toEqual([
-    ["0", "00"],
-    ["0", "010", "0100"],
-    ["0", "010", "0101"],
-    ["0", "010"],
-    ["0", "011"],
-    ["0", "012", "0120"],
-    ["0", "012", "0121"],
-    ["0", "012"],
-    ["0", "013"],
-    ["0", "012"], //b
-    ["0", "012", "0121"], //b
-    ["0", "012", "0120"], //b
-    ["0", "011"],  //b
-    ["0", "012", "0120"],
-    ["0", "012", "0121"],
-    ["0", "012"],
-    ["0", "013"],
-    ["0", "014", "0140"],
-    ["0", "014", "0141"],
-    ["0", "014"],
-    ["0", "015"],
-    ["0", "02"],
-    ["0", "015"], //b
-    ["0", "014"], //b
-    ["0", "015"],
-    ["0", "02"],
-    ["0"]
-  ]);
+  expect(result[7]).toEqual(result[5]);
+  expect(result[8]).toEqual(result[4]);
+  expect(result[9]).toEqual(result[3]);
+  expect(result[10]).toEqual(result[2]);
+  expect(result[19]).toEqual(result[17]);
+  expect(result[20]).toEqual(result[16]);
 });
 
 test('StartTimes are always set properly even when changing direction mid iteration', () => {
@@ -581,8 +520,6 @@ test('StartTimes are always set properly even when changing direction mid iterat
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
-  result.push(toStartTime(iterator.next().value));
-  result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next(-1).value));
   result.push(toStartTime(iterator.next(-1).value));
   result.push(toStartTime(iterator.next(-1).value));
@@ -595,10 +532,8 @@ test('StartTimes are always set properly even when changing direction mid iterat
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
-  result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next(-1).value));
   result.push(toStartTime(iterator.next(-1).value));
-  result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
   result.push(toStartTime(iterator.next().value));
 
@@ -606,10 +541,10 @@ test('StartTimes are always set properly even when changing direction mid iterat
   expect(last.value).toBeUndefined();
   expect(last.done).toEqual(true);
 
-  expect(result[9]).toEqual(result[7]);
-  expect(result[10]).toEqual(result[6]);
-  expect(result[11]).toEqual(result[5]);
-  expect(result[12]).toEqual(result[4]);
-  expect(result[22]).toEqual(result[20]);
-  expect(result[23]).toEqual(result[19]);
+  expect(result[7]).toEqual(result[5]);
+  expect(result[8]).toEqual(result[4]);
+  expect(result[9]).toEqual(result[3]);
+  expect(result[10]).toEqual(result[2]);
+  expect(result[19]).toEqual(result[17]);
+  expect(result[20]).toEqual(result[16]);
 });

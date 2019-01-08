@@ -1,5 +1,5 @@
-import eventTraversal from '../src/timer_screen/timer/EventTraversal';
-import { log, logo } from "./TestUtils";
+import eventTraversal from '../../src/timer_screen/timer/EventTraversal';
+import { log, logo } from "../TestUtils";
 
 /*
   Test events position through time
@@ -25,11 +25,8 @@ let events = [
 let data = [
   [ events[1], events[2], events[3], events[4] ],
   [ events[1], events[2], events[3], events[5] ],
-  [ events[1], events[2], events[3]            ],
   [ events[1], events[2], events[6]            ],
-  [ events[1], events[2]                       ],
-  [ events[1], events[7]                       ],
-  [ events[1]                                  ],
+  [ events[1], events[7]                       ]
 ];
 
 let iterable = MockIterableWithDirectionalNext(data);
@@ -124,11 +121,8 @@ test('provides current path head via `get head()`', () => {
   expect(result).toEqual([
     events[4],
     events[5],
-    events[3],
     events[6],
-    events[2],
-    events[7],
-    events[1]
+    events[7]
   ]);
 });
 
@@ -142,13 +136,10 @@ test('provides path diff after an iteration step via `get diff()`', () => {
   }
 
   expect(result).toEqual([
-    {added: [ events[1], events[2], events[3], events[4] ], removed: [           ]},
-    {added: [ events[5]                                  ], removed: [ events[4] ]},
-    {added: [                                            ], removed: [ events[5] ]},
-    {added: [ events[6]                                  ], removed: [ events[3] ]},
-    {added: [                                            ], removed: [ events[6] ]},
-    {added: [ events[7]                                  ], removed: [ events[2] ]},
-    {added: [                                            ], removed: [ events[7] ]}
+    {added: [ events[1], events[2], events[3], events[4] ], removed: [                      ]},
+    {added: [ events[5]                                  ], removed: [ events[4]            ]},
+    {added: [ events[6]                                  ], removed: [ events[3], events[5] ]},
+    {added: [ events[7]                                  ], removed: [ events[2], events[6] ]}
   ]);
 });
 

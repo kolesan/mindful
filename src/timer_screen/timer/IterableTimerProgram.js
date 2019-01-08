@@ -46,13 +46,6 @@ function *programPathIterator(root, startFrom = 1) {
   function *iterator(node, startTime, direction) {
     if (isEvent(node)) {
       path.push(toTimerEvent(node, startTime));
-      if (direction === -1) {
-        direction = normalizeDirection(yield path);
-        if (direction === 1) {
-          path.pop();
-          return direction;
-        }
-      }
     }
 
     let child;
@@ -78,7 +71,7 @@ function *programPathIterator(root, startFrom = 1) {
     }
 
     if (isEvent(node)) {
-      if (direction === 1) {
+      if (node.isLeaf()) {
         direction = normalizeDirection(yield path);
       }
       path.pop();
