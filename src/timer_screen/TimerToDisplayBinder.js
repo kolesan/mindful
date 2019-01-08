@@ -6,9 +6,10 @@ import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
 import eventTraversal from './timer/EventTraversal';
 import iterableTimerProgram from "./timer/IterableTimerProgram";
+import timeKeeperBuilder from './timer/TimeKeeper';
 
 function newInstance(program, timerComponentContainer) {
-  let timer = newTimer(eventTraversal(iterableTimerProgram(program)));
+  let timer = newTimer(timeKeeperBuilder(), eventTraversal(iterableTimerProgram(program)));
   let display = newTimerDisplay(timer, timerComponentContainer);
   timer.onFinish(Controls.resetButtons);
   bindEventListeners();

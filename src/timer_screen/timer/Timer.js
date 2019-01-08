@@ -17,11 +17,6 @@ function newTimerEvent(id, name, startTime, duration, callback) {
   return Object.create(TimerEvent).init(id, name, startTime, duration, callback);
 }
 
-const States = {
-  running: "running",
-  paused: "paused",
-  stopped: "stopped",
-};
 const Events = {
   START: "TIMER_STARTED",
   PAUSE: "TIMER_PAUSED",
@@ -32,100 +27,68 @@ const Events = {
 };
 
 let Timer = {
-  get running() { return this._state == States.running},
-  get paused() { return this._state == States.paused},
-  get stopped() { return this._state == States.stopped},
+  get running() { return this._timeKeeper.running},
+  get paused() { return this._timeKeeper.paused},
+  get stopped() { return this._timeKeeper.stopped},
 
-  onStart(fn) { on.call(this, Events.START, fn) },
-  onPause(fn) { on.call(this, Events.PAUSE, fn) },
-  onFinish(fn) { on.call(this, Events.FINISH, fn) },
-  onTick(fn) { on.call(this, Events.TICK, fn) },
-  onLevelUpdate(fn) { on.call(this, Events.LEVEL_UPDATE, fn) },
-  onSeek(fn) { on.call(this, Events.SEEK, fn) },
+  onStart(fn)       { this._timerEventBus.bindListener(Events.START, fn)        },
+  onPause(fn)       { this._timerEventBus.bindListener(Events.PAUSE, fn)        },
+  onFinish(fn)      { this._timerEventBus.bindListener(Events.FINISH, fn)       },
+  onTick(fn)        { this._timerEventBus.bindListener(Events.TICK, fn)         },
+  onLevelUpdate(fn) { this._timerEventBus.bindListener(Events.LEVEL_UPDATE, fn) },
+  onSeek(fn)        { this._timerEventBus.bindListener(Events.SEEK, fn)         },
 
-  init: function initTimer(eventTraversal) {
+  init: function initTimer(timeKeeperBuilder, eventTraversal) {
     this._eventTraversal = eventTraversal;
     this._timerEventBus = createEventBus();
-    this._currentTime = 0;
-    this._startTime = 0;
-    this._msUntilNextTick = 0;
-    this._pauseTime = 0;
-    this._intervalId = 0;
-    this._tickAndLaunchTimeoutId = 0;
-    this._state = null;
-    markStopped.call(this);
+    this._timeKeeper = timeKeeperBuilder
+      .interval(1000)
+      .onProc(tick.bind(this))
+      .build();
     return this;
   },
 
   start: function startTimer() {
     if (this.running) return;
 
-    if (this.stopped) {
-      this._startTime = Date.now();
-      this._msUntilNextTick = 1000;
-    } else {
-      this._startTime += Date.now() - this._pauseTime;
-    }
-
-    startUp.call(this);
-
-    markRunning.call(this);
+    this._timeKeeper.start();
     fire.call(this, Events.START);
   },
+  pause: function pauseTimer() {
+    if (!this.running) return;
+
+    this._timeKeeper.pause();
+    fire.call(this, Events.PAUSE);
+  },
+  stop: function stopTimer() {
+    if (this.stopped) return;
+
+    finish.call(this);
+  },
   seek: function seekTimer(time) {
-    clearCounters.call(this);
     this._eventTraversal.seek(time);
-    fire.call(this, Events.SEEK, time, this._eventTraversal.diff);
 
     if (this._eventTraversal.finished) {
       finish.call(this);
       return;
     }
 
-    let msLeftovers = time % 1000;
-    this._currentTime = time - msLeftovers;
-    this._startTime = Date.now() - time;
-    this._pauseTime = Date.now();
-    this._msUntilNextTick = msLeftovers === 0 && time > 0 ? 0 : 1000 - msLeftovers;
-
-    if (this.running) {
-      startUp.call(this);
-    } else if (this.stopped) {
-      markPaused.call(this);
-    }
-  },
-  pause: function pauseTimer() {
-    if (!this.running) return;
-
-    this._pauseTime = Date.now();
-    this._msUntilNextTick = 1000 - (this._pauseTime - this._startTime) % 1000;
-    clearCounters.call(this);
-    markPaused.call(this);
-    fire.call(this, Events.PAUSE);
-  },
-  stop: function stopTimer() {
-    if (this.stopped) return;
-
-    clearCounters.call(this);
-    finish.call(this);
+    this._timeKeeper.seek(time);
+    fire.call(this, Events.SEEK, time, this._eventTraversal.diff);
   },
 
   get currentEvents() {
     return this._eventTraversal.path;
   },
 };
-function newTimer(eventTraversal) {
-  return Object.create(Timer).init(eventTraversal);
+function newTimer(timeKeeper, eventTraversal) {
+  return Object.create(Timer).init(timeKeeper, eventTraversal);
 }
 
-function launch() {
-  this._intervalId = setInterval(tick.bind(this), 1000);
-}
-function tick() {
-  this._currentTime += 1000;
-  fire.call(this, Events.TICK, this._currentTime);
+function tick(time) {
+  fire.call(this, Events.TICK, time);
 
-  while (this._currentTime >= this._eventTraversal.head.endTime) {
+  while (time >= this._eventTraversal.head.endTime) {
     this._eventTraversal.head.callback();
 
     this._eventTraversal.next();
@@ -133,44 +96,16 @@ function tick() {
     fire.call(this, Events.LEVEL_UPDATE, this._eventTraversal.diff);
 
     if (this._eventTraversal.finished) {
-      clearCounters.call(this);
       finish.call(this);
-      break;
+      return;
     }
   }
 }
 
-function startUp() {
-  this._tickAndLaunchTimeoutId = setTimeout(() => {
-    tick.call(this);
-    if (!this.stopped) {
-      launch.call(this);
-    }
-  }, this._msUntilNextTick);
-}
 function finish() {
-  this._currentTime = 0;
+  this._timeKeeper.stop();
   this._eventTraversal.reset();
-  markStopped.call(this);
   fire.call(this, Events.FINISH);
-}
-function clearCounters() {
-  clearTimeout(this._tickAndLaunchTimeoutId);
-  clearInterval(this._intervalId);
-}
-
-function markRunning() {
-  this._state = States.running;
-}
-function markPaused() {
-  this._state = States.paused;
-}
-function markStopped() {
-  this._state = States.stopped;
-}
-
-function on(event, fn) {
-  this._timerEventBus.bindListener(event, fn);
 }
 
 function fire(event, ...args) {
