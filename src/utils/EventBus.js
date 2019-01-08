@@ -1,9 +1,7 @@
-import * as Map from './Map';
-
 let globalInstance = instantiate();
 
 function instantiate() {
-  let listeners = Map.inst();
+  let listeners = new Map();
   return Object.freeze({
     fire: function(eventType, ...args) {
       let listenersOfType = listeners.get(eventType);
@@ -18,7 +16,7 @@ function instantiate() {
       if (listenersOfType) {
         listenersOfType.push(listener);
       } else {
-        listeners.put(eventType, [listener]);
+        listeners.set(eventType, [listener]);
       }
       return this;
     }

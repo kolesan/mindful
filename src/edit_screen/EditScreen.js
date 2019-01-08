@@ -50,7 +50,7 @@ function asTransparentDashed(style) {
 }
 function putToolNameToData(toolName) {
   return function(dragged) {
-    dragged.data.put("tool", toolName);
+    dragged.data.set("tool", toolName);
   }
 }
 function makeToolDraggable(toolCmp, toolName) {

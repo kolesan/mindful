@@ -1,7 +1,6 @@
 import { log } from "../../utils/Logging";
 import { assignDefinedProperties, noop, px } from "../../utils/Utils";
 import { removeComponent } from "../../utils/HtmlUtils";
-import * as Map from '../../utils/Map';
 import { center, inside, point, rect } from "../../utils/GeometryUtils";
 
 function makeDraggable(cmp, dragAnchorCmp) {
@@ -147,7 +146,7 @@ function makeDraggable(cmp, dragAnchorCmp) {
 
 
 function newDraggable(image = null) {
-  let data = Map.inst();
+  let data = new Map();
   return {
     get data() { return data },
     get image() { return image },

@@ -1,11 +1,10 @@
-import * as Map from "../../utils/Map";
 import * as Loop from "../tools/Loop";
 import * as Event from "../tools/Event";
 import ToolNames from "./ToolNames";
 
-let ToolMap = Map.inst()
-  .put(ToolNames.event, newTool(ToolNames.event, Event))
-  .put(ToolNames.loop, newTool(ToolNames.loop, Loop));
+let ToolMap = new Map()
+  .set(ToolNames.event, newTool(ToolNames.event, Event))
+  .set(ToolNames.loop, newTool(ToolNames.loop, Loop));
 
 let Tools = Object.freeze({
   create(name, props) {

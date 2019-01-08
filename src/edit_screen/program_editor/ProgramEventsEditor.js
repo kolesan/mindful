@@ -265,7 +265,7 @@ function inst(containerCmp) {
         leaveOnlyHeadingVisible(draggable.image.node);
         draggable.image.recalculateBoundingRectangle();
         onDrag && onDrag(draggable, element);
-        draggable.data.put("element", element);
+        draggable.data.set("element", element);
         showPlaceholderInsteadOf(element);
       })
       .bindDropZone(programEditorDropZone)

@@ -1,5 +1,4 @@
 import * as audio from './Audio';
-import * as Map from './utils/Map';
 import * as utils from "./utils/Utils";
 
 const noop = "noop";
@@ -8,11 +7,11 @@ const ffgong = "ffgong";
 const sgong = "sgong";
 const fsgong = "fsgong";
 
-let callbackDictionary = Map.inst()
-  .put(noop, utils.noop)
-  .put(fgong, audio.fgong)
-  .put(ffgong, audio.ffgong)
-  .put(sgong, audio.sgong)
-  .put(fsgong, audio.fsgong);
+let callbackDictionary = new Map()
+  .set(noop, utils.noop)
+  .set(fgong, audio.fgong)
+  .set(ffgong, audio.ffgong)
+  .set(sgong, audio.sgong)
+  .set(fsgong, audio.fsgong);
 
 export { noop, fgong, ffgong, sgong, fsgong, callbackDictionary }
