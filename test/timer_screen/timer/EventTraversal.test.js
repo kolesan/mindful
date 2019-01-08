@@ -41,7 +41,6 @@ function MockIteratorWithDirectionalNext(array) {
   return {
     next(direction = 1) {
       currentIndex += direction > 0 ? 1 : -1;
-      log("Next called", direction, currentIndex, array[currentIndex]);
       return {
         value: array[currentIndex],
         done: currentIndex >= array.length
