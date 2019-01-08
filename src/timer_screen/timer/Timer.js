@@ -68,7 +68,7 @@ let Timer = {
       this.startTime += Date.now() - this.pauseTime;
     }
 
-    this._startUp();
+    startUp.call(this);
 
     this.markRunning();
     this.fire(this.Events.START);
@@ -88,19 +88,19 @@ let Timer = {
       this.fire(this.Events.LEVEL_UPDATE, this.eventTraversal.diff);
 
       if (this.eventTraversal.finished) {
-        this._clearCounters();
-        this._finish();
+        clearCounters.call(this);
+        finish.call(this);
         break;
       }
     }
   },
   seek: function seekTimer(time) {
-    this._clearCounters();
+    clearCounters.call(this);
     this.eventTraversal.seek(time);
     this.fire(this.Events.SEEK, time, this.eventTraversal.diff);
 
     if (this.eventTraversal.finished) {
-      this._finish();
+      finish.call(this);
       return;
     }
 
@@ -111,7 +111,7 @@ let Timer = {
     this.msUntilNextTick = msLeftovers === 0 && time > 0 ? 0 : 1000 - msLeftovers;
 
     if (this.running) {
-      this._startUp();
+      startUp.call(this);
     } else if (this.stopped) {
       this.markPaused();
     }
@@ -121,42 +121,42 @@ let Timer = {
 
     this.pauseTime = Date.now();
     this.msUntilNextTick = 1000 - (this.pauseTime - this.startTime) % 1000;
-    this._clearCounters();
+    clearCounters.call(this);
     this.markPaused();
     this.fire(this.Events.PAUSE);
   },
   stop: function stopTimer() {
     if (this.stopped) return;
 
-    this._clearCounters();
-    this._finish();
+    clearCounters.call(this);
+    finish.call(this);
   },
 
   currentEvents: function getCurrentEvents() {
     return this.eventTraversal.path;
   },
-
-  _startUp: function startUpTimerPRIVATE() {
-    this.tickAndLaunchTimeoutId = setTimeout(() => {
-      this.tick();
-      if (!this.stopped) {
-        this.launch();
-      }
-    }, this.msUntilNextTick);
-  },
-  _finish: function finishTimerPRIVATE() {
-    this.currentTime = 0;
-    this.eventTraversal.reset();
-    this.markStopped();
-    this.fire(this.Events.FINISH);
-  },
-  _clearCounters: function clearCountersPRIVATE() {
-    clearTimeout(this.tickAndLaunchTimeoutId);
-    clearInterval(this.intervalId);
-  }
 };
 function newTimer(eventTraversal) {
   return Object.create(Timer).init(eventTraversal);
+}
+
+function startUp() {
+  this.tickAndLaunchTimeoutId = setTimeout(() => {
+    this.tick();
+    if (!this.stopped) {
+      this.launch();
+    }
+  }, this.msUntilNextTick);
+}
+function finish() {
+  this.currentTime = 0;
+  this.eventTraversal.reset();
+  this.markStopped();
+  this.fire(this.Events.FINISH);
+}
+function clearCounters() {
+  clearTimeout(this.tickAndLaunchTimeoutId);
+  clearInterval(this.intervalId);
 }
 
 export { newTimerEvent, newTimer, States as TimerStates };
