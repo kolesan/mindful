@@ -1,7 +1,7 @@
 import { minmax } from "../utils/Utils";
 
 let programElement = {
-  init(children, duration) {
+  init(children = [], duration) {
     this.children = children;
     this.duration = duration;
     this._childCount = this.children.length;
@@ -21,6 +21,9 @@ let programElement = {
   },
   skipToAfterLastChild() {
     this._setCurrentChildIndex(this._childCount);
+  },
+  isLeaf() {
+    return this._childCount == 0;
   },
 
   _setCurrentChildIndex(v) {

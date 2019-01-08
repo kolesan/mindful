@@ -3,7 +3,7 @@ import programEvent from "../../src/program/ProgramEvent";
 import { noop } from "../TestUtils";
 
 test("Can create a program event", () => {
-  let event = Object.create(programEvent).init("TestEvent", noop, [], 1000);
+  let event = Object.create(programEvent).init("TestEvent", noop, undefined, 1000);
 
   expect(event.name).toEqual("TestEvent");
   expect(event.children).toEqual([]);
@@ -149,4 +149,26 @@ test("Can change iteration direction 'mid-air'", () => {
   expect(event.previousChild().name).toEqual("child2");
   expect(event.nextChild().name).toEqual("child3");
   expect(event.nextChild()).toBeUndefined();
+});
+
+test("isLeaf() returns a boolean signaling if this element has any children", () => {
+  let event = Object.create(programEvent).init(
+    "TestEvent",
+    noop,
+    [
+      {name: "child1"},
+      {name: "child2"},
+      {name: "child3"}
+    ],
+    1000
+  );
+  let eventLeaf = Object.create(programEvent).init(
+    "TestEvent",
+    noop,
+    [],
+    1000
+  );
+
+  expect(event.isLeaf()).toEqual(false);
+  expect(eventLeaf.isLeaf()).toEqual(true);
 });
