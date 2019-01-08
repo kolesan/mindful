@@ -1,6 +1,6 @@
-import { last, log, logo } from "../TestUtils";
-import iterableTimerProgram from "../../src/timer_screen/timer/IterableTimerProgram";
-import { ffgong, fsgong, noop, sgong } from "../../src/EventCallbacks";
+import { last, log, logo } from "../../TestUtils";
+import iterableTimerProgram from "../../../src/timer_screen/timer/IterableTimerProgram";
+import { ffgong, fsgong, noop, sgong } from "../../../src/EventCallbacks";
 
 window.customElements = {
   define() {}

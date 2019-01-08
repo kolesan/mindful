@@ -1,5 +1,5 @@
-import eventTraversal from '../../src/timer_screen/timer/EventTraversal';
-import { log, logo } from "../TestUtils";
+import eventTraversal from '../../../src/timer_screen/timer/EventTraversal';
+import { log, logo } from "../../TestUtils";
 
 /*
   Test events position through time

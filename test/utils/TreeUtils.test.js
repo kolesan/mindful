@@ -1,6 +1,6 @@
-import * as TreeUtils from '../src/utils/TreeUtils';
-import * as utils from './TestUtils';
-import { log } from "./TestUtils";
+import * as TreeUtils from '../../src/utils/TreeUtils';
+import * as utils from '../TestUtils';
+import { log } from "../TestUtils";
 
 let entryPoint = {
   name: 1,
