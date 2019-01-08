@@ -25,7 +25,7 @@ function newInstance(program, timerComponentContainer) {
     pause: timer.pause.bind(timer),
     stop: timer.stop.bind(timer),
     seek: (level, percent) => {
-      let event = timer.currentEvents()[level];
+      let event = timer.currentEvents[level];
       let time = event.startTime + Math.floor(event.duration * percent / 100);
       if (percent == 100) {
         //User should not be able to seek past the event 'he is seeking on'
@@ -33,7 +33,6 @@ function newInstance(program, timerComponentContainer) {
       }
       timer.seek(time);
     },
-    get state() { return timer.state },
     get running() { return timer.running },
     get paused() { return timer.paused },
     get stopped() { return timer.stopped }

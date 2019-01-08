@@ -22,39 +22,38 @@ const States = {
   paused: "paused",
   stopped: "stopped",
 };
+const Events = {
+  START: "TIMER_STARTED",
+  PAUSE: "TIMER_PAUSED",
+  FINISH: "TIMER_FINISHED",
+  TICK: "TIMER_TICK",
+  LEVEL_UPDATE: "TIMER_LEVEL_UPDATE",
+  SEEK: "TIMER_SEEK_UPDATE",
+};
 
 let Timer = {
-  Events: Object.freeze({
-    START: "TIMER_STARTED",
-    PAUSE: "TIMER_PAUSED",
-    FINISH: "TIMER_FINISHED",
-    TICK: "TIMER_TICK",
-    LEVEL_UPDATE: "TIMER_LEVEL_UPDATE",
-    SEEK: "TIMER_SEEK_UPDATE",
-  }),
+  get running() { return this._state == States.running},
+  get paused() { return this._state == States.paused},
+  get stopped() { return this._state == States.stopped},
 
-  get running() { return this.state == States.running},
-  get paused() { return this.state == States.paused},
-  get stopped() { return this.state == States.stopped},
-  markRunning() { this.state = States.running },
-  markPaused() { this.state = States.paused },
-  markStopped() { this.state = States.stopped },
-
-  on(event, fn) { this.timerEventBus.bindListener(event, fn) },
-  onStart(fn) { this.on(this.Events.START, fn) },
-  onPause(fn) { this.on(this.Events.PAUSE, fn) },
-  onFinish(fn) { this.on(this.Events.FINISH, fn) },
-  onTick(fn) { this.on(this.Events.TICK, fn) },
-  onLevelUpdate(fn) { this.on(this.Events.LEVEL_UPDATE, fn) },
-  onSeek(fn) { this.on(this.Events.SEEK, fn) },
-
-  fire(event, ...args) { this.timerEventBus.fire(event, ...args) },
+  onStart(fn) { on.call(this, Events.START, fn) },
+  onPause(fn) { on.call(this, Events.PAUSE, fn) },
+  onFinish(fn) { on.call(this, Events.FINISH, fn) },
+  onTick(fn) { on.call(this, Events.TICK, fn) },
+  onLevelUpdate(fn) { on.call(this, Events.LEVEL_UPDATE, fn) },
+  onSeek(fn) { on.call(this, Events.SEEK, fn) },
 
   init: function initTimer(eventTraversal) {
-    this.eventTraversal = eventTraversal;
-    this.currentTime = 0;
-    this.timerEventBus = createEventBus();
-    this.markStopped();
+    this._eventTraversal = eventTraversal;
+    this._timerEventBus = createEventBus();
+    this._currentTime = 0;
+    this._startTime = 0;
+    this._msUntilNextTick = 0;
+    this._pauseTime = 0;
+    this._intervalId = 0;
+    this._tickAndLaunchTimeoutId = 0;
+    this._state = null;
+    markStopped.call(this);
     return this;
   },
 
@@ -62,68 +61,47 @@ let Timer = {
     if (this.running) return;
 
     if (this.stopped) {
-      this.startTime = Date.now();
-      this.msUntilNextTick = 1000;
+      this._startTime = Date.now();
+      this._msUntilNextTick = 1000;
     } else {
-      this.startTime += Date.now() - this.pauseTime;
+      this._startTime += Date.now() - this._pauseTime;
     }
 
     startUp.call(this);
 
-    this.markRunning();
-    this.fire(this.Events.START);
-  },
-  launch: function launchTimer() {
-    this.intervalId = setInterval(this.tick.bind(this), 1000);
-  },
-  tick: function tickTimer() {
-    this.currentTime += 1000;
-    this.fire(this.Events.TICK, this.currentTime);
-
-    while (this.currentTime >= this.eventTraversal.head.endTime) {
-      this.eventTraversal.head.callback();
-
-      this.eventTraversal.next();
-
-      this.fire(this.Events.LEVEL_UPDATE, this.eventTraversal.diff);
-
-      if (this.eventTraversal.finished) {
-        clearCounters.call(this);
-        finish.call(this);
-        break;
-      }
-    }
+    markRunning.call(this);
+    fire.call(this, Events.START);
   },
   seek: function seekTimer(time) {
     clearCounters.call(this);
-    this.eventTraversal.seek(time);
-    this.fire(this.Events.SEEK, time, this.eventTraversal.diff);
+    this._eventTraversal.seek(time);
+    fire.call(this, Events.SEEK, time, this._eventTraversal.diff);
 
-    if (this.eventTraversal.finished) {
+    if (this._eventTraversal.finished) {
       finish.call(this);
       return;
     }
 
     let msLeftovers = time % 1000;
-    this.currentTime = time - msLeftovers;
-    this.startTime = Date.now() - time;
-    this.pauseTime = Date.now();
-    this.msUntilNextTick = msLeftovers === 0 && time > 0 ? 0 : 1000 - msLeftovers;
+    this._currentTime = time - msLeftovers;
+    this._startTime = Date.now() - time;
+    this._pauseTime = Date.now();
+    this._msUntilNextTick = msLeftovers === 0 && time > 0 ? 0 : 1000 - msLeftovers;
 
     if (this.running) {
       startUp.call(this);
     } else if (this.stopped) {
-      this.markPaused();
+      markPaused.call(this);
     }
   },
   pause: function pauseTimer() {
     if (!this.running) return;
 
-    this.pauseTime = Date.now();
-    this.msUntilNextTick = 1000 - (this.pauseTime - this.startTime) % 1000;
+    this._pauseTime = Date.now();
+    this._msUntilNextTick = 1000 - (this._pauseTime - this._startTime) % 1000;
     clearCounters.call(this);
-    this.markPaused();
-    this.fire(this.Events.PAUSE);
+    markPaused.call(this);
+    fire.call(this, Events.PAUSE);
   },
   stop: function stopTimer() {
     if (this.stopped) return;
@@ -132,31 +110,71 @@ let Timer = {
     finish.call(this);
   },
 
-  currentEvents: function getCurrentEvents() {
-    return this.eventTraversal.path;
+  get currentEvents() {
+    return this._eventTraversal.path;
   },
 };
 function newTimer(eventTraversal) {
   return Object.create(Timer).init(eventTraversal);
 }
 
-function startUp() {
-  this.tickAndLaunchTimeoutId = setTimeout(() => {
-    this.tick();
-    if (!this.stopped) {
-      this.launch();
+function launch() {
+  this._intervalId = setInterval(tick.bind(this), 1000);
+}
+function tick() {
+  this._currentTime += 1000;
+  fire.call(this, Events.TICK, this._currentTime);
+
+  while (this._currentTime >= this._eventTraversal.head.endTime) {
+    this._eventTraversal.head.callback();
+
+    this._eventTraversal.next();
+
+    fire.call(this, Events.LEVEL_UPDATE, this._eventTraversal.diff);
+
+    if (this._eventTraversal.finished) {
+      clearCounters.call(this);
+      finish.call(this);
+      break;
     }
-  }, this.msUntilNextTick);
-}
-function finish() {
-  this.currentTime = 0;
-  this.eventTraversal.reset();
-  this.markStopped();
-  this.fire(this.Events.FINISH);
-}
-function clearCounters() {
-  clearTimeout(this.tickAndLaunchTimeoutId);
-  clearInterval(this.intervalId);
+  }
 }
 
-export { newTimerEvent, newTimer, States as TimerStates };
+function startUp() {
+  this._tickAndLaunchTimeoutId = setTimeout(() => {
+    tick.call(this);
+    if (!this.stopped) {
+      launch.call(this);
+    }
+  }, this._msUntilNextTick);
+}
+function finish() {
+  this._currentTime = 0;
+  this._eventTraversal.reset();
+  markStopped.call(this);
+  fire.call(this, Events.FINISH);
+}
+function clearCounters() {
+  clearTimeout(this._tickAndLaunchTimeoutId);
+  clearInterval(this._intervalId);
+}
+
+function markRunning() {
+  this._state = States.running;
+}
+function markPaused() {
+  this._state = States.paused;
+}
+function markStopped() {
+  this._state = States.stopped;
+}
+
+function on(event, fn) {
+  this._timerEventBus.bindListener(event, fn);
+}
+
+function fire(event, ...args) {
+  this._timerEventBus.fire(event, ...args)
+}
+
+export { newTimerEvent, newTimer };

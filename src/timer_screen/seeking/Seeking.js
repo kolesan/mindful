@@ -1,6 +1,5 @@
 import { minmax } from '../../utils/Utils';
 import { currentTimer } from '../TimerScreen';
-import { TimerStates } from '../timer/Timer';
 
 const INDICATOR_ACTIVE_CLASS = "timer__bar__seeking_indicator_active";
 function markIndicatorActive(indicator) {
@@ -15,12 +14,12 @@ function widthPercentage(width, x) {
 }
 
 function inst() {
-  let timerStateBeforePause;
+  let wasRunning;
 
   return Object.freeze({
     pauseTimer() {
-      timerStateBeforePause = currentTimer().state;
-      if (currentTimer().running) {
+      wasRunning = currentTimer().running;
+      if (wasRunning) {
         currentTimer().pause();
       }
     },
@@ -34,14 +33,10 @@ function inst() {
     },
     endSeeking(indicator) {
       markIndicatorInactive(indicator);
-      if (wasRunning()) {
+      if (wasRunning) {
         currentTimer().start();
       }
     }
   });
-
-  function wasRunning() {
-    return timerStateBeforePause == TimerStates.running;
-  }
 }
 export { inst, widthPercentage };

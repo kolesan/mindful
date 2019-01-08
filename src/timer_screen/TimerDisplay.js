@@ -55,8 +55,7 @@ function newInstance(timer, container){
   }
 
   function generateBars() {
-    let events = timer.currentEvents();
-    log("Generating bars", events);
+    let events = timer.currentEvents;
     bars = [];
     for(let i = 0; i < events.length; i++) {
       bars.push(createTimerBar(i, events[i]));
@@ -85,13 +84,13 @@ function newInstance(timer, container){
   }
 
   function seekAnimations(time) {
-    timer.currentEvents().forEach(function(event, i) {
+    timer.currentEvents.forEach(function(event, i) {
       bars[i].animation.currentTime = time - event.startTime;
     });
   }
 
   function updateTime(time) {
-    let events = timer.currentEvents();
+    let events = timer.currentEvents;
     for(let i = 0; i < events.length; i++) {
       bars[i].setTime(time - events[i].startTime);
     }

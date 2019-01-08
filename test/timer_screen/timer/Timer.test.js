@@ -10,11 +10,33 @@ let mainEvent =
     ])
   ]);
 
-test('seeking sets current event properly', () => {
-  let timer = newTimer(noop, noop, mainEvent);
-  timer.seek(6000);
-  let events = timer.currentEvents();
-  expect(events[0].name).toBe("MainTimer");
-  expect(events[1].name).toBe("l2_timer1");
-  expect(events[2].name).toBe("l3_timer1.2");
+let traversal = MockEventTraversal();
+
+function MockEventTraversal() {
+  return {
+    path: []
+  }
+}
+
+test('Can create a Timer object', () => {
+  let timer = newTimer(traversal);
+
+  expect(timer.running).toBeDefined();
+  expect(timer.paused).toBeDefined();
+  expect(timer.stopped).toBeDefined();
+
+  expect(timer.onStart).toBeDefined();
+  expect(timer.onPause).toBeDefined();
+  expect(timer.onFinish).toBeDefined();
+  expect(timer.onTick).toBeDefined();
+  expect(timer.onLevelUpdate).toBeDefined();
+  expect(timer.onSeek).toBeDefined();
+
+  expect(timer.init).toBeDefined();
+  expect(timer.start).toBeDefined();
+  expect(timer.seek).toBeDefined();
+  expect(timer.pause).toBeDefined();
+  expect(timer.stop).toBeDefined();
+
+  expect(timer.currentEvents).toBeDefined();
 });
