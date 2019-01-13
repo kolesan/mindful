@@ -1,30 +1,14 @@
+import { log } from '../../utils/Logging';
 import { noop } from "../../utils/Utils";
 
-export default function TimeKeeperBuilder() {
-  let procInterval = 1000;
-  let onProcCb = noop;
-
-  return Object.freeze({
-    interval(d) {
-      procInterval = d;
-      return this;
-    },
-    onProc(cb) {
-      onProcCb = cb;
-      return this;
-    },
-    build() {
-      return TimeKeeper(procInterval, onProcCb);
-    }
-  })
-}
-
-function TimeKeeper(procInterval, onProcCb) {
+export default function TimeKeeper(procInterval) {
   const States = {
     running: "running",
     paused: "paused",
     stopped: "stopped",
   };
+
+  let onProcCb = noop;
 
   let currentTime = 0;
   let startTime = 0;
@@ -36,6 +20,11 @@ function TimeKeeper(procInterval, onProcCb) {
   markStopped();
 
   return Object.freeze({
+    onProc(cb) {
+      onProcCb = cb;
+      return this;
+    },
+
     get running() { return isRunning()},
     get paused() { return isPaused()},
     get stopped() { return isStopped()},
@@ -92,13 +81,14 @@ function TimeKeeper(procInterval, onProcCb) {
     procAndLaunchTimeoutId = setTimeout(() => {
       proc();
       //Proc callback could potentially stop the TimeSeeker, if for example the timer is exhausted by this last proc
-      if (isStopped()) {
+      if (!isStopped()) {
         intervalId = setInterval(proc, procInterval);
       }
     }, msUntilNextProc);
   }
   function proc() {
     currentTime += procInterval;
+    console.log("proc called", currentTime);
     onProcCb(currentTime);
   }
 
@@ -108,8 +98,8 @@ function TimeKeeper(procInterval, onProcCb) {
   }
 
   function isRunning() { return state === States.running}
-  function isPaused() { return state === States.running}
-  function isStopped() { return state === States.running}
+  function isPaused() { return state === States.paused}
+  function isStopped() { return state === States.stopped}
   function markRunning() { state = States.running }
   function markPaused() { state = States.paused }
   function markStopped() { state = States.stopped }

@@ -26,6 +26,9 @@ const Events = {
   SEEK: "TIMER_SEEK_UPDATE",
 };
 
+function newTimer(timeKeeper, eventTraversal) {
+  return Object.create(Timer).init(timeKeeper, eventTraversal);
+}
 let Timer = {
   get running() { return this._timeKeeper.running},
   get paused() { return this._timeKeeper.paused},
@@ -38,13 +41,10 @@ let Timer = {
   onLevelUpdate(fn) { this._timerEventBus.bindListener(Events.LEVEL_UPDATE, fn) },
   onSeek(fn)        { this._timerEventBus.bindListener(Events.SEEK, fn)         },
 
-  init: function initTimer(timeKeeperBuilder, eventTraversal) {
+  init: function initTimer(timeKeeper, eventTraversal) {
     this._eventTraversal = eventTraversal;
     this._timerEventBus = createEventBus();
-    this._timeKeeper = timeKeeperBuilder
-      .interval(1000)
-      .onProc(tick.bind(this))
-      .build();
+    this._timeKeeper = timeKeeper.onProc(tick.bind(this));
     return this;
   },
 
@@ -81,9 +81,6 @@ let Timer = {
     return this._eventTraversal.path;
   },
 };
-function newTimer(timeKeeper, eventTraversal) {
-  return Object.create(Timer).init(timeKeeper, eventTraversal);
-}
 
 function tick(time) {
   fire.call(this, Events.TICK, time);
