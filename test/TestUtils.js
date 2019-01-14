@@ -17,3 +17,11 @@ export function noop() {
 export function last(arr) {
   return arr[arr.length-1];
 }
+
+export function nowKeeper() {
+  return {
+    time: 0,
+    advance(t) { this.time += t },
+    now() { return this.time }
+  };
+}

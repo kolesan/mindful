@@ -1,7 +1,7 @@
 import { log } from '../../utils/Logging';
 import { noop } from "../../utils/Utils";
 
-export default function TimeKeeper(procInterval) {
+export default function TimeKeeper(procInterval = 1000, nowKeeper = Date) {
   const States = {
     running: "running",
     paused: "paused",
@@ -33,21 +33,23 @@ export default function TimeKeeper(procInterval) {
       if (isRunning()) return;
 
       if (isStopped()) {
-        startTime = Date.now();
-        msUntilNextProc = 1000;
+        msUntilNextProc = procInterval;
+        startTime = nowKeeper.now();
       } else {
-        startTime += Date.now() - pauseTime;
+        //(pauseTime - startTime) is the time that passed while timer was running
+        msUntilNextProc = procInterval - (pauseTime - startTime) % procInterval;
+        //(now - pauseTime) is the time that passed while the timer was paused
+        //for future (pauseTime - startTime) calculations we need to move startTime forward by the time during pause
+        startTime += nowKeeper.now() - pauseTime;
       }
 
       startUp();
-
       markRunning();
     },
     pause() {
       if (!isRunning()) return;
 
-      pauseTime = Date.now();
-      msUntilNextProc = 1000 - (pauseTime - startTime) % 1000;
+      pauseTime = nowKeeper.now();
 
       clearCounters();
       markPaused();
@@ -55,19 +57,19 @@ export default function TimeKeeper(procInterval) {
     stop() {
       if (isStopped()) return;
 
-      clearCounters();
-
       currentTime = 0;
+
+      clearCounters();
       markStopped();
     },
     seek(time) {
       clearCounters();
 
-      let msLeftovers = time % 1000;
+      let msLeftovers = time % procInterval;
       currentTime = time - msLeftovers;
-      startTime = Date.now() - time;
-      pauseTime = Date.now();
-      msUntilNextProc = msLeftovers === 0 && time > 0 ? 0 : 1000 - msLeftovers;
+      startTime = nowKeeper.now() - time;
+      pauseTime = nowKeeper.now();
+      msUntilNextProc = msLeftovers === 0 && time > 0 ? 0 : procInterval - msLeftovers;
 
       if (isRunning()) {
         startUp();
@@ -88,7 +90,6 @@ export default function TimeKeeper(procInterval) {
   }
   function proc() {
     currentTime += procInterval;
-    console.log("proc called", currentTime);
     onProcCb(currentTime);
   }
 
