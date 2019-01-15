@@ -2,8 +2,6 @@ import { log, logo, noop } from "../../TestUtils";
 
 import { newTimer } from '../../../src/timer_screen/timer/Timer';
 
-jest.mock('../../../src/timer_screen/timer/TimeKeeper');
-
 function MockEventTraversal() {
   return {
     next: jest.fn(),
