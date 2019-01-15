@@ -66,6 +66,13 @@ it('can be created', () => {
   expect(timer.seek).toBeFunction();
 
   expect(timer.currentEvents).toBeDefined();
+
+  expect(Object.getPrototypeOf(timer)).toContainAllKeys([
+    "running", "paused", "stopped",
+    "onStart", "onPause", "onFinish", "onTick", "onLevelUpdate", "onSeek",
+    "init", "start", "pause", "stop", "seek",
+    "currentEvents"
+  ]);
 });
 
 it('can bet started', () => {
