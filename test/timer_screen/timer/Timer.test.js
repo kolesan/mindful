@@ -1,19 +1,8 @@
-import { log, logo } from "../../TestUtils";
+import { log, logo, noop } from "../../TestUtils";
 
-import { newTimerEvent, newTimer } from '../../../src/timer_screen/timer/Timer';
-import timeKeeper from '../../../src/timer_screen/timer/TimeKeeper';
+import { newTimer } from '../../../src/timer_screen/timer/Timer';
 
 jest.mock('../../../src/timer_screen/timer/TimeKeeper');
-
-let noop = () => {};
-let mainEvent =
-  newTimerEvent(`MainTimer`, 0, 10000, noop, [
-    newTimerEvent(`l2_timer0`, 0, 2000, noop),
-    newTimerEvent(`l2_timer1`, 2000, 7000, noop, [
-      newTimerEvent(`l3_timer1.1`, 2000, 3000, noop),
-      newTimerEvent(`l3_timer1.2`, 5000, 3000, noop)
-    ])
-  ]);
 
 function MockEventTraversal() {
   return {
