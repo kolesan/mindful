@@ -1,57 +1,7 @@
-import { noop, fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
+import { fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
 import ToolNames from "../edit_screen/tools/ToolNames";
-import { last } from "../utils/Utils";
 import { s, m } from "../utils/TimeUtils";
-
-function programBuilder(name) {
-  let programDuration = 0;
-  let program = newEvent(name, programDuration, noop);
-  let elemStack = [program];
-  return Object.freeze({
-    loop(iterations) {
-      addElem(newLoop(iterations));
-      return this;
-    },
-    event(name, duration, callback = noop) {
-      addElem(newEvent(name, duration, callback));
-      return this;
-    },
-    end() {
-      elemStack.pop();
-      return this;
-    },
-    build() {
-      program.duration = calculateDuration(program);
-      return program;
-    }
-  });
-
-  function calculateDuration(parent) {
-    return parent.children.reduce((a, b) => {
-      if (b.element == ToolNames.event) {
-        return a + b.duration;
-      } else {
-        return a + calculateDuration(b) * b.iterations;
-      }
-    }, 0);
-  }
-
-  function addElem(elem) {
-    let parent = last(elemStack);
-    if (!parent) {
-      throw new Error("DSL error, trying to add child to non existent parent. Check your 'end`s'.");
-    }
-
-    parent.children.push(elem);
-    elemStack.push(elem);
-  }
-  function newLoop(iterations, children = []) {
-    return { element: ToolNames.loop, iterations, children };
-  }
-  function newEvent(name, duration, callback, children = []) {
-    return { element: ToolNames.event, name, duration, callback, children };
-  }
-}
+import { programBuilder } from "./DevUtils";
 
 let yogaProgram = {
   id: "Yoga",
