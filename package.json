@@ -10,7 +10,8 @@
     "buildDevNetlify": "webpack --config webpack.netlifyDev.js",
     "dev": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "test": "jest",
-    "testWatch": "jest --watch"
+    "testWatch": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "author": "kolesan90@gmail.com",
   "license": "ISC",
