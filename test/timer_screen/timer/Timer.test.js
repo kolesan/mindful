@@ -323,23 +323,71 @@ it('binds timeKeeper onProc during creation', () => {
   expect(timeKeeper.onProc).toHaveBeenCalledTimes(1);
 });
 
-it('calls eventTraversal.head.callback if its endTime is < than currentTime', () => {
+it('calls callbacks of all events that should have happened since last tick', () => {
   let timeKeeper = MockTimeKeeper();
   let traversal = MockEventTraversal();
   let timer = newTimer(timeKeeper, traversal);
 
-  let callCount = 0;
+  let levelUpdateCbCallCount = 0;
   let diff = [];
   timer.onLevelUpdate(d => {
-    callCount++;
-    diff = d;
+    levelUpdateCbCallCount++;
+    diff.push(d);
   });
 
+  traversal.head.endTime = 200;
+  traversal.next.mockImplementationOnce(() => {
+    traversal.head.endTime = 500;
+    traversal.diff = 1;
+  });
+  traversal.next.mockImplementationOnce(() => {
+    traversal.head.endTime = 600;
+    traversal.diff = 2;
+  });
+  traversal.next.mockImplementationOnce(() => {
+    traversal.head.endTime = 1100;
+    traversal.diff = 3;
+  });
+
+
   timer.start();
-  timeKeeper.doProc(10);
+  timeKeeper.doProc(1000);
   timer.stop();
 
-  expect(callCount).toEqual(0);
+
+  expect(traversal.head.callback).toHaveBeenCalledTimes(3);
+  expect(levelUpdateCbCallCount).toEqual(3);
+  expect(diff).toEqual([1, 2, 3]);
+});
+
+it('stops when traversal is finished', () => {
+  let timeKeeper = MockTimeKeeper();
+  let traversal = MockEventTraversal();
+  let timer = newTimer(timeKeeper, traversal);
+
+  let levelUpdateCbCallCount = 0;
+  timer.onLevelUpdate(() => levelUpdateCbCallCount++);
+  let finishCallbackCallCount = 0;
+  timer.onFinish(() => finishCallbackCallCount++);
+
+  traversal.head.endTime = 200;
+  traversal.next.mockImplementationOnce(() => {
+    traversal.head.endTime = 1500;
+  });
+  traversal.finishedMock.mockReturnValueOnce(false);
+  traversal.finishedMock.mockReturnValueOnce(true);
+
+  timer.start();
+  timeKeeper.doProc(1000);
+  timeKeeper.doProc(2000);
+  timer.stop();
+
+  expect(traversal.finishedMock).toHaveBeenCalledTimes(2);
+  expect(traversal.head.callback).toHaveBeenCalledTimes(2);
+  expect(levelUpdateCbCallCount).toEqual(2);
+  expect(finishCallbackCallCount).toEqual(1);
+  expect(timeKeeper.stop).toHaveBeenCalledTimes(1);
+  expect(traversal.reset).toHaveBeenCalledTimes(1);
 });
 
 
