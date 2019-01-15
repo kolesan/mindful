@@ -70,10 +70,9 @@ export default function inst(iterable) {
     while(before[i] && after[i] && before[i].id == after[i].id) {
       i++;
     }
-    return diffObj(after.slice(i), before.slice(i));
-  }
-
-  function diffObj(added = [], removed = []) {
-    return Object.freeze({added, removed});
+    return Object.freeze({
+      added: after.slice(i),
+      removed: before.slice(i)
+    });
   }
 }

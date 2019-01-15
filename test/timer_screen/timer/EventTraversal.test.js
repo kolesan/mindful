@@ -158,6 +158,20 @@ test('allows early termination via `return()`', () => {
   expect(traversal.next().value).toEqual(undefined);
 });
 
+test('original iterators `return()` is called during in traversal `return()` call', () => {
+  let it = MockIteratorWithDirectionalNext(data);
+  it.return = jest.fn();
+  let traversal = eventTraversal({
+    [Symbol.iterator]() { return it; }
+  });
+
+  traversal.next();
+  traversal.return();
+
+  expect(traversal.finished).toEqual(true);
+  expect(it.return).toHaveBeenCalledTimes(1);
+});
+
 test('allows resetting iteration to the beginning via `reset()`', () => {
   let traversal = eventTraversal(iterable);
 
