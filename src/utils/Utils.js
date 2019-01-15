@@ -4,18 +4,6 @@ export function minmax(min, max) {
   }
 }
 
-export function makeSetIconByStateFunction(iconElem, iconTrue, iconFalse) {
-  return function(status) {
-    if (status) {
-      iconElem.classList.remove(iconFalse);
-      iconElem.classList.add(iconTrue);
-    } else {
-      iconElem.classList.remove(iconTrue);
-      iconElem.classList.add(iconFalse);
-    }
-  }
-}
-
 export function isArray(o) {
   return Array.prototype.isPrototypeOf(o);
 }
@@ -57,7 +45,7 @@ export function noSpaces(s) {
 }
 
 export function isFn(o) {
-  return Function.isPrototypeOf(o);
+  return Function.prototype.isPrototypeOf(o);
 }
 
 export function arr(o) {

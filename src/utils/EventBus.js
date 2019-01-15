@@ -1,3 +1,4 @@
+import { isFn } from "./Utils";
 let globalInstance = instantiate();
 
 function instantiate() {
@@ -24,7 +25,7 @@ function instantiate() {
 }
 
 function validateListener(listener) {
-  if (!Function.prototype.isPrototypeOf(listener)) {
+  if (!isFn(listener)) {
     throw Error(`Trying to bind invalid listener object '${listener}'`);
   }
 }
