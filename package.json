@@ -11,7 +11,7 @@
     "dev": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "test": "jest",
     "testWatch": "jest --watch",
-    "watchCoverage": "jest --reporters=\"default\" --verbose=false --watchAll --coverage"
+    "watchCoverage": "jest --reporters=\"./test/JestNoOutputReporter.js\" --verbose=false --watchAll --coverage"
   },
   "author": "kolesan90@gmail.com",
   "license": "ISC",
