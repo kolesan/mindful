@@ -65,11 +65,11 @@ export default function TimeKeeper(procInterval = 1000, nowKeeper = Date) {
     seek(time) {
       clearCounters();
 
-      let msLeftovers = time % procInterval;
-      currentTime = time - msLeftovers;
+      let msSinceLastProc = time % procInterval;
+      currentTime = time - msSinceLastProc;
+      msUntilNextProc = procInterval - msSinceLastProc;
       startTime = nowKeeper.now() - time;
       pauseTime = nowKeeper.now();
-      msUntilNextProc = msLeftovers === 0 && time > 0 ? 0 : procInterval - msLeftovers;
 
       if (isRunning()) {
         startUp();
@@ -81,11 +81,8 @@ export default function TimeKeeper(procInterval = 1000, nowKeeper = Date) {
 
   function startUp() {
     procAndLaunchTimeoutId = setTimeout(() => {
+      intervalId = setInterval(proc, procInterval);
       proc();
-      //Proc callback could potentially stop the TimeSeeker, if for example the timer is exhausted by this last proc
-      if (!isStopped()) {
-        intervalId = setInterval(proc, procInterval);
-      }
     }, msUntilNextProc);
   }
   function proc() {

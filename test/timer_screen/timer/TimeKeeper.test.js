@@ -68,6 +68,29 @@ it(`defaults interval to 1000`, () => {
   );
 });
 
+it(`defaults nowKeeper to Date`, () => {
+  let dateNow = Date.now;
+  Date.now = jest.fn();
+
+
+  let keeper = timeKeeper();
+  let procCb = jest.fn();
+  keeper.onProc(procCb);
+
+  keeper.start();
+  advanceTime(4500);
+  keeper.stop();
+
+  expect(Date.now).toBeCalledTimes(1);
+  expect(procCb).toBeCalledTimes(4);
+  [1000, 2000, 3000, 4000].forEach(
+    it => expect(procCb).toHaveBeenCalledWith(it)
+  );
+
+
+  Date.now = dateNow;
+});
+
 it('can be started, paused and then resumed', () => {
   let keeper = timeKeeper(1000, now);
   let procCb = jest.fn();
@@ -176,7 +199,7 @@ it('allows seeking backwards', () => {
   );
 });
 
-it('stays paused after seeking', () => {
+it('stays paused after seeking (if was paused before)', () => {
   let keeper = timeKeeper(1000, now);
   let procCb = jest.fn();
   keeper.onProc(procCb);
@@ -195,7 +218,7 @@ it('stays paused after seeking', () => {
   );
 });
 
-it('continues running after seeking', () => {
+it('continues running after seeking (if was running before)', () => {
   let keeper = timeKeeper(1000, now);
   let procCb = jest.fn();
   keeper.onProc(procCb);
@@ -227,6 +250,93 @@ it('becomes paused after seeking if it was stopped', () => {
 
   expect(procCb).toBeCalledTimes(1);
   [3000].forEach(
+    it => expect(procCb).toHaveBeenCalledWith(it)
+  );
+});
+
+it('does not proc if seeked right on the proc boundary', () => {
+  let keeper = timeKeeper(1000, now);
+  let procCb = jest.fn();
+  keeper.onProc(procCb);
+
+  keeper.start();
+  keeper.seek(1000);
+  advanceTime(1);
+  keeper.seek(2000);
+  advanceTime(1);
+  keeper.seek(3000);
+  advanceTime(1);
+  keeper.stop();
+
+  expect(procCb).toHaveBeenCalledTimes(0);
+});
+
+it('can be stopped through first onProc callback', () => {
+  let keeper = timeKeeper(1000, now);
+  let procCb = jest.fn(() => keeper.stop());
+  keeper.onProc(procCb);
+
+  keeper.start();
+  advanceTime(5000);
+
+  expect(keeper.stopped).toBeTrue();
+  expect(procCb).toHaveBeenCalledTimes(1);
+  [1000].forEach(
+    it => expect(procCb).toHaveBeenCalledWith(it)
+  );
+});
+
+it('can be stopped through onProc callback', () => {
+  let keeper = timeKeeper(1000, now);
+  let procCb = jest.fn();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce(() => keeper.stop());
+  keeper.onProc(procCb);
+
+  keeper.start();
+  advanceTime(5000);
+
+  expect(keeper.stopped).toBeTrue();
+  expect(procCb).toHaveBeenCalledTimes(3);
+  [1000, 2000, 3000].forEach(
+    it => expect(procCb).toHaveBeenCalledWith(it)
+  );
+});
+
+it('can be paused through onProc callback', () => {
+  let keeper = timeKeeper(1000, now);
+  let procCb = jest.fn();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce(() => keeper.pause());
+  keeper.onProc(procCb);
+
+  keeper.start();
+  advanceTime(5000);
+  expect(keeper.paused).toBeTrue();
+  keeper.stop();
+
+  expect(procCb).toHaveBeenCalledTimes(3);
+  [1000, 2000, 3000].forEach(
+    it => expect(procCb).toHaveBeenCalledWith(it)
+  );
+});
+
+it('can be seeked through onProc callback', () => {
+  let keeper = timeKeeper(1000, now);
+  let procCb = jest.fn();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce();
+  procCb.mockImplementationOnce(() => keeper.seek(500));
+  keeper.onProc(procCb);
+
+  keeper.start();
+  advanceTime(5000);
+  keeper.stop();
+
+  expect(procCb).toHaveBeenCalledTimes(5);
+  [1000, 2000, 3000, 1000, 2000].forEach(
     it => expect(procCb).toHaveBeenCalledWith(it)
   );
 });
