@@ -45,7 +45,7 @@ export function noSpaces(s) {
 }
 
 export function isFn(o) {
-  return Function.prototype.isPrototypeOf(o);
+  return typeof o === "function";
 }
 
 export function arr(o) {
