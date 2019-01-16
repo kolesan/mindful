@@ -8,8 +8,9 @@ export default function inst(callbackDictionary) {
       serializedProgram.mainEvent = map(program.mainEvent, node => {
         let clone = Object.assign({}, node);
         if (clone.callback) {
-          let callbackDictionaryEntry = callbackDictionary.entries.find(([k, v]) => v == clone.callback);
-          clone.callback = callbackDictionaryEntry[0];
+          let entries = [...callbackDictionary.entries()];
+          let fnEntry = entries.find(([k, v]) => v == clone.callback);
+          clone.callback = fnEntry[0];
         }
         return clone;
       });
