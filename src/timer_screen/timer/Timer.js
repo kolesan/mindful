@@ -1,6 +1,9 @@
 import { log } from '../../utils/Logging';
 import { instantiate as createEventBus } from '../../utils/EventBus';
 
+function newTimerEvent(id, name, startTime, duration, callback) {
+  return Object.create(TimerEvent).init(id, name, startTime, duration, callback);
+}
 let TimerEvent = {
   init: function initTimerEvent(id, name, startTime, duration, callback) {
     this.id = id;
@@ -13,9 +16,6 @@ let TimerEvent = {
     return this;
   }
 };
-function newTimerEvent(id, name, startTime, duration, callback) {
-  return Object.create(TimerEvent).init(id, name, startTime, duration, callback);
-}
 
 const Events = {
   START: "TIMER_STARTED",
