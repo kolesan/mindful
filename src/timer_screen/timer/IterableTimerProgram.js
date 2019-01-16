@@ -1,7 +1,6 @@
 import { log } from "../../utils/Logging";
 import ToolNames from "../../edit_screen/tools/ToolNames";
 import { newTimerEvent } from "./Timer";
-import { callbackDictionary } from '../../EventCallbacks';
 import programEvent from "../../program/ProgramEvent";
 import programLoop from "../../program/ProgramLoop";
 
@@ -98,6 +97,6 @@ function toTimerEvent(programEvent, startTime) {
     name,
     startTime,
     programEvent.duration,
-    callbackDictionary.get(programEvent.callback)
+    programEvent.callback
   );
 }
