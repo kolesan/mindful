@@ -1,11 +1,11 @@
+import { log } from '../utils/Logging';
 import { createElement } from "../utils/HtmlUtils";
 import { last, px } from "../utils/Utils";
 import { noop } from "../EventCallbacks";
 import ToolNames from "../edit_screen/tools/ToolNames";
 
 export function programBuilder(name) {
-  let programDuration = 0;
-  let program = newEvent(name, programDuration, noop);
+  let program = newEvent(name, 0, noop);
   let elemStack = [program];
   return Object.freeze({
     loop(iterations) {
