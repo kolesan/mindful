@@ -171,15 +171,6 @@ test('Zero iteration loops should be ignored', () => {
   expect(result).toEqual([]);
 });
 
-test('Callbacks should be deserialized to functions', () => {
-  let iterable = iterableTimerProgram(program);
-
-  for (let it of iterable) {
-    let callback = last(it).callback;
-    expect(Function.prototype.isPrototypeOf(callback)).toEqual(true);
-  }
-});
-
 test('Generated events have same ids for every iterator', () => {
   let iterable = iterableTimerProgram(program);
 
