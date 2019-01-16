@@ -10,6 +10,9 @@ export default function inst(callbackDictionary) {
         if (clone.callback) {
           let entries = [...callbackDictionary.entries()];
           let fnEntry = entries.find(([k, v]) => v == clone.callback);
+          if (!fnEntry) {
+            throw Error(`'Provided callback dictionary does not contain function '${clone.callback}'`);
+          }
           clone.callback = fnEntry[0];
         }
         return clone;
@@ -25,7 +28,7 @@ export default function inst(callbackDictionary) {
         if (clone.callback) {
           let callbackFn = callbackDictionary.get(clone.callback);
           if (!callbackFn) {
-            throw Error(`'${callbackDictionary}' callback dictionary does not contain function '${clone.callback}'`);
+            throw Error(`'Provided callback dictionary does not contain function '${clone.callback}'`);
           }
           clone.callback = callbackFn;
         }

@@ -153,3 +153,51 @@ it('can serialize a program', () => {
 
   expect(service.serialize(deserializedProgram)).toEqual(serializedProgram)
 });
+
+it('deserialize returns new instance of program', () => {
+  let service = programSerialization(callbacks);
+
+  let deserialized = service.deserialize(serializedProgram);
+  deserialized.mainEvent.name = "DefinitelySomethingNew";
+  deserialized.mainEvent.children[0].name = "AlsoDefinitelySomethingNew";
+
+  expect(deserialized.mainEvent.name).toEqual("DefinitelySomethingNew");
+  expect(serializedProgram.mainEvent.name).toEqual("Mindful Yoga");
+
+  expect(deserialized.mainEvent.children[0].name).toEqual("AlsoDefinitelySomethingNew");
+  expect(serializedProgram.mainEvent.children[0].name).toEqual("Preparation");
+});
+
+it('serialize returns new instance of program', () => {
+  let service = programSerialization(callbacks);
+
+  let serialized = service.serialize(deserializedProgram);
+  serialized.mainEvent.name = "DefinitelySomethingNew";
+  serialized.mainEvent.children[0].name = "AlsoDefinitelySomethingNew";
+
+  expect(serialized.mainEvent.name).toEqual("DefinitelySomethingNew");
+  expect(deserializedProgram.mainEvent.name).toEqual("Mindful Yoga");
+
+  expect(serialized.mainEvent.children[0].name).toEqual("AlsoDefinitelySomethingNew");
+  expect(deserializedProgram.mainEvent.children[0].name).toEqual("Preparation");
+});
+
+it('during serialization throws an error if callback dictionary does not contain needed function', () => {
+  let service = programSerialization(callbacks);
+
+  let deserializedClone = service.deserialize(serializedProgram);
+  deserializedClone.mainEvent.callback = function NoSuchFunction() {};
+
+  expect(() => service.serialize(deserializedClone))
+    .toThrowWithMessage(Error, /Provided callback dictionary does not contain.*NoSuchFunction/);
+});
+
+it('during deserialization throws an error if callback dictionary does not contain needed function', () => {
+  let service = programSerialization(callbacks);
+
+  let serializedClone = service.serialize(deserializedProgram);
+  serializedClone.mainEvent.callback = "NoSuchFunction";
+
+  expect(() => service.deserialize(serializedClone))
+    .toThrowWithMessage(Error, /Provided callback dictionary does not contain.*NoSuchFunction/);
+});
