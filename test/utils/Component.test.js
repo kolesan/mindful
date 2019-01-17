@@ -34,3 +34,11 @@ test('can detach itself from container element', () => {
   cmp.detach();
   expect(div.childNodes.length).toBe(0);
 });
+
+test('`element` returns first element of the child element array', () => {
+  let div = document.createElement("div");
+  let p = document.createElement("p");
+  let cmp = create([div, p]);
+
+  expect(cmp.element).toEqual(div);
+});
