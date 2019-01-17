@@ -67,3 +67,24 @@ test('timeStampToTimeObject creates a time object from timestamp', () => {
   expect(timeObj.timestamp).toEqual(123456789);
   expect(timeObj.toString()).toEqual("34h 17m 36s 789ms");
 });
+
+test('can format timestamp into `00:00:00` string', () => {
+  expect(TimeUtils.formatTime(123456789)).toEqual("34:17:36");
+});
+
+test('timestamp formated into `00:00:00` string always has 2 symbols', () => {
+  expect(TimeUtils.formatTime(2000)).toEqual("00:00:02");
+});
+
+test('can turn hours in to timestamp', () => {
+  expect(TimeUtils.h(34)).toEqual(34*60*60*1000);
+});
+
+test('can turn hours in to timestamp', () => {
+  expect(TimeUtils.m(34)).toEqual(34*60*1000);
+});
+
+test('can turn hours in to timestamp', () => {
+  expect(TimeUtils.s(34)).toEqual(34*1000);
+});
+
