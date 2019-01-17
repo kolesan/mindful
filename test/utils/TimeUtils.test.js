@@ -80,11 +80,11 @@ test('can turn hours in to timestamp', () => {
   expect(TimeUtils.h(34)).toEqual(34*60*60*1000);
 });
 
-test('can turn hours in to timestamp', () => {
+test('can turn minutes in to timestamp', () => {
   expect(TimeUtils.m(34)).toEqual(34*60*1000);
 });
 
-test('can turn hours in to timestamp', () => {
+test('can turn seconds in to timestamp', () => {
   expect(TimeUtils.s(34)).toEqual(34*1000);
 });
 
