@@ -1,5 +1,4 @@
 import * as TreeUtils from '../../src/utils/TreeUtils';
-import * as utils from '../TestUtils';
 import { log } from "../TestUtils";
 
 let entryPoint = {
@@ -23,60 +22,35 @@ let entryPoint = {
   ]
 };
 
+test('visit: visits a tree using postorder traversing', () => {
+  let names = [];
+
+  TreeUtils.visit(entryPoint, node => names.push(node.name));
+
+  expect(names).toEqual([1.1, 5, 4, 6, 9, 8, 10, 7, 3, 2, 1]);
+});
+
+test('visit does not fail if passed node is null', () => {
+  TreeUtils.visit(null, () => {});
+});
+
+test('visit does not fail if passed node does not have children', () => {
+  TreeUtils.visit({children: null}, () => {});
+});
+
+test('postorderRightToLeftVisitor: visits a tree using a using postorder right to left traversing', () => {
+  let names = [];
+
+  let gen = TreeUtils.postorderRightToLeftVisitor(entryPoint);
+  for(let node of gen) {
+    names.push(node.name);
+  }
+
+  expect(names).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1.1, 1]);
+});
+
 test('flattens a tree using postorder traversing', () => {
   expect(TreeUtils.flatten(entryPoint).map(toNames)).toEqual([1.1, 5, 4, 6, 9, 8, 10, 7, 3, 2, 1]);
-});
-
-test('Traverses the tree with a path returning iterator', () => {
-  let iterator = TreeUtils.pathReturningTreeIterator(entryPoint);
-
-  let first = iterator.next();
-  expect(first.value.map(it => it.name)).toEqual([1, 1.1]);
-  expect(first.done).toEqual(false);
-
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 4, 5]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 4]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 6]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 7, 8, 9]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 7, 8]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 7, 10]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3, 7]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2, 3]);
-  expect(iterator.next().value.map(toNames)).toEqual([1, 2]);
-  expect(iterator.next().value.map(toNames)).toEqual([1]);
-
-  let last = iterator.next();
-  expect(last.value).toBeUndefined();
-  expect(last.done).toEqual(true);
-
-  iterator.return();
-});
-
-test('pathReturningTreeIterable returns an iterable for provided tree', () => {
-  let iterable = TreeUtils.pathReturningTreeIterable(entryPoint);
-  let iteratorA = iterable[Symbol.iterator]();
-  let iteratorB = iterable[Symbol.iterator]();
-
-  let a = iteratorA.next();
-  expect(a.value.map(it => it.name)).toEqual([1, 1.1]);
-  expect(a.done).toEqual(false);
-  expect(iteratorA.next().value.map(toNames)).toEqual([1, 2, 3, 4, 5]);
-  expect(iteratorA.next().value.map(toNames)).toEqual([1, 2, 3, 4]);
-
-
-  let b = iteratorB.next();
-  expect(b.value.map(it => it.name)).toEqual([1, 1.1]);
-  expect(b.done).toEqual(false);
-  expect(iteratorB.next().value.map(toNames)).toEqual([1, 2, 3, 4, 5]);
-  expect(iteratorB.next().value.map(toNames)).toEqual([1, 2, 3, 4]);
-
-
-  expect(iteratorA.next().value.map(toNames)).toEqual([1, 2, 3, 6]);
-  expect(iteratorB.next().value.map(toNames)).toEqual([1, 2, 3, 6]);
-
-
-  let iteratorC = iterable[Symbol.iterator]();
-  expect(iteratorC.next().value.map(toNames)).toEqual([1, 1.1]);
 });
 
 test("Can map a tree", () => {
@@ -101,6 +75,12 @@ test("Can map a tree", () => {
       }
     ]
   })
+});
+
+test("Mapping a tree handles nodes with no children", () => {
+  expect(
+    TreeUtils.map({children: null}, it => it)
+  ).toEqual({children: null});
 });
 
 function toNames(event) {
