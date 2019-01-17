@@ -21,3 +21,19 @@ test('can generate minmax function using `minmax`', () => {
   expect(minmaxFn(21)).toEqual(20);
   expect(minmaxFn(250012)).toEqual(20);
 });
+
+test('isArray checks if passed object is an Array', () => {
+  expect(Utils.isArray([])).toBeTrue();
+  expect(Utils.isArray([1,2,3])).toBeTrue();
+  expect(Utils.isArray({})).toBeFalse();
+  expect(Utils.isArray(1)).toBeFalse();
+  expect(Utils.isArray("")).toBeFalse();
+});
+
+test('px() calls + "px" string on provided obj', () => {
+  expect(Utils.px(1)).toEqual("1px");
+});
+
+test('noop is a function that does nothing', () => {
+  expect(Utils.noop.toString()).toEqual("function noop() {}");
+});
