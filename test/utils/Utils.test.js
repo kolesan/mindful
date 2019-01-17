@@ -37,3 +37,33 @@ test('px() calls + "px" string on provided obj', () => {
 test('noop is a function that does nothing', () => {
   expect(Utils.noop.toString()).toEqual("function noop() {}");
 });
+
+test('last returns last element of an array', () => {
+  expect(Utils.last()).toBeUndefined();
+  expect(Utils.last([])).toBeUndefined();
+  expect(Utils.last([1,2,3])).toEqual(3);
+  expect(Utils.last([1,2,"3"])).toEqual("3");
+});
+
+test('noSpaces trims whitespace from a string', () => {
+  expect(Utils.noSpaces(" a b   c")).toEqual("abc");
+  expect(Utils.noSpaces("")).toEqual("");
+  expect(Utils.noSpaces()).toBeUndefined();
+  expect(Utils.noSpaces([])).toBeUndefined();
+  expect(Utils.noSpaces({})).toBeUndefined();
+  expect(Utils.noSpaces(undefined)).toBeUndefined();
+  expect(Utils.noSpaces(null)).toBeUndefined();
+});
+
+test('isFn checks if passed object is a function', () => {
+  expect(Utils.isFn(() => {})).toBeTrue();
+  expect(Utils.isFn(jest.fn())).toBeTrue();
+  expect(Utils.isFn(function a(){})).toBeTrue();
+
+  expect(Utils.isFn({})).toBeFalse();
+  expect(Utils.isFn("obj.fn")).toBeFalse();
+  expect(Utils.isFn([])).toBeFalse();
+  expect(Utils.isFn(1)).toBeFalse();
+  expect(Utils.isFn()).toBeFalse();
+  expect(Utils.isFn(null)).toBeFalse();
+});
