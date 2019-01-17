@@ -64,3 +64,13 @@ it('bound listeners receive arguments passed to fire', () => {
   expect(listner2).toHaveBeenCalledTimes(1);
   expect(listner2).toHaveBeenCalledWith("b", 4, fn);
 });
+
+it('provides a global instance', () => {
+  let listner = jest.fn();
+  globalInstance.bindListener("TEST_EVENT", listner);
+
+  globalInstance.fire("TEST_EVENT", "a", 2);
+
+  expect(listner).toHaveBeenCalledTimes(1);
+  expect(listner).toHaveBeenCalledWith("a", 2);
+});
