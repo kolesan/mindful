@@ -1,7 +1,7 @@
 import { fgong, ffgong, sgong, fsgong } from '../EventCallbacks';
 import ToolNames from "../edit_screen/tools/ToolNames";
 import { s, m } from "../utils/TimeUtils";
-import { programBuilder } from "./DevUtils";
+import programBuilder from "./ProgramBuilder";
 
 let yogaProgram = {
   id: "Yoga",
@@ -13,15 +13,19 @@ let yogaProgram = {
     01h total
   `,
   mainEvent: programBuilder( `Mindful Yoga` )
-                     .event( `Preparation`,      s(30), ffgong ).end()
-                     .loop(50)
-                       .event( `Hold pose {i}`, s(60) )
-                         .event( `1/2`,          s(30), fsgong ).end()
-                         .event( `2/2`,          s(30), fsgong ).end()
+                     .event( `Preparation`, s(30), ffgong ).end()
+                     .loop(49)
+                       .event( `Hold pose {i}` )
+                         .event( `1/2`, s(30), fsgong ).end()
+                         .event( `2/2`, s(30), fsgong ).end()
                        .end()
-                       .event( `Change pose`,  s(10), ffgong ).end()
+                       .event( `Change pose`, s(10), ffgong ).end()
                      .end()
-                     .event( `Chill`,            s(70), sgong  )
+                     .event( `Hold pose 50` )
+                       .event( `1/2`, s(30), fsgong ).end()
+                       .event( `2/2`, s(30), fsgong ).end()
+                     .end()
+                     .event( `Chill`, s(80), sgong  )
                      .build()
 };
 
@@ -78,11 +82,12 @@ let cardioProgram = {
   description: `Simple HIIT 1min action/1min rest`,
   mainEvent: programBuilder( `1h HIIT Cardio` )
                      .event( `Preparation`, s(10), fsgong ).end()
-                     .loop(30)
-                       .event( `Action`,    m(1),  fgong  ).end()
+                     .loop(29)
+                       .event( `Action {i}`,    m(1),  fgong  ).end()
                        .event( `Rest`,      m(1),  fsgong ).end()
                      .end()
-                     .event( `Chill`,       m(1),  sgong  )
+                     .event( `Action 30`,   m(1),  fgong  ).end()
+                     .event( `Chill`,       s(50),  sgong  )
                      .build()
 };
 
@@ -146,12 +151,19 @@ let testProgram = {
           {
             element: ToolNames.event,
             name: `l3_timer1.2`,
-            duration: 3000,
+            duration: 4000,
             callback: ffgong,
             children: []
           }
         ]
-      }
+      },
+      {
+        element: ToolNames.event,
+        name: `l2_timer2`,
+        duration: 1000,
+        callback: fsgong,
+        children: []
+      },
     ]
   }
 };
