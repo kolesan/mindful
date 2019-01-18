@@ -1,5 +1,5 @@
 import { DurationInput } from "./duration_input/DurationInput";
-import { DynamicSizeInput } from "./duration_input/DynamicSizeInput";
+import { DynamicSizeInput } from "./dynamic_size_input/DynamicSizeInput";
 
 const CustomElements = {
   dynamicSizeInput: "dynamic-size-input",
