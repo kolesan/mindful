@@ -80,7 +80,4 @@ function durationInputCmp(duration = 0) {
   return input;
 }
 
-function calculateDuration(eventElement) {
-}
-
-export { create, calculateDuration };
+export { create };
