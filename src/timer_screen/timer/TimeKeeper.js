@@ -14,8 +14,7 @@ export default function TimeKeeper(procInterval = 1000, nowKeeper = Date) {
   let startTime = 0;
   let msUntilNextProc = 0;
   let pauseTime = 0;
-  let intervalId = 0;
-  let procAndLaunchTimeoutId = 0;
+  let procTimeoutId = 0;
   let state = null;
   markStopped();
 
@@ -80,19 +79,16 @@ export default function TimeKeeper(procInterval = 1000, nowKeeper = Date) {
   });
 
   function startUp() {
-    procAndLaunchTimeoutId = setTimeout(() => {
-      intervalId = setInterval(proc, procInterval);
-      proc();
-    }, msUntilNextProc);
+    procTimeoutId = setTimeout(proc, msUntilNextProc);
   }
   function proc() {
+    procTimeoutId = setTimeout(proc, procInterval);
     currentTime += procInterval;
     onProcCb(currentTime);
   }
 
   function clearCounters() {
-    clearTimeout(procAndLaunchTimeoutId);
-    clearInterval(intervalId);
+    clearTimeout(procTimeoutId);
   }
 
   function isRunning() { return state === States.running}
