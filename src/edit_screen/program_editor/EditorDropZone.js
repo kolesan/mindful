@@ -7,9 +7,10 @@ import { fade } from "../../utils/Utils";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
 
 export default function inst({container, dropCb}) {
-  let placeholder = createPlaceholder();
   let showingPlaceholder = false;
+  let placeholder = createPlaceholder();
   let dragHereCmp = createDragHereTextCmp();
+  let copyMode = false;
   showDragHereTxt();
   initScrollBarStyleSheet();
 
@@ -28,7 +29,7 @@ export default function inst({container, dropCb}) {
     .onDragLeave(draggable => {
       removePlaceholder();
       showRemovalMark(draggable);
-      if (childEventsEditorCmp.childElementCount == 0) {
+      if (container.childElementCount == 0) {
         showDragHereTxt();
       }
       setScrollbarWidth();
@@ -47,6 +48,12 @@ export default function inst({container, dropCb}) {
 
   return Object.freeze({
     zone,
+    getCopyMode() {
+      return copyMode;
+    },
+    setCopyMode(v) {
+      copyMode = v;
+    },
     load(mainEvent) {
       removeChildNodes(container, it => it.dataset.element);
       let viewElements = ModelViewConverter.programToView(mainEvent, cmp => {
@@ -102,6 +109,8 @@ export default function inst({container, dropCb}) {
 
     if (toolName) {
       element = newProgramElement(toolName);
+    } else if (copyMode) {
+      element = draggable.data.get("element").cloneNode(true);
     } else {
       element = draggable.data.get("element");
     }
@@ -112,7 +121,6 @@ export default function inst({container, dropCb}) {
 
     return element;
   }
-
   function newProgramElement(toolName) {
     let toolComponent = Tools.create(toolName);
     makeCmpDraggable(toolComponent);
@@ -126,7 +134,11 @@ export default function inst({container, dropCb}) {
         draggable.image.recalculateBoundingRectangle();
         onDrag && onDrag(draggable, element);
         draggable.data.set("element", element);
-        showPlaceholderInsteadOf(element);
+        if (copyMode) {
+          showPlaceholder(draggable, element.parentNode);
+        } else {
+          showPlaceholderInsteadOf(element);
+        }
       })
       .bindDropZone(zone)
       .allowTouch();

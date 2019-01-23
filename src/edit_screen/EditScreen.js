@@ -11,6 +11,8 @@ import { noSpaces } from "../utils/Utils";
 import ToolNames from "./tools/ToolNames";
 import { newMainEvent } from "./program_editor/ProgramEventsEditor";
 
+const COPY_BUTTON_ACTIVE_CLASS = "tools__copy_toggle-active";
+
 const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
 const NEW_PROGRAM_SAVED_EVENT = "NEW_PROGRAM_SAVED_EVENT";
 
@@ -57,12 +59,29 @@ function makeToolDraggable(toolCmp, toolName) {
   makeDraggable(toolCmp)
     .onDragStart(putToolNameToData(toolName))
     .stylePlaceholder(asTransparentDashed)
-    .bindDropZone(programEventsEditor.dropZone)
+    .bindDropZone(programEventsEditor.dropZone.zone)
     .allowTouch();
 }
 makeToolDraggable(loop, ToolNames.loop);
 makeToolDraggable(event, ToolNames.event);
 
+let copyButton = editScreen.querySelector("#copyModeToggle");
+copyButton.addEventListener("click", event => {
+  programEventsEditor.dropZone.setCopyMode(!programEventsEditor.dropZone.getCopyMode());
+  copyButton.classList.toggle(COPY_BUTTON_ACTIVE_CLASS);
+});
+window.addEventListener("keydown", event => {
+  if (event.key === "Control") {
+    programEventsEditor.dropZone.setCopyMode(true);
+    copyButton.classList.add(COPY_BUTTON_ACTIVE_CLASS);
+  }
+});
+window.addEventListener("keyup", event => {
+  if (event.key === "Control") {
+    programEventsEditor.dropZone.setCopyMode(false);
+    copyButton.classList.remove(COPY_BUTTON_ACTIVE_CLASS);
+  }
+});
 
 let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", event => {

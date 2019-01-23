@@ -67,7 +67,7 @@ function inst(containerCmp) {
   })();
 
   return Object.freeze({
-    get dropZone() { return programEditorDropZone.zone },
+    get dropZone() { return programEditorDropZone },
     load(mainEvent) {
       mainEventNameInput.value = mainEvent.name;
       mainEventDurationInput.value = mainEvent.duration;
