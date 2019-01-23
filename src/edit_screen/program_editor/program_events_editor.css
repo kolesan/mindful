@@ -84,7 +84,7 @@
 .program__drag_here_txt_wrapper {
     position: absolute;
     width: 100%;
-    height: calc(100% - 4rem);
+    height: 100%;
 
     display: flex;
 }
