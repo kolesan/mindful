@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import { log, logo, nowKeeper } from "../../TestUtils";
 
 import { newTimer } from '../../../src/timer_screen/timer/Timer';

@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import { last, log, logo } from "../../TestUtils";
 import iterableTimerProgram from "../../../src/timer_screen/timer/IterableTimerProgram";
 

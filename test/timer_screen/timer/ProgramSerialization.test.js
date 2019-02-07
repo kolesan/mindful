@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import programSerialization from '../../../src/timer_screen/timer/ProgramSerialization';
 
 let a = jest.fn();

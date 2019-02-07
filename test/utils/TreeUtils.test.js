@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import * as TreeUtils from '../../src/utils/TreeUtils';
 import { log } from "../TestUtils";
 
