@@ -43,7 +43,7 @@ function *programPathIterator(root, startFrom = 1) {
   yield *iterator(root, 0, normalizeDirection(startFrom));
 
   function *iterator(node, startTime, direction) {
-    if (isEvent(node)) {
+    if (!node.isTransparent()) {
       path.push(toTimerEvent(node, startTime));
     }
 
@@ -69,7 +69,7 @@ function *programPathIterator(root, startFrom = 1) {
       }
     }
 
-    if (isEvent(node)) {
+    if (!node.isTransparent()) {
       if (node.isLeaf()) {
         direction = normalizeDirection(yield path);
       }
@@ -81,9 +81,6 @@ function *programPathIterator(root, startFrom = 1) {
 
   function normalizeDirection(direction) {
     return (direction && direction < 0) ? -1 : 1;
-  }
-  function isEvent(node) {
-    return programEvent.isPrototypeOf(node);
   }
 }
 

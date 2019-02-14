@@ -172,3 +172,18 @@ test("isLeaf() returns a boolean signaling if this element has any children", ()
   expect(event.isLeaf()).toEqual(false);
   expect(eventLeaf.isLeaf()).toEqual(true);
 });
+
+it('is not transparent', () => {
+  let event = Object.create(programEvent).init(
+    "TestEvent",
+    noop,
+    [
+      {name: "child1"},
+      {name: "child2"},
+      {name: "child3"}
+    ],
+    1000
+  );
+
+  expect(event.isTransparent()).toBeFalse();
+});

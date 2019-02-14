@@ -26,5 +26,8 @@ programLoop._currentChild = function() {
 
   return child;
 };
+programLoop.isTransparent = function() {
+  return true;
+};
 
 export default programLoop;

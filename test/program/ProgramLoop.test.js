@@ -208,3 +208,16 @@ test("Does not iterate loop with 0 iterations", () => {
   expect(loop.nextChild()).toBeUndefined();
   expect(loop.previousChild()).toBeUndefined();
 });
+
+it('is transparent', () => {
+  let loop = Object.create(programLoop).init(
+    0,
+    [
+      {name: "child1"},
+      {name: "child2"}
+    ],
+    1000
+  );
+
+  expect(loop.isTransparent()).toBeTrue();
+});

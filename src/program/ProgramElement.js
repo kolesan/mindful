@@ -25,6 +25,9 @@ let programElement = {
   isLeaf() {
     return this._childCount == 0;
   },
+  isTransparent() {
+    return false;
+  },
 
   _setCurrentChildIndex(v) {
     this._currentChildIndex = this._minmaxIndex(v);
