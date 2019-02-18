@@ -29,6 +29,7 @@ export function createElement(tag, classes, content) {
 
   return elem;
 }
+
 export function element({tag, classes, children = [], attributes = {}, listeners = {}, value}) {
   let elem = createElement(tag, classes);
 
@@ -39,8 +40,15 @@ export function element({tag, classes, children = [], attributes = {}, listeners
 
   return elem;
 }
+
 export function text(v) {
   return document.createTextNode(v);
+}
+
+export function elementFromString(s) {
+  let template = document.createElement('template');
+  template.innerHTML = s.trim();
+  return template.content.firstChild;
 }
 
 export function removeComponent(node) {
