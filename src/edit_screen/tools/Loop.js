@@ -41,7 +41,7 @@ function create({iterations} = {}) {
   return cmp;
 
   function writeValuesTo(targetElement) {
-    let targetDurationInput = getDurationInput(targetElement);
+    let targetDurationInput = getDurationDisplay(targetElement);
     let targetIterationsInput = getIterationsInput(targetElement);
 
     if (targetDurationInput && targetIterationsInput) {
@@ -61,8 +61,8 @@ function initChildMutationCallbacks(element, durationDisplay) {
   observer.observe(element, {childList: true});
 }
 
-function getDurationInput(target) {
-  return target.querySelector("[name=eventDurationInput]")
+function getDurationDisplay(target) {
+  return target.querySelector("[name=durationDisplay]")
 }
 function getIterationsInput(target) {
   return target.querySelector("[name=iterationsInput]");
@@ -107,8 +107,7 @@ function durationDisplayCmp() {
     tag: "duration-input",
     classes: "text_input peeh__duration_input",
     attributes: {
-      //TODO rename to durationInput since its no longer only on events
-      name: "eventDurationInput",
+      name: "durationDisplay",
       disabled: true,
       title: "Loop duration"
     },
