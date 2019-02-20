@@ -110,9 +110,10 @@ export default function inst({container, dropCb}) {
     if (toolName) {
       element = newProgramElement(toolName);
     } else if (copyMode) {
-      element = draggable.data.get("element").cloneNode(true);
+      let componentCopy = draggable.data.get("programElementComponent").copy(makeCmpDraggable);
+      element = componentCopy.element;
     } else {
-      element = draggable.data.get("element");
+      element = draggable.data.get("programElementComponent").element;
     }
 
     if (!element) {
@@ -132,8 +133,8 @@ export default function inst({container, dropCb}) {
       .onDragStart((draggable, element) => {
         leaveOnlyHeadingVisible(draggable.image.node);
         draggable.image.recalculateBoundingRectangle();
-        onDrag && onDrag(draggable, element);
-        draggable.data.set("element", element);
+        onDrag && onDrag(draggable);
+        draggable.data.set("programElementComponent", cmp);
         if (copyMode) {
           showPlaceholder(draggable, element.parentNode);
         } else {

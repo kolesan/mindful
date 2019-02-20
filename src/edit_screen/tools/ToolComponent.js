@@ -1,5 +1,5 @@
 import * as Component from "../../utils/Component";
-import { children, createElement, iconElem, setChildIcon } from "../../utils/HtmlUtils";
+import { children, createElement, iconElem } from "../../utils/HtmlUtils";
 import { log } from "../../utils/Logging";
 import ToolNames from "./ToolNames";
 

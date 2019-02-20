@@ -1,20 +1,34 @@
 import { log } from "../../utils/Logging";
 import { createElement, element, text } from "../../utils/HtmlUtils";
 import ToolNames from "./ToolNames";
-import { create as createTool, loopDuration } from "./ToolComponent";
-import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
+import { create as createTool, loopDuration, programElemChildren } from "./ToolComponent";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
+import { Tools } from "./Tools";
 
 const LOOP_ICON = "fas fa-undo-alt";
+
+function fromElement(element, afterCreationCb) {
+  let cmp = create({
+    iterations: getIterationsInput(element).value,
+  });
+
+  programElemChildren(element)
+    .map(childElement => Tools.fromElement(childElement, afterCreationCb))
+    .forEach(childCmp => cmp.element.appendChild(childCmp.element));
+
+  afterCreationCb(cmp);
+  return cmp;
+}
 
 function create({iterations} = {}) {
   let durationDisplay = durationDisplayCmp(0);
   let iterationsInput = loopIterationsInputCmp(iterations);
 
   let cmp = createTool(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterationsInput, durationDisplay));
-  //Shadow dom values are not cloned with cloneNode() call for some reason
-  cmp.onDrag = (draggable, elem) => copyValuesOfCustomElements(elem, draggable.image.node);
+  //Shadow dom input values are not cloned with cloneNode() call for some reason
+  cmp.onDrag = draggable => writeValuesTo(draggable.image.node);
+  cmp.copy = afterCopyCb => fromElement(cmp.element, afterCopyCb);
 
   durationDisplay.onDurationChange(() => {
     EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);
@@ -25,6 +39,19 @@ function create({iterations} = {}) {
   initChildMutationCallbacks(cmp.element, durationDisplay);
 
   return cmp;
+
+  function writeValuesTo(targetElement) {
+    let targetDurationInput = getDurationInput(targetElement);
+    let targetIterationsInput = getIterationsInput(targetElement);
+
+    if (targetDurationInput && targetIterationsInput) {
+      targetDurationInput.value = durationDisplay.value;
+      targetIterationsInput.value = iterationsInput.value;
+      return;
+    }
+
+    throw Error(`Can not copy loop field values to`, targetElement);
+  }
 }
 
 function initChildMutationCallbacks(element, durationDisplay) {
@@ -32,6 +59,13 @@ function initChildMutationCallbacks(element, durationDisplay) {
     durationDisplay.value = loopDuration(element);
   });
   observer.observe(element, {childList: true});
+}
+
+function getDurationInput(target) {
+  return target.querySelector("[name=eventDurationInput]")
+}
+function getIterationsInput(target) {
+  return target.querySelector("[name=iterationsInput]");
 }
 
 function loopHeadingCmp(iterationsInput, durationDisplay) {
@@ -82,4 +116,4 @@ function durationDisplayCmp() {
   });
 }
 
-export { create };
+export { create, fromElement };

@@ -9,11 +9,14 @@ let ToolMap = new Map()
 let Tools = Object.freeze({
   create(name, props) {
     return ToolMap.get(name).create(props);
+  },
+  fromElement(element, afterCreationCb) {
+    return ToolMap.get(element.dataset.element).fromElement(element, afterCreationCb);
   }
 });
 
 function newTool(name, tool) {
-  return {name, create: tool.create};
+  return {name, create: tool.create, fromElement: tool.fromElement};
 }
 
 export { ToolNames, Tools }

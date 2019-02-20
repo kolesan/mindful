@@ -3,28 +3,57 @@ import { createElement, disable, enable, iconElem } from "../../utils/HtmlUtils"
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import ToolNames from "./ToolNames";
 import * as InputValidator from "../../text_input/InputValidator";
-import { copyValuesOfCustomElements } from "../../utils/CustomElementsUtils";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
 import { programElemChildren } from "./ToolComponent";
 import { eventDuration } from "./ToolComponent";
+import { Tools } from "./Tools";
 
 const EVENT_ICON = "fas fa-bell";
 const EVENT_ICON_MUTED = "fas fa-bell-slash";
 
+function fromElement(element, afterCreationCb) {
+  let cmp = create({
+    name: getNameInput(element).value,
+    duration: getDurationInput(element).value
+  });
+
+  programElemChildren(element)
+    .map(childElement => Tools.fromElement(childElement, afterCreationCb))
+    .forEach(childCmp => cmp.element.appendChild(childCmp.element));
+
+  afterCreationCb(cmp);
+  return cmp;
+}
+
 function create({name, duration} = {}) {
   let durationInput = durationInputCmp(duration);
+  let nameInput = nameInputCmp(name);
 
-  let cmp = ToolComponent.create(EVENT_ICON, ToolNames.event, eventHeadingCmp(name, durationInput));
+  let cmp = ToolComponent.create(EVENT_ICON, ToolNames.event, eventHeadingCmp(nameInput, durationInput));
   //Shadow dom values are not cloned with cloneNode() call for some reason
-  cmp.onDrag = (draggable, elem) => copyValuesOfCustomElements(elem, draggable.image.node);
+  cmp.onDrag = draggable => writeValuesTo(draggable.image.node);
+  cmp.copy = afterCopyCb => fromElement(cmp.element, afterCopyCb);
 
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
   initChildMutationCallbacks();
 
   return cmp;
+
+  function writeValuesTo(targetElement) {
+    let targetDurationInput = getDurationInput(targetElement);
+    let targetNameInput = getNameInput(targetElement);
+
+    if (targetDurationInput && targetNameInput) {
+      targetDurationInput.value = durationInput.value;
+      targetNameInput.value = nameInput.value;
+      return;
+    }
+
+    throw Error(`Can not copy event field values to ${targetElement}`);
+  }
 
   function initChildMutationCallbacks() {
     let childElementsObserver = new MutationObserver(() => {
@@ -49,9 +78,16 @@ function create({name, duration} = {}) {
   }
 }
 
-function eventHeadingCmp(name, durationInput) {
+function getNameInput(target) {
+  return target.querySelector("[name=eventNameInput]");
+}
+function getDurationInput(target) {
+  return target.querySelector("[name=eventDurationInput]")
+}
+
+function eventHeadingCmp(nameInput, durationInput) {
   let heading = createElement("div", "pee__heading");
-  heading.appendChild(nameInputCmp(name));
+  heading.appendChild(nameInput);
   heading.appendChild(durationInput);
   return heading;
 }
@@ -80,4 +116,4 @@ function durationInputCmp(duration = 0) {
   return input;
 }
 
-export { create };
+export { create, fromElement };
