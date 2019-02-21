@@ -12,6 +12,9 @@
 <body>
     <div class="drawer_menu_overlay"></div>
     <nav class="drawer_menu">
+        <button name="homeBtn" class="icon-button drawer_menu__home">
+            Timepp
+        </button>
         <div class="drawer_menu__section">
             <span class="drawer_menu__header">Programs</span>
             <button class="drawer_menu__item" id="newProgramBtn">
@@ -23,13 +26,15 @@
             </div>
         </div>
 
-        <span class="drawer_menu__header">Settings</span>
-        <button class="drawer_menu__item" id="showTimerNamesBtn">
-            <i class="drawer_menu__item__icon drawer_menu__item__icon_setting far"></i> Show timer names
-        </button>
-        <button class="drawer_menu__item" id="readTimerNamesBtn">
-            <i class="drawer_menu__item__icon drawer_menu__item__icon_setting far"></i> Read timer names
-        </button>
+        <div class="drawer_menu__section">
+            <span class="drawer_menu__header">Settings</span>
+            <button class="drawer_menu__item" id="showTimerNamesBtn">
+                <i class="drawer_menu__item__icon drawer_menu__item__icon_setting far"></i> Show timer names
+            </button>
+            <button class="drawer_menu__item" id="readTimerNamesBtn">
+                <i class="drawer_menu__item__icon drawer_menu__item__icon_setting far"></i> Read timer names
+            </button>
+        </div>
 
         <button class="drawer_menu__item drawer_menu__close_btn" id="closeDrawerBtn">
             <i class="drawer_menu__close_btn__icon fas fa-times"></i> <span>Close</span>
@@ -39,11 +44,12 @@
         <section id="titleScreen" class="title_screen hidden">
             <section class="title section">
                 <button name="menuBtn" class="icon-button" title="Menu"><i class="fas fa-bars"></i></button>
-                <span class="">Hello</span>
-                <div></div>
+                <span class="">Timepp</span>
+                <button name="newProgramBtn" class="icon-button" title="New Program"><i class="far fa-plus-square"></i></button>
             </section>
             <section class="title_screen__introduction">
-                Application for custom timer creation
+                Timepp is a web application for custom timer creation. You can browse the programs
+                or create a new one from the drawer menu on the left.
             </section>
         </section>
         <section id="timerScreen" class="timer_screen hidden">

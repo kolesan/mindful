@@ -1,3 +1,5 @@
+import './title_screen.css';
+
 let titleScreen = document.getElementById("titleScreen");
 let screen = {
   title: function() {

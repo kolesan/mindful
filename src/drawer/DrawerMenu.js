@@ -18,8 +18,11 @@ drawerOverlay.addEventListener("click", toggleDrawerState);
 let closeDrawerBtn = document.querySelector("#closeDrawerBtn");
 closeDrawerBtn.addEventListener("click", toggleDrawerState);
 
-// let shown = window.innerWidth > 1000;
-let shown = false;
+let homeBtn = document.querySelector("button[name=homeBtn]");
+homeBtn.addEventListener("click", Routing.toTitleScreen);
+
+let shown = window.innerWidth > 1000;
+// let shown = false;
 function init(programs) {
   toggleDrawer();
   ProgramsSection.init(programs);

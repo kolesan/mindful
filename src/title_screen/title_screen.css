@@ -1,0 +1,6 @@
+.title_screen__introduction {
+    display: flex;
+    justify-content: center;
+
+    padding: 2rem;
+}
