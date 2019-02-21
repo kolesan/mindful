@@ -33,6 +33,10 @@ export function isNormalNumber(v) {
   return typeof v == "number" && !Number.isNaN(v) && Number.isFinite(v);
 }
 
+export function isNormalPositiveNumber(v) {
+  return typeof v == "number" && !Number.isNaN(v) && Number.isFinite(v) && v > 0;
+}
+
 export function last(arr) {
   if (!arr || arr.length == 0) {
     return;
