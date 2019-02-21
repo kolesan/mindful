@@ -4,21 +4,13 @@ import ToolNames from "./ToolNames";
 import { create as createTool, loopDuration, programElemChildren } from "./ToolComponent";
 import * as EventBus from "../../utils/EventBus";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
-import { Tools } from "./Tools";
 
 const LOOP_ICON = "fas fa-undo-alt";
 
-function fromElement(element, afterCreationCb) {
-  let cmp = create({
+function fromElement(element) {
+  return create({
     iterations: getIterationsInput(element).value,
   });
-
-  programElemChildren(element)
-    .map(childElement => Tools.fromElement(childElement, afterCreationCb))
-    .forEach(childCmp => cmp.element.appendChild(childCmp.element));
-
-  afterCreationCb(cmp);
-  return cmp;
 }
 
 function create({iterations} = {}) {
@@ -28,7 +20,6 @@ function create({iterations} = {}) {
   let cmp = createTool(LOOP_ICON, ToolNames.loop, loopHeadingCmp(iterationsInput, durationDisplay));
   //Shadow dom input values are not cloned with cloneNode() call for some reason
   cmp.onDrag = draggable => writeValuesTo(draggable.image.node);
-  cmp.copy = afterCopyCb => fromElement(cmp.element, afterCopyCb);
 
   durationDisplay.onDurationChange(() => {
     EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element);

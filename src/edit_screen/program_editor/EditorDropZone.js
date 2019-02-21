@@ -110,7 +110,7 @@ export default function inst({container, dropCb}) {
     if (toolName) {
       element = newProgramElement(toolName);
     } else if (copyMode) {
-      let componentCopy = draggable.data.get("programElementComponent").copy(makeCmpDraggable);
+      let componentCopy = Tools.fromElement(draggable.data.get("programElementComponent").element, makeCmpDraggable);
       element = componentCopy.element;
     } else {
       element = draggable.data.get("programElementComponent").element;

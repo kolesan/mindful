@@ -1,5 +1,6 @@
 import * as Loop from "../tools/Loop";
 import * as Event from "../tools/Event";
+import { programElemChildren } from "./ToolComponent";
 import ToolNames from "./ToolNames";
 
 let ToolMap = new Map()
@@ -10,8 +11,16 @@ let Tools = Object.freeze({
   create(name, props) {
     return ToolMap.get(name).create(props);
   },
-  fromElement(element, afterCreationCb) {
-    return ToolMap.get(element.dataset.element).fromElement(element, afterCreationCb);
+  fromElement: function fromElement(element, afterCreationCb) {
+    let tool = ToolMap.get(element.dataset.element);
+    let cmp = tool.fromElement(element);
+
+    programElemChildren(element)
+      .map(childElement => fromElement(childElement, afterCreationCb))
+      .forEach(childCmp => cmp.element.appendChild(childCmp.element));
+
+    afterCreationCb(cmp);
+    return cmp;
   }
 });
 

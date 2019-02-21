@@ -8,23 +8,15 @@ import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
 import { programElemChildren } from "./ToolComponent";
 import { eventDuration } from "./ToolComponent";
-import { Tools } from "./Tools";
 
 const EVENT_ICON = "fas fa-bell";
 const EVENT_ICON_MUTED = "fas fa-bell-slash";
 
-function fromElement(element, afterCreationCb) {
-  let cmp = create({
+function fromElement(element) {
+  return create({
     name: getNameInput(element).value,
     duration: getDurationInput(element).value
   });
-
-  programElemChildren(element)
-    .map(childElement => Tools.fromElement(childElement, afterCreationCb))
-    .forEach(childCmp => cmp.element.appendChild(childCmp.element));
-
-  afterCreationCb(cmp);
-  return cmp;
 }
 
 function create({name, duration} = {}) {
@@ -34,7 +26,6 @@ function create({name, duration} = {}) {
   let cmp = ToolComponent.create(EVENT_ICON, ToolNames.event, eventHeadingCmp(nameInput, durationInput));
   //Shadow dom values are not cloned with cloneNode() call for some reason
   cmp.onDrag = draggable => writeValuesTo(draggable.image.node);
-  cmp.copy = afterCopyCb => fromElement(cmp.element, afterCopyCb);
 
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
