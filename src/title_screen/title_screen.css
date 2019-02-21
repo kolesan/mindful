@@ -5,3 +5,10 @@
 
     padding: 2rem;
 }
+
+.title_screen__favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
