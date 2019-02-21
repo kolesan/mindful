@@ -1,5 +1,5 @@
 import { log } from "../../utils/Logging";
-import { createElement, element, text, disable, enable } from "../../utils/HtmlUtils";
+import { createElement, element, textNode, disable, enable } from "../../utils/HtmlUtils";
 import { h, m, s, timeObject, timestampToTimeObject } from "../../utils/TimeUtils";
 import { DISABLED_ATTR } from "../../utils/AttributeConstants";
 import { minmax, noop } from "../../utils/Utils";
@@ -119,7 +119,7 @@ function numberInput(max, labelTxt) {
     attributes: {
       slot: "right"
     },
-    children: [text(labelTxt)]
+    children: [textNode(labelTxt)]
   });
 
   return element({

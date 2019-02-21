@@ -30,7 +30,7 @@ export function createElement(tag, classes, content) {
   return elem;
 }
 
-export function element({tag, classes, children = [], attributes = {}, listeners = {}, value}) {
+export function element({tag, classes, children = [], attributes = {}, listeners = {}, value, text}) {
   let elem = createElement(tag, classes);
 
   children.forEach(it => elem.appendChild(it));
@@ -38,10 +38,14 @@ export function element({tag, classes, children = [], attributes = {}, listeners
   Object.keys(listeners).forEach(k => elem.addEventListener(k, listeners[k]));
   elem.value = value;
 
+  if (typeof text == "string" && text.length > 0) {
+    elem.appendChild(textNode(text));
+  }
+
   return elem;
 }
 
-export function text(v) {
+export function textNode(v) {
   return document.createTextNode(v);
 }
 

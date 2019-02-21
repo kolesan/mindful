@@ -1,5 +1,5 @@
 import { log } from "../../utils/Logging";
-import { createElement, element, text } from "../../utils/HtmlUtils";
+import { createElement, element, textNode } from "../../utils/HtmlUtils";
 import ToolNames from "./ToolNames";
 import { create as createTool, loopDuration, programElemChildren } from "./ToolComponent";
 import * as EventBus from "../../utils/EventBus";
@@ -72,7 +72,7 @@ function loopIterationsInputCmp(iterations = 2) {
     attributes: {
       slot: "left"
     },
-    children: [text("x")]
+    children: [textNode("x")]
   });
 
   return element({
