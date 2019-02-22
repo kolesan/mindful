@@ -1,6 +1,6 @@
 import * as log from "./utils/Logging"
 import { screens } from "./Screens";
-import * as Storage from './Storage';
+import * as Storage from './storage/Storage';
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);

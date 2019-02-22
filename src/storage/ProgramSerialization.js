@@ -1,5 +1,5 @@
-import { map } from "../../utils/TreeUtils";
-import { callbackDictionary } from '../../EventCallbacks';
+import { map } from "../utils/TreeUtils";
+import { callbackDictionary } from '../EventCallbacks';
 
 export default newInstance(callbackDictionary);
 

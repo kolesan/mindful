@@ -1,7 +1,7 @@
 import './edit_screen.css';
 
 import { setChildIcon } from '../utils/HtmlUtils';
-import * as Storage from '../Storage';
+import * as Storage from '../storage/Storage';
 import * as EventBus from '../utils/EventBus';
 import * as InputValidator from "../text_input/InputValidator";
 import { makeDraggable } from "./dragndrop/Draggable";

@@ -10,7 +10,7 @@ import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
 import { replaceWithClone } from "../utils/HtmlUtils";
 
-import programSerializationService from './timer/ProgramSerialization';
+import programSerializationService from '../storage/ProgramSerialization';
 
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");

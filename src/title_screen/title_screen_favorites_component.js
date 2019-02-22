@@ -1,7 +1,7 @@
 import './title_screen_favorites_component.css';
 
 import favorites from '../favorites/favorites';
-import { loadPrograms } from '../Storage';
+import { loadPrograms } from '../storage/Storage';
 import { element, iconElem } from "../utils/HtmlUtils";
 import * as Routing from "../Routing";
 

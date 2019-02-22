@@ -9,7 +9,7 @@ import * as Drawer from './drawer/DrawerMenu';
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
-import { loadPrograms, loadSettings, saveSettings } from "./Storage";
+import { loadPrograms, loadSettings } from "./storage/Storage";
 import { loadTestProgramsToStorage } from "./dev/DevTools";
 import { setVolumeSlider } from "./timer_screen/volume/VolumeControls";
 

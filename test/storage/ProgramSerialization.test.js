@@ -1,5 +1,5 @@
 import "@babel/polyfill";
-import { newInstance as programSerialization } from '../../../src/timer_screen/timer/ProgramSerialization';
+import { newInstance as programSerialization } from '../../src/storage/ProgramSerialization';
 
 let a = jest.fn();
 let b = jest.fn();
