@@ -1,6 +1,9 @@
 import { map } from "../../utils/TreeUtils";
+import { callbackDictionary } from '../../EventCallbacks';
 
-export default function inst(callbackDictionary) {
+export default newInstance(callbackDictionary);
+
+export function newInstance(callbackDictionary) {
   return Object.freeze({
     serialize(program) {
       let serializedProgram = {...program};

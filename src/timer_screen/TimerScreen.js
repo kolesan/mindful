@@ -10,13 +10,10 @@ import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
 import { replaceWithClone } from "../utils/HtmlUtils";
 
-import { callbackDictionary } from '../EventCallbacks';
-import programSerialization from './timer/ProgramSerialization';
+import programSerializationService from './timer/ProgramSerialization';
 
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
-
-let programSerializationService = programSerialization(callbackDictionary);
 
 let timerModules = {
   currentModuleId: null,
