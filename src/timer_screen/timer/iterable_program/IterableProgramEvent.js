@@ -1,4 +1,4 @@
-import programElement from "./ProgramElement";
+import programElement from "./IterableProgramElement";
 
 let programEvent = Object.create(programElement);
 programEvent.init = function(name, callback, children, duration) {

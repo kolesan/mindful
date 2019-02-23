@@ -1,6 +1,6 @@
-import programEvent from "../../src/program/ProgramEvent";
+import programEvent from "../../../../src/timer_screen/timer/iterable_program/IterableProgramEvent";
 
-import { noop } from "../TestUtils";
+import { noop } from "../../../TestUtils";
 
 test("Can create a program event", () => {
   let event = Object.create(programEvent).init("TestEvent", noop, undefined, 1000);

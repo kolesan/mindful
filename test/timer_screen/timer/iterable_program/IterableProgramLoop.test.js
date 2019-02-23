@@ -1,6 +1,6 @@
-import programLoop from "../../src/program/ProgramLoop";
+import programLoop from "../../../../src/timer_screen/timer/iterable_program/IterableProgramLoop";
 
-import { noop } from "../TestUtils";
+import { noop } from "../../../TestUtils";
 
 test("Can create a program loop", () => {
   let loop = Object.create(programLoop).init(10, undefined, 1000);

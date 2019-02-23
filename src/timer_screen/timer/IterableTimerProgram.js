@@ -1,8 +1,8 @@
 import { log } from "../../utils/Logging";
 import ToolNames from "../../edit_screen/tools/ToolNames";
 import { newTimerEvent } from "./Timer";
-import programEvent from "../../program/ProgramEvent";
-import programLoop from "../../program/ProgramLoop";
+import programEvent from "./iterable_program/IterableProgramEvent";
+import programLoop from "./iterable_program/IterableProgramLoop";
 
 export default function inst(program) {
   return Object.freeze({

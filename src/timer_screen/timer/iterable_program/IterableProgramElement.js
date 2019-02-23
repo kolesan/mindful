@@ -1,4 +1,4 @@
-import { minmax } from "../utils/Utils";
+import { minmax } from "../../../utils/Utils";
 
 let programElement = {
   init(children = [], duration) {

@@ -1,6 +1,6 @@
-import programElement from "./ProgramElement";
-import { div } from "../utils/MathUtils";
-import { minmax } from "../utils/Utils";
+import programElement from "./IterableProgramElement";
+import { div } from "../../../utils/MathUtils";
+import { minmax } from "../../../utils/Utils";
 
 let programLoop = Object.create(programElement);
 programLoop.init = function(iterations, children, duration) {
