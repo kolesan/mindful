@@ -24,10 +24,10 @@ export function *postorderRightToLeftVisitor(node) {
   yield node;
 }
 
-export function map(root, fn) {
+export function mapTree(root, fn) {
   let mapped = fn(root);
   if (mapped.children) {
-    mapped.children = mapped.children.map(child => map(child, fn));
+    mapped.children = mapped.children.map(child => mapTree(child, fn));
   }
   return mapped;
 }

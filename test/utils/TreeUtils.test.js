@@ -56,7 +56,7 @@ test('flattens a tree using postorder traversing', () => {
 
 test("Can map a tree", () => {
   let addAToName = it => Object.assign({}, it, {name: it.name + "a"});
-  expect(TreeUtils.map(entryPoint, addAToName)).toEqual({
+  expect(TreeUtils.mapTree(entryPoint, addAToName)).toEqual({
     name: "1a",
     children: [
       { name: "1.1a", children: [] },
@@ -80,7 +80,7 @@ test("Can map a tree", () => {
 
 test("Mapping a tree handles nodes with no children", () => {
   expect(
-    TreeUtils.map({children: null}, it => it)
+    TreeUtils.mapTree({children: null}, it => it)
   ).toEqual({children: null});
 });
 
