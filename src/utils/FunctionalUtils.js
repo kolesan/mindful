@@ -1,3 +1,5 @@
+import { log } from "./Logging";
+
 export function Identity(value) {
   return {
     value,
@@ -16,13 +18,13 @@ export function optional(v) {
   return Object.freeze({
     get v() { return v },
     ifPresent(fn) {
-      if (v) {
+      if (v !== undefined) {
         fn(v)
       }
       return this;
     },
     ifEmpty(fn) {
-      if (!v) {
+      if (v === undefined) {
         fn();
       }
       return this;
