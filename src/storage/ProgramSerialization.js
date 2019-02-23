@@ -2,6 +2,7 @@ import { log } from "../utils/Logging";
 import { mapTree } from "../utils/TreeUtils";
 import { callbackDictionary } from '../EventCallbacks';
 import { fnFind } from '../utils/PrototypeExtensions';
+import { optional } from '../utils/FunctionalUtils';
 
 export default newInstance(callbackDictionary);
 
@@ -35,12 +36,14 @@ export function newInstance(callbackDictionary) {
 
       deserializedProgram.mainEvent = mapTree(program.mainEvent, node => {
         let clone = {...node};
-        if (clone.callback) {
-          let callbackFn = callbackDictionary.get(clone.callback);
-          if (!callbackFn) {
-            throw Error(`'Provided callback dictionary does not contain function '${clone.callback}'`);
-          }
-          clone.callback = callbackFn;
+        if (node.callback) {
+          optional(callbackDictionary.get(node.callback))
+            .ifPresent(callbackFn =>
+              clone.callback = callbackFn
+            )
+            .ifEmpty(() => {
+              throw Error(`'Provided callback dictionary does not contain function '${node.callback}'`);
+            })
         }
         return clone;
       });
