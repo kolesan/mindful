@@ -6,7 +6,7 @@ import * as EventBus from '../utils/EventBus';
 import * as InputValidator from "../text_input/InputValidator";
 import { makeDraggable } from "./dragndrop/Draggable";
 import * as ProgramEventsEditor from "./program_editor/ProgramEventsEditor";
-import { alphanumericValidation, emptyStringValidation, markInvalid, markValid } from "../Validation";
+import { alphanumericValidation, markInvalid, markValid } from "../Validation";
 import { noSpaces } from "../utils/Utils";
 import ToolNames from "./tools/ToolNames";
 import { newMainEvent } from "./program_editor/ProgramEventsEditor";
