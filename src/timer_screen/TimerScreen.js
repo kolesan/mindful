@@ -10,8 +10,6 @@ import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
 import { replaceWithClone } from "../utils/HtmlUtils";
 
-import programSerializationService from '../storage/ProgramSerialization';
-
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
 
@@ -48,7 +46,7 @@ function loadTimer(program, recreateTimer = false) {
 
 function newTimerModule(program) {
   return TimerModule.newInstance(
-    programSerializationService.deserialize(program),
+    program,
     document.querySelector(".timer__display")
   );
 }

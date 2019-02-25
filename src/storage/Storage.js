@@ -1,5 +1,6 @@
 import { isArray } from "../utils/Utils";
 import { log } from "../utils/Logging";
+import programSerializationService from '../storage/ProgramSerialization';
 
 const PROGRAMS_KEY = "programs";
 const SETTINGS_KEY = "settings";
@@ -24,12 +25,20 @@ function loadPrograms() {
   if (!isArray(programs)) {
     throw new Error(`Program deserialization error. Serialized object '${programs}' is not an array.`);
   }
-  return programs;
+
+  return programs
+    .map(programSerializationService.deserialize);
 }
 
 function loadProgram(id) {
   return loadPrograms().find(it => it.id == id);
 }
+
+function putProgramsInToStorage(programs) {
+  localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs.map(programSerializationService.serialize)))
+}
+
+
 
 function loadSettings() {
   return JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -42,9 +51,6 @@ function saveSettings(settings) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(combinedSettings))
 }
 
-function putProgramsInToStorage(programs) {
-  localStorage.setItem(PROGRAMS_KEY, JSON.stringify(programs))
-}
 
 
 export { saveProgram, overrideProgram, loadPrograms, loadProgram, loadSettings, saveSettings };

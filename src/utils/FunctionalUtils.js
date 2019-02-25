@@ -16,7 +16,7 @@ export function trace(v) {
 
 export function optional(v) {
   return Object.freeze({
-    get v() { return v },
+    get value() { return v },
     ifPresent(fn) {
       if (v !== undefined) {
         fn(v)

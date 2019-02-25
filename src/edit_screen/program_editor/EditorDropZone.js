@@ -54,15 +54,13 @@ export default function inst({container, dropCb}) {
     setCopyMode(v) {
       copyMode = v;
     },
-    load(mainEvent) {
+    load(programElements) {
       removeChildNodes(container, it => it.dataset.element);
-      let viewElements = ModelViewConverter.programToView(mainEvent, cmp => {
-        makeCmpDraggable(cmp);
-      });
+      let viewElements = ModelViewConverter.programToView(programElements, makeCmpDraggable);
       viewElements.forEach(viewElement =>
         container.appendChild(viewElement)
       );
-      if (mainEvent.children.length > 0) {
+      if (viewElements.length > 0) {
         hideDragHereTxt();
       } else {
         showDragHereTxt();

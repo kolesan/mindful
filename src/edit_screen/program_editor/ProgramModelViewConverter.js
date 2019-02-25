@@ -1,4 +1,4 @@
-import { fgong, fsgong, noop } from "../../EventCallbacks";
+import { fgong, fsgong, noop, callbackDictionary } from "../../EventCallbacks";
 import ToolNames from "../tools/ToolNames";
 import { Tools } from "../tools/Tools";
 
@@ -18,8 +18,8 @@ function viewToProgram(viewChildren, depth = 0) {
         let name = viewElement.querySelector("[name=eventNameInput").value;
         let duration = viewElement.querySelector("[name=eventDurationInput").value;
         let callback = viewElement.dataset.muted == "true" ?
-          noop :
-          depth == 0 ? fgong : fsgong;
+          callbackDictionary.get(noop) :
+          depth == 0 ? callbackDictionary.get(fgong) : callbackDictionary.get(fsgong);
 
         Object.assign(programElement, {name, duration, callback});
         break;
@@ -30,14 +30,14 @@ function viewToProgram(viewChildren, depth = 0) {
   return programElements;
 }
 
-function programToView(parent, afterToolCreationHook) {
+function programToView(programElements, afterToolCreationHook) {
   let elements = [];
-  parent.children.forEach(programElement => {
-    let toolCmp = Tools.create(programElement.element, programElement);
-    let viewElement = toolCmp.element;
-    let children = programToView(programElement, afterToolCreationHook);
+  programElements.forEach(programElement => {
+    let cmp = Tools.create(programElement.element, programElement);
+    let viewElement = cmp.element;
+    let children = programToView(programElement.children, afterToolCreationHook);
     children.forEach(it => viewElement.appendChild(it));
-    afterToolCreationHook(toolCmp);
+    afterToolCreationHook(cmp);
     elements.push(viewElement)
   });
   return elements;

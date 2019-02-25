@@ -9,7 +9,7 @@ import * as InputValidator from "../../text_input/InputValidator";
 import * as ModelViewConverter from "./ProgramModelViewConverter";
 import * as TreeUtils from "../../utils/TreeUtils";
 import * as EventBus from "../../utils/EventBus";
-import { noop, sgong } from "../../EventCallbacks";
+import { noop, sgong, callbackDictionary } from "../../EventCallbacks";
 import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import {
   durationInputOf, elemDurationSum, eventDuration, isEvent, isLoop, loopDuration,
@@ -74,7 +74,7 @@ function inst(containerCmp) {
 
       markValid(mainEventNameInput);
 
-      programEditorDropZone.load(mainEvent);
+      programEditorDropZone.load(mainEvent.children);
     },
     save() {
       let programElements = ModelViewConverter.viewToProgram(childEventsEditorCmp.children);
@@ -82,13 +82,13 @@ function inst(containerCmp) {
         element: ToolNames.event,
         name: mainEventNameInput.value,
         duration: mainEventDurationInput.value,
-        callback: programElements.length > 0 ? noop : sgong,
+        callback: programElements.length > 0 ? callbackDictionary.get(noop) : callbackDictionary.get(sgong),
         children: programElements
       };
       //TODO temporary fix until user can select callback from the UI
       let visitor = TreeUtils.postorderRightToLeftVisitor(mainEvent);
       let lastNode = visitor.next();
-      lastNode.value.callback = sgong;
+      lastNode.value.callback = callbackDictionary.get(sgong);
       visitor.return();
       return mainEvent;
     },
