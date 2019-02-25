@@ -47,7 +47,7 @@ export default function programBuilder(name) {
       }
     };
   }
-  function newEvent(name, duration = 0, callback) {
+  function newEvent(name, duration = 0, callback = noop) {
     return {
       element: ToolNames.event,
       name,
