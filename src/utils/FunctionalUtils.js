@@ -14,14 +14,29 @@ export function trace(v) {
   return v;
 }
 
+function orable(v) {
+  return {
+    get value() { return v },
+    orElse(fn) {
+      if (v !== undefined) {
+        return v;
+      }
+      fn();
+    }
+  };
+}
+
 export function optional(v) {
-  return Object.freeze({
+  return {
     get value() { return v },
     ifPresent(fn) {
       if (v !== undefined) {
         fn(v)
       }
       return this;
+    },
+    ifPresentReturn() {
+      return orable(v);
     },
     ifEmpty(fn) {
       if (v === undefined) {
@@ -35,5 +50,5 @@ export function optional(v) {
       }
       return o;
     }
-  });
+  };
 }
