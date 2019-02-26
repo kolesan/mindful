@@ -26,9 +26,9 @@ export function *postorderRightToLeftVisitor(node) {
 
 export function mapTree(root, fn) {
   let mapped = fn(root);
-  mapped.children = root.children ?
-    root.children.map(child => mapTree(child, fn))
-    : [];
+  if (root.children) {
+    mapped.children = root.children.map(child => mapTree(child, fn));
+  }
   return mapped;
 }
 
