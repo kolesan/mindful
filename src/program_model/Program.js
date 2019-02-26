@@ -1,6 +1,6 @@
 import { log } from "../utils/Logging";
 
-import { noSpaces } from "../utils/Utils";
+import { assignDefinedProperties, noSpaces } from "../utils/Utils";
 import programEvent from "./ProgramEvent";
 
 const program = {
@@ -17,7 +17,7 @@ export default function inst(options) {
 
   let instance = Object.create(program);
 
-  return Object.assign(instance, options);
+  return assignDefinedProperties(instance, options);
 }
 
 function validate(program) {
