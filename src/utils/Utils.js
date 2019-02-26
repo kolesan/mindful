@@ -67,4 +67,5 @@ export function assignDefinedProperties(target, ...sources) {
       }
     })
   });
+  return target;
 }
