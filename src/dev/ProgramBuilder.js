@@ -18,7 +18,6 @@ export default function programBuilder(name) {
     end() {
       let pop = elemStack.pop();
       pop.recalculateDuration();
-      log(pop);
       return this;
     },
     build() {
