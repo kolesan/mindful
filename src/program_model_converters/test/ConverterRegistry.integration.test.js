@@ -1,6 +1,6 @@
 import '@babel/polyfill';
-import { log } from "../../test/TestUtils";
-import registry, { Converters } from './ConverterRegistry';
+import { log } from "../../../test/TestUtils";
+import registry, { Converters } from '../ConverterRegistry';
 
 it(`provides Symbols for the available converters`, () => {
   expect(Converters.localStorage).toBeDefined();

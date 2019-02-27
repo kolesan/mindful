@@ -1,5 +1,5 @@
 import "@babel/polyfill";
-import elementTreeConverter from './ElementTreeConverter';
+import elementTreeConverter from '../ElementTreeConverter';
 
 it(`can be created`, () => {
   let treeConverter = elementTreeConverter();

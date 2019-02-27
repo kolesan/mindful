@@ -1,5 +1,5 @@
 import "@babel/polyfill";
-import newRegistry from './ElementConverterRegistry';
+import newRegistry from '../ElementConverterRegistry';
 
 it(`can be created`, () => {
   let registry = newRegistry();

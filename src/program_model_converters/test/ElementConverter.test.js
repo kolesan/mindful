@@ -1,4 +1,4 @@
-import elementConverter from './ElementConverter';
+import elementConverter from '../ElementConverter';
 
 it(`Is an interface that provides serialization and deserialization methods`, () => {
   let newConverter = Object.create(elementConverter);
