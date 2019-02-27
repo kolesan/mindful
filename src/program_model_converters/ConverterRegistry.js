@@ -1,4 +1,4 @@
-import localStorageConverter from "../storage/ProgramElementSerialization";
+import localStorageConverter from "../storage/LocalStorageElementConverter";
 // import editorScreenDOMConverter from "";
 // import iterableFroTimerConverter from "";
 

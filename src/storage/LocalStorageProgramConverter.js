@@ -3,9 +3,10 @@ import { log } from "../utils/Logging";
 import programInstance from '../program_model/Program';
 import converterRegistry, { Converters } from "../program_model_converters/ConverterRegistry";
 
-export default newInstance(converterRegistry.get(Converters.localStorage));
+export default inst(converterRegistry.get(Converters.localStorage));
 
-export function newInstance(elementConverter) {
+export function inst(elementConverter) {
+
   return Object.freeze({
     serialize(program) {
       let { mainEvent, ...serializedProgram } = program;
