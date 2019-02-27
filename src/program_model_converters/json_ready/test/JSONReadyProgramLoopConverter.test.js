@@ -1,6 +1,6 @@
-import converterProto from '../program_model_converters/ElementConverter';
-import converter from './LocalStorageProgramLoopConverter';
-import ToolNames from "../edit_screen/tools/ToolNames";
+import converterProto from '../../ElementConverter';
+import converter from '../JSONReadyProgramLoopConverter';
+import ToolNames from "../../../edit_screen/tools/ToolNames";
 
 let loop = {
   element: "loop",

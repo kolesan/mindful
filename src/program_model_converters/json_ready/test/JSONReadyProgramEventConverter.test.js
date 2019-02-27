@@ -1,4 +1,4 @@
-import { inst as newEventConverter } from './LocalStorageProgramEventConverter';
+import { inst as newEventConverter } from '../JSONReadyProgramEventConverter';
 
 let a = jest.fn();
 let b = jest.fn();

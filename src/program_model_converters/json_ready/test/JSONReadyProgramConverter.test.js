@@ -1,5 +1,5 @@
 import "@babel/polyfill";
-import { inst as programSerialization } from './LocalStorageProgramConverter';
+import { inst as programSerialization } from '../JSONReadyProgramConverter';
 
 let converter = {
   serialize: jest.fn( () => ({}) ),

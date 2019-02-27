@@ -1,6 +1,6 @@
-import programLoop from '../program_model/ProgramLoop';
-import elementConverter from '../program_model_converters/ElementConverter';
-import ToolNames from "../edit_screen/tools/ToolNames";
+import programLoop from '../../program_model/ProgramLoop';
+import elementConverter from '../ElementConverter';
+import ToolNames from "../../edit_screen/tools/ToolNames";
 
 export default Object.assign(Object.create(elementConverter), {
   type: ToolNames.loop,

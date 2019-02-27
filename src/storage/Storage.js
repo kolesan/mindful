@@ -1,6 +1,6 @@
 import { isArray } from "../utils/Utils";
 import { log } from "../utils/Logging";
-import programSerializationService from './LocalStorageProgramConverter';
+import programSerializationService from '../program_model_converters/json_ready/JSONReadyProgramConverter';
 
 const PROGRAMS_KEY = "programs";
 const SETTINGS_KEY = "settings";

@@ -3,8 +3,8 @@ import { log } from "../../../test/TestUtils";
 import registry, { Converters } from '../ConverterRegistry';
 
 it(`provides Symbols for the available converters`, () => {
-  expect(Converters.localStorage).toBeDefined();
-  expect(typeof Converters.localStorage).toEqual("symbol");
+  expect(Converters.jsonReady).toBeDefined();
+  expect(typeof Converters.jsonReady).toEqual("symbol");
 
   // expect(Converters.editorScreenDOM).toBeDefined();
   // expect(typeof Converters.editorScreenDOM).toEqual("symbol");

@@ -1,8 +1,8 @@
-import { callbackDictionary } from "../EventCallbacks";
-import { optional } from "../utils/FunctionalUtils";
-import programEvent from '../program_model/ProgramEvent';
-import elementConverter from '../program_model_converters/ElementConverter';
-import ToolNames from "../edit_screen/tools/ToolNames";
+import { callbackDictionary } from "../../EventCallbacks";
+import { optional } from "../../utils/FunctionalUtils";
+import programEvent from '../../program_model/ProgramEvent';
+import elementConverter from '../ElementConverter';
+import ToolNames from "../../edit_screen/tools/ToolNames";
 
 export default inst(callbackDictionary);
 

@@ -1,9 +1,9 @@
-import { log } from "../utils/Logging";
+import { log } from "../../utils/Logging";
 
-import programInstance from '../program_model/Program';
-import converterRegistry, { Converters } from "../program_model_converters/ConverterRegistry";
+import programInstance from '../../program_model/Program';
+import converterRegistry, { Converters } from "../ConverterRegistry";
 
-export default inst(converterRegistry.get(Converters.localStorage));
+export default inst(converterRegistry.get(Converters.jsonReady));
 
 export function inst(elementConverter) {
 
