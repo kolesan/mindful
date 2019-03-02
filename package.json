@@ -11,6 +11,7 @@
     "dev": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "test": "jest",
     "testWatch": "jest --watch",
+    "coverage": "jest --reporters=\"./test/JestNoOutputReporter.js\" --coverage",
     "watchCoverage": "jest --reporters=\"./test/JestNoOutputReporter.js\" --verbose=false --watchAll --coverage",
     "stats": "webpack --config webpack.dev.js --profile --json > webpack-stats.json"
   },
