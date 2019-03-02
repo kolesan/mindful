@@ -1,7 +1,7 @@
 import './title_screen_favorites_component.css';
 
 import favorites from '../favorites/favorites';
-import { loadPrograms } from '../storage/Storage';
+import programsStorage from "../storage/programs_storage/ProgramsStorage";
 import { element, iconElem } from "../utils/HtmlUtils";
 import * as Routing from "../Routing";
 
@@ -19,7 +19,7 @@ export default function initFavorites(container) {
   container.appendChild(title);
   container.appendChild(buttonContainer);
 
-  favorites(loadPrograms(), 5)
+  favorites(programsStorage.loadAll(), 5)
     .forEach(program =>
       buttonContainer.appendChild(favoriteProgramButton(program))
     );

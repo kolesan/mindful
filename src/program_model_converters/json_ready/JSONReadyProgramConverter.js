@@ -10,7 +10,7 @@ export function inst(elementConverter) {
   return Object.freeze({
     serialize(program) {
       let { mainEvent, ...serializedProgram } = program;
-      serializedProgram.mainEvent = elementConverter.serialize(mainEvent);
+      serializedProgram.mainEvent = mainEvent ? elementConverter.serialize(mainEvent) : null;
       return serializedProgram;
     },
     deserialize(program) {
@@ -20,7 +20,7 @@ export function inst(elementConverter) {
         icon: program.icon,
         description: program.description,
         timesOpened: program.timesOpened,
-        mainEvent: elementConverter.deserialize(program.mainEvent)
+        mainEvent: program.mainEvent ? elementConverter.deserialize(program.mainEvent) : null
       });
     }
   })

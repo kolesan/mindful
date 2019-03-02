@@ -1,8 +1,9 @@
 import './edit_screen.css';
 
 import { setChildIcon } from '../utils/HtmlUtils';
-import * as Storage from '../storage/Storage';
+import programsStorage from "../storage/programs_storage/ProgramsStorage";
 import * as EventBus from '../utils/EventBus';
+import newProgram from '../program_model/Program';
 import * as InputValidator from "../text_input/InputValidator";
 import { makeDraggable } from "./dragndrop/Draggable";
 import * as ProgramEventsEditor from "./program_editor/ProgramEventsEditor";
@@ -17,6 +18,7 @@ const PROGRAM_SAVED_EVENT = "PROGRAM_SAVED_EVENT";
 const NEW_PROGRAM_SAVED_EVENT = "NEW_PROGRAM_SAVED_EVENT";
 
 let editScreen = document.querySelector("#editScreen");
+let editingExistingProgram = false;
 
 let loop = editScreen.querySelector("#loopTool");
 let event = editScreen.querySelector("#eventTool");
@@ -88,45 +90,43 @@ saveBtn.addEventListener("click", event => {
   if (!titleValidator.validate() || !programEventsEditor.validate()) {
     return;
   }
-  save(currentProgram.id);
+  save();
 });
 
-function loadProgramTitles() {
-  return Storage.loadPrograms().map(program => program.title);
-}
-
 let programIconInput = editScreen.querySelector(".basic_program_data [name=selectIconBtn]");
-function save(oldId) {
-  let title = programTitleInput.value || generateNewProgramTitle(programTitles);
-  let program = {
-    id: noSpaces(title),
-    title: title,
+function save() {
+  let program = newProgram({
+    title: programTitleInput.value || generateUniqueTitle(programTitles),
     icon: programIconInput.dataset.icon,
     description: "",
     mainEvent: programEventsEditor.save()
-  };
-  console.log("saving", program);
-  if (oldId) {
-    Storage.overrideProgram(oldId, program);
-    EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, program);
+  });
+  console.log("saving", program, currentProgram);
+  if (editingExistingProgram) {
+    let id = programsStorage.update(currentProgram.id, program);
+    EventBus.globalInstance.fire(PROGRAM_SAVED_EVENT, id);
   } else {
-    Storage.saveProgram(program);
-    EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, program);
+    let id = programsStorage.save(program);
+    EventBus.globalInstance.fire(NEW_PROGRAM_SAVED_EVENT, id);
   }
   programTitles = loadProgramTitles();
 }
 
-function newProgram() {
-  return {
+function loadProgramTitles() {
+  return programsStorage.loadAll().map(program => program.title);
+}
+
+function generateFreshProgram() {
+  return newProgram({
     id: null,
     title: "",
     icon: "fas fa-heartbeat",
     description: "",
     mainEvent: newMainEvent()
-  };
+  });
 }
 
-function generateNewProgramTitle(programTitles) {
+function generateUniqueTitle(programTitles) {
   return programTitles
     .filter(title => /^New Program.*/.test(title))
     .reduce((a, b) => a != b ? a : appendCounter(a), "New Program");
@@ -150,7 +150,8 @@ function load(program) {
 
 function onShow(program) {
   programTitles = loadProgramTitles();
-  load(program || newProgram(programTitles));
+  editingExistingProgram = !!program;
+  load(program || generateFreshProgram());
   markValid(programTitleInput);
 }
 

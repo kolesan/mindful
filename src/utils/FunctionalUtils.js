@@ -29,6 +29,9 @@ function orable(v) {
 export function optional(v) {
   return {
     get value() { return v },
+    isEmpty() {
+      return v === undefined;
+    },
     ifPresent(fn) {
       if (v !== undefined) {
         fn(v)

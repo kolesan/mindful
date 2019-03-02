@@ -4,6 +4,7 @@ import './seeking/TouchSeeking';
 import './seeking/MouseSeeking';
 import './TimerControls';
 
+import { log } from '../utils/Logging';
 import * as Routing from '../Routing';
 import * as TimerModule from './TimerToDisplayBinder';
 import * as eventBus from '../utils/EventBus';

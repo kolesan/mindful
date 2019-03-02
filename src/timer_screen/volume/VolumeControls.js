@@ -2,7 +2,7 @@ import './volume_input.css';
 
 import { log } from '../../utils/Logging';
 import Volume from './Volume';
-import { saveSettings } from "../../storage/Storage";
+import { saveSettings } from "../../storage/local_storage/LocalStorage";
 
 const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
 

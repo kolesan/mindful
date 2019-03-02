@@ -1,6 +1,6 @@
 import * as log from "./utils/Logging"
 import { screens } from "./Screens";
-import * as Storage from './storage/Storage';
+import programsStorage from "./storage/programs_storage/ProgramsStorage";
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -32,12 +32,9 @@ function notFound(msg) {
 }
 
 function ifProgramExistsGoTo(id, screen) {
-  let program = Storage.loadProgram(id);
-  if (program) {
-    screen.show(program);
-  } else {
-    screens.notFound.show(`Sorry but program ${inRed(id)} was not found`);
-  }
+  programsStorage.load(id)
+    .ifPresent(program => screen.show(program))
+    .ifEmpty(() => screens.notFound.show(`Sorry but program ${inRed(id)} was not found`));
 }
 
 function inRed(s) {

@@ -59,6 +59,16 @@ export function arr(o) {
   return (o && Array.from(o)) || [];
 }
 
+export function removeFromArray(array, fn) {
+  let copy = [...array];
+  let index = copy.findIndex(fn);
+  if (index != -1) {
+    copy.splice(index, 1);
+  }
+  return copy;
+}
+
+
 export function assignDefinedProperties(target, ...sources) {
   sources.forEach(source => {
     Object.entries(source).forEach(([k, v]) => {

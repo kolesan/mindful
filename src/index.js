@@ -9,7 +9,8 @@ import * as Drawer from './drawer/DrawerMenu';
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
-import { loadPrograms, loadSettings } from "./storage/Storage";
+import { loadSettings } from "./storage/local_storage/LocalStorage";
+import programsStorage from "./storage/programs_storage/ProgramsStorage";
 import { loadTestProgramsToStorage } from "./dev/DevTools";
 import { setVolumeSlider } from "./timer_screen/volume/VolumeControls";
 
@@ -40,17 +41,17 @@ function defaultSettings() {
 }
 
 
-Drawer.init(loadPrograms());
+Drawer.init(programsStorage.loadAll());
 
 eventBus.globalInstance.bindListener(EditScreen.NEW_PROGRAM_SAVED_EVENT,
-  program => {
-    Routing.toTimerScreen(program);
+  id => {
+    Routing.toTimerScreen(programsStorage.load(id).value);
   }
 );
 
 eventBus.globalInstance.bindListener(EditScreen.PROGRAM_SAVED_EVENT,
-  program => {
-    Drawer.init(loadPrograms());
-    Routing.toTimerScreen(program, true);
+  id => {
+    Drawer.init(programsStorage.loadAll());
+    Routing.toTimerScreen(programsStorage.load(id).value, true);
   }
 );
