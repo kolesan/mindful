@@ -13,8 +13,6 @@ function makeDraggable(cmp, dragAnchorCmp) {
   let originalCmpStyle = null;
 
   initDragStartEvent("mousedown", onMouseDown);
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onEnd);
 
   return Object.freeze({
     onDragStart(fn) {
@@ -95,6 +93,9 @@ function makeDraggable(cmp, dragAnchorCmp) {
 
     originalCmpStyle = cmp.style;
     stylePlaceholderCb(cmp.style);
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onEnd);
   }
   function onMove(x, y) {
     if (dragging) {
@@ -128,6 +129,9 @@ function makeDraggable(cmp, dragAnchorCmp) {
 
       cmp.style = originalCmpStyle;
       dragging = false;
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onEnd);
     }
   }
 
