@@ -21,7 +21,7 @@ function orable(v) {
       if (v !== undefined) {
         return v;
       }
-      fn();
+      return fn();
     }
   };
 }

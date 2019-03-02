@@ -2,7 +2,7 @@ import './volume_input.css';
 
 import { log } from '../../utils/Logging';
 import Volume from './Volume';
-import { saveSettings } from "../../storage/local_storage/LocalStorage";
+import settingsStorage from "../../storage/settings_storage/SettingsStorage";
 
 const SLIDER_STYLESHEET_ID = "sliderStyleSheet";
 
@@ -23,7 +23,7 @@ setSliderBackground(Volume.volume);
 function volumeChangeListener(event) {
   let volume = event.target.value;
   setVolume(volume);
-  saveSettings({volume});
+  settingsStorage.save({volume});
 }
 
 function setVolume(val) {

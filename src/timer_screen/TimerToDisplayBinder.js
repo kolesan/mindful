@@ -1,6 +1,6 @@
 import { log } from '../utils/Logging';
 import { newTimer } from './timer/Timer';
-import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../settings/Settings';
+import { SETTING_CHANGED_EVENT, SHOW_TIMER_NAMES_SETTING } from '../drawer/settings/SettingsDrawerSection';
 import { newInstance as newTimerDisplay } from './TimerDisplay';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';

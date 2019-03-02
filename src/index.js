@@ -9,8 +9,8 @@ import * as Drawer from './drawer/DrawerMenu';
 import * as eventBus from './utils/EventBus';
 import * as EditScreen from './edit_screen/EditScreen';
 import * as Routing from "./Routing";
-import { loadSettings } from "./storage/local_storage/LocalStorage";
 import programsStorage from "./storage/programs_storage/ProgramsStorage";
+import settingsStorage from "./storage/settings_storage/SettingsStorage";
 import { loadTestProgramsToStorage } from "./dev/DevTools";
 import { setVolumeSlider } from "./timer_screen/volume/VolumeControls";
 
@@ -29,15 +29,8 @@ function loadExamplePrograms() {
 }
 
 function setSettingsFromStorage() {
-  let settingsFromStorage = loadSettings();
-  let settings = Object.assign({}, defaultSettings(), settingsFromStorage);
+  let settings = settingsStorage.load();
   setVolumeSlider(settings.volume);
-}
-
-function defaultSettings() {
-  return {
-    volume: 25
-  };
 }
 
 
