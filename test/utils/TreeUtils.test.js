@@ -1,6 +1,6 @@
 import "@babel/polyfill";
 import * as TreeUtils from '../../src/utils/TreeUtils';
-import { log } from "../TestUtils";
+import { log, logo } from "../TestUtils";
 
 let entryPoint = {
   name: 1,
@@ -82,6 +82,74 @@ test("Mapping a tree handles nodes with no children", () => {
   expect(
     TreeUtils.mapTree({children: null}, it => it)
   ).toEqual({children: null});
+});
+
+test(`Can map a tree leafs to root`, () => {
+  let counter = 0;
+  let mapped = TreeUtils.mapTreeFromLeafs({
+    root: entryPoint,
+    mapFn: (it, children) => ({...it, name: counter++, children})
+  });
+
+  expect(mapped).toEqual({
+    name: 10,
+    children: [
+      { name: 0, children: [] },
+      { name: 9,
+        children: [
+          { name: 8,
+            children: [
+              { name: 2, children: [ { name: 1, children: [] }]},
+              { name: 3, children: []},
+              { name: 7, children: [
+                { name: 5, children: [ {name: 4, children: []} ] },
+                { name: 6, children: [] }
+              ]}
+            ]
+          }
+        ]
+      }
+    ]
+  })
+});
+
+test(`Can map a tree leafs to root, with custom children provider fn`, () => {
+  let counter = 0;
+  let mapped = TreeUtils.mapTreeFromLeafs({
+    root: entryPoint,
+    childrenProvider: it => {
+      if (it.children.length > 0) {
+        it.children.push({name: "willChangeAnyway", children: []});
+      }
+      return it.children;
+    } ,
+    mapFn: (it, children) => ({...it, name: counter++, children})
+  });
+
+  expect(mapped).toEqual({
+    name: 16,
+    children: [
+      { name: 0, children: [] },
+      { name: 14,
+        children: [
+          { name: 12,
+            children: [
+              { name: 3, children: [ { name: 1, children: [] }, { name: 2, children: [] }]},
+              { name: 4, children: []},
+              { name: 10, children: [
+                { name: 7, children: [ {name: 5, children: []}, { name: 6, children: [] } ] },
+                { name: 8, children: [] },
+                { name: 9, children: [] }
+              ]},
+              { name: 11, children: [] }
+            ]
+          },
+          { name: 13, children: [] }
+        ]
+      },
+      { name: 15, children: [] }
+    ]
+  })
 });
 
 function toNames(event) {

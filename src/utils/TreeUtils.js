@@ -32,4 +32,12 @@ export function mapTree(root, fn) {
   return mapped;
 }
 
+export function mapTreeFromLeafs({root, childrenProvider = elem => elem.children, mapFn}) {
+  let children = childrenProvider(root) || [];
+  let mappedChildren = children.map(child =>
+    mapTreeFromLeafs({root: child, childrenProvider, mapFn})
+  );
+  return mapFn(root, mappedChildren);
+}
+
 export { visit, flatten, };
