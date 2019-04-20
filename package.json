@@ -2,7 +2,7 @@
   "name": "mindful",
   "version": "1.0.0",
   "private": true,
-  "description": "Simple timer with configurable gongs, to be used during meditation practice",
+  "description": "Custom timer creation app. Useful for activities that require signaling to the user at preset time intervals.",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
