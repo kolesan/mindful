@@ -45,9 +45,7 @@ export function elemDuration(elem) {
   } else if (isLoop(elem)) {
     return loopDuration(elem);
   }
-  log(elem);
-  throw Error("WHAT THE FUCK MAN, ONLY LOOPS AND EVENTS ALLOWED AND YOU GIVE ME THIS SHIT ^");
-  return 0;
+  throw Error("ONLY LOOPS AND EVENTS ALLOWED");
 }
 export function loopDuration(loop) {
   // log("Duration input value of", loop, elemDurationSum(programElemChildren(loop)) * iterationsInputOf(loop).value);
