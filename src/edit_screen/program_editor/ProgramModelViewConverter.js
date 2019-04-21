@@ -1,6 +1,5 @@
 import { fgong, fsgong, noop, callbackDictionary } from "../../EventCallbacks";
 import ToolNames from "../tools/ToolNames";
-import { Tools } from "../tools/Tools";
 
 function viewToProgram(viewChildren, depth = 0) {
   let viewElements = Array.from(viewChildren).filter(it => it.classList.contains("program__element"));
