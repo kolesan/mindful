@@ -1,4 +1,5 @@
 import { inst as newEventConverter } from '../JSONReadyProgramEventConverter';
+import newCallbackDictionary from '../../../utils/CallbackDictionary';
 
 let a = jest.fn();
 let b = jest.fn();
@@ -9,7 +10,7 @@ let callbacks = new Map()
   .set("b", b)
   .set("c", c);
 
-let converter = newEventConverter(callbacks);
+let converter = newEventConverter(newCallbackDictionary(callbacks));
 
 let event = {
   element: "event",
@@ -33,22 +34,6 @@ it(`serializes program event element`, () => {
 
 it(`deserializes program event element`, () => {
   expect(converter.deserialize(serializedEvent)).toEqual(event);
-});
-
-it('throws an error if callback dictionary does not contain needed function during serialization', () => {
-  let deserialized = converter.deserialize(serializedEvent);
-  deserialized.callback = function NoSuchFunction() {};
-
-  expect(() => converter.serialize(deserialized))
-    .toThrowWithMessage(Error, /Provided callback dictionary does not contain.*NoSuchFunction/);
-});
-
-it('throws an error if callback dictionary does not contain needed function during deserialization', () => {
-  let serialized = converter.serialize(event);
-  serialized.callback = "NoSuchFunction";
-
-  expect(() => converter.deserialize(serialized))
-    .toThrowWithMessage(Error, /Provided callback dictionary does not contain.*NoSuchFunction/);
 });
 
 it('deserialize returns new instance of element', () => {
