@@ -26,7 +26,10 @@ function create({name, duration} = {}) {
   let cmp = ToolComponent.create(EVENT_ICON, ToolNames.event, eventHeadingCmp(nameInput, durationInput));
   //Shadow dom values are not cloned with cloneNode() call for some reason
   cmp.onDrag = draggable => writeValuesTo(draggable.image.node);
-
+  cmp.addChild = child => {
+    cmp.children.push(child);
+    cmp.element.appendChild(child.element);
+  };
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
   initChildMutationCallbacks();

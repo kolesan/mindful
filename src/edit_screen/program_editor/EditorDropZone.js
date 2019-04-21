@@ -4,7 +4,10 @@ import { Tools } from "../tools/Tools";
 import { makeDraggable } from "../dragndrop/Draggable";
 import ToolNames from "../tools/ToolNames";
 import { fade } from "../../utils/Utils";
-import * as ModelViewConverter from "./ProgramModelViewConverter";
+import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry"
+import * as TreeUtils from '../../utils/TreeUtils';
+
+const modelToEditorComponentsConverter = ConverterRegistry.get(Converters.editorDOM);
 
 export default function inst({container, dropCb}) {
   let showingPlaceholder = false;
@@ -56,16 +59,22 @@ export default function inst({container, dropCb}) {
     },
     load(programElements) {
       removeChildNodes(container, it => it.dataset.element);
-      let viewElements = ModelViewConverter.programToView(programElements, makeCmpDraggable);
-      viewElements.forEach(viewElement =>
-        container.appendChild(viewElement)
-      );
-      if (viewElements.length > 0) {
+      if (programElements.length > 0) {
         hideDragHereTxt();
       } else {
         showDragHereTxt();
       }
       setScrollbarWidth();
+
+      programElements.reduce(
+        (container, programElement) => {
+          const editorComponent = modelToEditorComponentsConverter.serialize(programElement);
+          TreeUtils.visit(editorComponent, cmp => makeCmpDraggable(cmp));
+          container.appendChild(editorComponent.element);
+          return container;
+        },
+        container
+      );
     }
   });
 

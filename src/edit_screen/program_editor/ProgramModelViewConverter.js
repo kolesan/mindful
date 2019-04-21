@@ -30,17 +30,4 @@ function viewToProgram(viewChildren, depth = 0) {
   return programElements;
 }
 
-function programToView(programElements, afterToolCreationHook) {
-  let elements = [];
-  programElements.forEach(programElement => {
-    let cmp = Tools.create(programElement.element, programElement);
-    let viewElement = cmp.element;
-    let children = programToView(programElement.children, afterToolCreationHook);
-    children.forEach(it => viewElement.appendChild(it));
-    afterToolCreationHook(cmp);
-    elements.push(viewElement)
-  });
-  return elements;
-}
-
-export { viewToProgram, programToView }
+export { viewToProgram }
