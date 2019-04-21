@@ -38,6 +38,7 @@ Drawer.init(programsStorage.loadAll());
 
 eventBus.globalInstance.bindListener(EditScreen.NEW_PROGRAM_SAVED_EVENT,
   id => {
+    Drawer.init(programsStorage.loadAll());
     Routing.toTimerScreen(programsStorage.load(id).value);
   }
 );

@@ -1,5 +1,6 @@
 import './edit_screen.css';
 
+import { log } from "../utils/Logging";
 import { setChildIcon } from '../utils/HtmlUtils';
 import programsStorage from "../storage/programs_storage/ProgramsStorage";
 import * as EventBus from '../utils/EventBus';

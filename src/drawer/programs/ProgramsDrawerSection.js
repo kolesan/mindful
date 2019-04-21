@@ -1,6 +1,5 @@
+import { log } from "../../utils/Logging";
 import { createElement, removeChildNodes } from "../../utils/HtmlUtils";
-import * as eventBus from "../../utils/EventBus";
-import { NEW_PROGRAM_SAVED_EVENT } from "../../edit_screen/EditScreen";
 import * as Routing from "../../Routing";
 import * as Drawer from "../DrawerMenu";
 
@@ -28,6 +27,7 @@ function deselectAllSelectOne(item) {
 }
 
 function addButton(program) {
+  log("Adding button for", program);
   let btn = createElement("button", "drawer_menu__item");
   btn.appendChild(createElement("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
   btn.appendChild(document.createTextNode(program.title));
@@ -38,7 +38,5 @@ function addButton(program) {
   });
   drawerProgramsSection.appendChild(btn);
 }
-
-eventBus.globalInstance.bindListener(NEW_PROGRAM_SAVED_EVENT, addButton);
 
 export { init, addButton, deselectAllItems };
