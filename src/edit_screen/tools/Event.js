@@ -8,6 +8,7 @@ import { DURATION_CHANGED_EVENT } from "../../utils/Events";
 import * as ToolComponent from "./ToolComponent";
 import { programElemChildren } from "./ToolComponent";
 import { eventDuration } from "./ToolComponent";
+import { fgong, callbackDictionary } from '../../EventCallbacks';
 
 const EVENT_ICON = "fas fa-bell";
 const EVENT_ICON_MUTED = "fas fa-bell-slash";
@@ -19,7 +20,7 @@ function fromElement(element) {
   });
 }
 
-function create({name, duration} = {}) {
+function create({name, duration, callback} = {}) {
   let durationInput = durationInputCmp(duration);
   let nameInput = nameInputCmp(name);
 
@@ -33,6 +34,10 @@ function create({name, duration} = {}) {
   durationInput.onDurationChange(() => EventBus.globalInstance.fire(DURATION_CHANGED_EVENT, cmp.element));
 
   initChildMutationCallbacks();
+
+  cmp.element.dataset.callback = callback ?
+    callbackDictionary.getByValue(callback) :
+    fgong;
 
   return cmp;
 

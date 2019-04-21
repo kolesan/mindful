@@ -2,11 +2,11 @@ import './program_events_editor.css';
 
 import { log } from "../../utils/Logging";
 import {
+  children,
   disable, enable, iconElem,
 } from "../../utils/HtmlUtils";
 import { alphanumericValidation, markInvalid, markValid } from "../../Validation";
 import * as InputValidator from "../../text_input/InputValidator";
-import * as ModelViewConverter from "./ProgramModelViewConverter";
 import * as TreeUtils from "../../utils/TreeUtils";
 import * as EventBus from "../../utils/EventBus";
 import { noop, sgong, callbackDictionary } from "../../EventCallbacks";
@@ -17,6 +17,9 @@ import {
 } from "../tools/ToolComponent";
 import ToolNames from "../tools/ToolNames";
 import editorDropZone from "./EditorDropZone";
+import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry"
+
+const modelToEditorComponentsConverter = ConverterRegistry.get(Converters.editorDOM);
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -77,7 +80,8 @@ function inst(containerCmp) {
       programEditorDropZone.load(mainEvent.children);
     },
     save() {
-      let programElements = ModelViewConverter.viewToProgram(childEventsEditorCmp.children);
+      let editorProgramElements = children(childEventsEditorCmp);
+      let programElements = editorProgramElements.map(child => modelToEditorComponentsConverter.deserialize(child));
       let mainEvent = {
         element: ToolNames.event,
         name: mainEventNameInput.value,
@@ -85,11 +89,7 @@ function inst(containerCmp) {
         callback: programElements.length > 0 ? callbackDictionary.get(noop) : callbackDictionary.get(sgong),
         children: programElements
       };
-      //TODO temporary fix until user can select callback from the UI
-      let visitor = TreeUtils.postorderRightToLeftVisitor(mainEvent);
-      let lastNode = visitor.next();
-      lastNode.value.callback = callbackDictionary.get(sgong);
-      visitor.return();
+      setLastCallbackToSgong(mainEvent); //TODO: fix (temporary until user can select callback from the UI)
       return mainEvent;
     },
     validate() {
@@ -97,6 +97,13 @@ function inst(containerCmp) {
       return mainEventNameValidator.validate() && !invalidElem;
     }
   });
+
+  function setLastCallbackToSgong(mainEvent) {
+    let visitor = TreeUtils.postorderRightToLeftVisitor(mainEvent);
+    let lastNode = visitor.next();
+    lastNode.value.callback = callbackDictionary.get(sgong);
+    visitor.return();
+  }
 
   function recalculateParentDuration(element) {
     // log("After event Recalculating duration for", element);
