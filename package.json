@@ -5,10 +5,10 @@
   "description": "Custom timer creation app. Useful for activities that require signaling to the user at preset time intervals.",
   "main": "index.js",
   "scripts": {
+    "start": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "buildDev": "webpack --config webpack.dev.js",
     "buildDevNetlify": "webpack --config webpack.netlifyDev.js",
-    "dev": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
     "test": "jest",
     "testWatch": "jest --watch",
     "coverage": "jest --reporters=\"./test/JestNoOutputReporter.js\" --coverage",
