@@ -1,12 +1,9 @@
 import { mapTree } from "../utils/TreeUtils";
-import newConverterRegistry from "./ElementConverterRegistry";
+import newByTypeElementConverter  from "./ByTypeElementConverter";
 
 export default function inst(...converters) {
 
-  let converterRegistry = converters.reduce(
-    (registry, converter) => registry.register(converter),
-    newConverterRegistry()
-  );
+  let byTypeElementConverter = newByTypeElementConverter(...converters);
 
   return Object.freeze({
     serialize: conversionFn("serialize"),
@@ -16,7 +13,7 @@ export default function inst(...converters) {
   function conversionFn(fnName) {
     return function (root) {
       return mapTree(root, element => {
-        return converterRegistry.get(element.element)[fnName](element);
+        return byTypeElementConverter[fnName](element);
       });
     }
   }

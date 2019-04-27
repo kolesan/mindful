@@ -88,7 +88,7 @@ test(`Can map a tree leafs to root`, () => {
   let counter = 0;
   let mapped = TreeUtils.mapTreeFromLeafs({
     root: entryPoint,
-    mapFn: (it, children) => ({...it, name: counter++, children})
+    mapper: (it, children) => ({...it, name: counter++, children})
   });
 
   expect(mapped).toEqual({
@@ -123,7 +123,7 @@ test(`Can map a tree leafs to root, with custom children provider fn`, () => {
       }
       return it.children;
     } ,
-    mapFn: (it, children) => ({...it, name: counter++, children})
+    mapper: (it, children) => ({...it, name: counter++, children})
   });
 
   expect(mapped).toEqual({

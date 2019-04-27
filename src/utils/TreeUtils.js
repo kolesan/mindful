@@ -1,4 +1,4 @@
-import { arr } from "./Utils";
+import { arr, noop } from "./Utils";
 import { log } from "./Logging";
 
 function visit(node, fn) {
@@ -32,12 +32,20 @@ export function mapTree(root, fn) {
   return mapped;
 }
 
-export function mapTreeFromLeafs({root, childrenProvider = elem => elem.children, mapFn}) {
+export function mapTreeFromLeafs({root, childrenProvider = elem => elem.children, mapper, childInjector = noop}) {
   let children = childrenProvider(root) || [];
   let mappedChildren = children.map(child =>
-    mapTreeFromLeafs({root: child, childrenProvider, mapFn})
+    mapTreeFromLeafs({root: child, childrenProvider, mapper, childInjector})
   );
-  return mapFn(root, mappedChildren);
+  let mappedRoot = mapper(root, mappedChildren);
+
+  return mappedChildren.reduce(
+    (mappedRoot, child) => {
+      childInjector(mappedRoot, child);
+      return mappedRoot;
+    },
+    mappedRoot
+  );
 }
 
 export { visit, flatten, };
