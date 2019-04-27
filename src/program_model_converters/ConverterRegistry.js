@@ -1,14 +1,14 @@
 import jsonReadyConverter from "./json_ready/JSONReadyElementTreeConverter";
 import editorDOMConverter from "./editor_components/EditorComponentTreeConverter";
-// import iterableForTimerConverter from "";
+import timerIterableConverter from "./timer_iterable/TimerIterableTreeConverter";
 
 export const Converters = {
-  jsonReady: Symbol("Converts ProgramElements to and from JSON ready objects"),
-  editorDOM: Symbol("Converts ProgramElements to and from DOM representations for editor"),
-  // iterableForTimer: Symbol("Converts ProgramElements to iterable that can be used by timer"),
+  jsonReady: Symbol("To and from JSON ready objects"),
+  editorDOM: Symbol("To tool components and from editor DOM elements"),
+  timerIterable: Symbol("To an iterable that can be used by the timer"),
 };
 
 export default new Map()
   .set(Converters.jsonReady, jsonReadyConverter)
-  .set(Converters.editorDOM, editorDOMConverter);
-  // .set(Converters.iterableForTimer, iterableForTimerConverter);
+  .set(Converters.editorDOM, editorDOMConverter)
+  .set(Converters.timerIterable, timerIterableConverter);

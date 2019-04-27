@@ -1,41 +1,18 @@
 import { log } from "../../utils/Logging";
-
-import ToolNames from "../../edit_screen/tools/ToolNames";
 import { newTimerEvent } from "./Timer";
-import programEvent from "./iterable_program/IterableProgramEvent";
-import programLoop from "./iterable_program/IterableProgramLoop";
+
+import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry";
+const timerIterableConverter = ConverterRegistry.get(Converters.timerIterable);
+
 
 export default function inst(program) {
   return Object.freeze({
     [Symbol.iterator](startFrom) {
-      return programPathIterator(toProgramElementTree(program.mainEvent), startFrom);
+      return programPathIterator(timerIterableConverter.serialize(program.mainEvent), startFrom);
     }
   });
 }
 
-function toProgramElementTree(node) {
-  let children = [];
-  for(let child of node.children) {
-    children.push(toProgramElementTree(child));
-  }
-
-  let programElement = toProgramElement(node);
-  programElement.children = children;
-  return programElement;
-}
-
-function toProgramElement(node) {
-  switch(node.element) {
-    case ToolNames.event:
-      let event = Object.create(programEvent);
-      event.init(node.name, node.callback, node.children, node.duration);
-      return event;
-    case ToolNames.loop:
-      let loop = Object.create(programLoop);
-      loop.init(node.iterations, node.children, node.duration);
-      return loop;
-  }
-}
 
 function *programPathIterator(root, startFrom = 1) {
   let path = [];
