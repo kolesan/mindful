@@ -17,9 +17,7 @@ import {
 } from "../tools/ToolComponent";
 import ToolNames from "../tools/ToolNames";
 import editorDropZone from "./EditorDropZone";
-import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry"
-
-const modelToEditorComponentsConverter = ConverterRegistry.get(Converters.editorDOM);
+import { editorComponentsConverter } from "../../program_model_converters/Converters"
 
 function inst(containerCmp) {
   let childEventsEditorCmp = containerCmp.querySelector(".program_events__children__editor");
@@ -81,7 +79,7 @@ function inst(containerCmp) {
     },
     save() {
       let editorProgramElements = children(childEventsEditorCmp);
-      let programElements = editorProgramElements.map(child => modelToEditorComponentsConverter.deserialize(child));
+      let programElements = editorProgramElements.map(child => editorComponentsConverter.deserialize(child));
       let mainEvent = {
         element: ToolNames.event,
         name: mainEventNameInput.value,

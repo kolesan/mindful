@@ -4,10 +4,8 @@ import { Tools } from "../tools/Tools";
 import { makeDraggable } from "../dragndrop/Draggable";
 import ToolNames from "../tools/ToolNames";
 import { fade } from "../../utils/Utils";
-import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry"
+import { editorComponentsConverter } from "../../program_model_converters/Converters"
 import * as TreeUtils from '../../utils/TreeUtils';
-
-const modelToEditorComponentsConverter = ConverterRegistry.get(Converters.editorDOM);
 
 export default function inst({container, dropCb}) {
   let showingPlaceholder = false;
@@ -68,7 +66,7 @@ export default function inst({container, dropCb}) {
 
       programElements.reduce(
         (container, programElement) => {
-          const editorComponent = modelToEditorComponentsConverter.serialize(programElement);
+          const editorComponent = editorComponentsConverter.serialize(programElement);
           TreeUtils.visit(editorComponent, cmp => makeCmpDraggable(cmp));
           container.appendChild(editorComponent.element);
           return container;

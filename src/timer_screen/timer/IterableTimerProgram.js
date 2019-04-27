@@ -1,9 +1,6 @@
 import { log } from "../../utils/Logging";
 import { newTimerEvent } from "./Timer";
-
-import ConverterRegistry, { Converters } from "../../program_model_converters/ConverterRegistry";
-const timerIterableConverter = ConverterRegistry.get(Converters.timerIterable);
-
+import { timerIterableConverter } from "../../program_model_converters/Converters";
 
 export default function inst(program) {
   return Object.freeze({

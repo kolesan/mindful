@@ -1,9 +1,9 @@
 import { log } from "../../utils/Logging";
 
 import programInstance from '../../program_model/Program';
-import converterRegistry, { Converters } from "../ConverterRegistry";
+import { jsonReadyConverter } from "../Converters";
 
-export default inst(converterRegistry.get(Converters.jsonReady));
+export default inst(jsonReadyConverter);
 
 export function inst(elementConverter) {
 
