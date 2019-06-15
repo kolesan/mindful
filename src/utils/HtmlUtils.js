@@ -107,9 +107,9 @@ export function enable(elem) {
   elem && elem.removeAttribute("disabled");
 }
 
-export function query(selector) {
-  return document.querySelector(selector);
+export function query(selector, elem = document) {
+  return elem.querySelector(selector);
 }
-export function queryAll(selector) {
-  return document.querySelectorAll(selector);
+export function queryAll(selector, elem = document) {
+  return elem.querySelectorAll(selector);
 }

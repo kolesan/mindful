@@ -86,6 +86,17 @@ body {
     display: none !important;
 }
 
+.title_right {
+    display: flex;
+    align-items: baseline;
+}
+.title_right > * {
+    margin-left: 1rem;
+}
+[name="shareBtn"] {
+    font-size: 1.7rem;
+}
+
 @media(min-resolution: 200dpi) {
     html {
         /*--font-size: 4rem;*/

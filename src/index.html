@@ -58,7 +58,10 @@
             <section class="title section">
                 <button name="menuBtn" class="icon-button" title="Menu"><i class="fas fa-bars"></i></button>
                 <span id="titleText"></span>
-                <button name="editBtn" class="icon-button" title="Edit program"><i class="fas fa-edit"></i></button>
+                <div class="title_right">
+                    <button name="shareBtn" class="icon-button" title="Share program"><i class="fas fa-share"></i></button>
+                    <button name="editBtn" class="icon-button" title="Edit program"><i class="fas fa-edit"></i></button>
+                </div>
             </section>
             <section class="timer section">
                 <div class="timer__display"></div>
@@ -93,7 +96,7 @@
                            title="Program title" placeholder="Program title" minsize=13 spellcheck="false">
                     </dynamic-size-input>
                 </div>
-                <button class="icon-button" title="Save program" id="saveBtn"><i class="fas fa-save"></i></button>
+                <button id="saveBtn" class="icon-button" title="Save program"><i class="fas fa-save"></i></button>
             </section>
             <section class="tools section">
                 <div id="loopTool" class="tools__tool">

@@ -9,7 +9,7 @@ import * as Routing from '../Routing';
 import * as TimerModule from './TimerToDisplayBinder';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
-import { replaceWithClone } from "../utils/HtmlUtils";
+import { query, replaceWithClone } from "../utils/HtmlUtils";
 
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
@@ -67,18 +67,23 @@ let screen = {
   cmp: timerScreen,
   onShow(program, recreateTimer) {
     loadTimer(program, recreateTimer);
-    cloneEditButtonAndAttachClickListener(program);
+    enableEditButton(program);
+    enableShareButton(program);
   },
   onHide() {
     currentTimer().pause();
   }
 };
 
-function cloneEditButtonAndAttachClickListener(program) {
+function enableEditButton(program) {
   editBtn = replaceWithClone(editBtn);
   editBtn.addEventListener("click", event => {
     Routing.toEditScreen(program);
   });
+}
+function enableShareButton(program) {
+  replaceWithClone(query(`[name="shareBtn"]`))
+    .addEventListener("click", () => alert(`${window.location.origin}/load/${program.title}`));
 }
 
 export { screen, currentTimer };

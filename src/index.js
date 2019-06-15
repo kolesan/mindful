@@ -33,7 +33,6 @@ function setSettingsFromStorage() {
   setVolumeSlider(settings.volume);
 }
 
-
 Drawer.init(programsStorage.loadAll());
 
 eventBus.globalInstance.bindListener(EditScreen.NEW_PROGRAM_SAVED_EVENT,
