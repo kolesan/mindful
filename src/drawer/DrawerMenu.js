@@ -4,55 +4,65 @@ import '../settings/Settings';
 import * as ProgramsSection from './programs/ProgramsDrawerSection';
 
 import * as Routing from "../Routing";
+import { query, queryAll } from '../utils/HtmlUtils';
 
 const HIDDEN_DRAWER_CLASS = "drawer_menu__hidden";
 
 let drawer = document.querySelector(".drawer_menu");
+let drawerOverlay = query(".drawer_menu_overlay");
 
-let drawerBtns = document.querySelectorAll("button[name=menuBtn]");
-drawerBtns.forEach(btn => btn.addEventListener("click", toggleDrawerState));
+drawerOverlay.addEventListener("click", close);
 
-let drawerOverlay = document.querySelector(".drawer_menu_overlay");
-drawerOverlay.addEventListener("click", toggleDrawerState);
+query("#closeDrawerBtn")
+  .addEventListener("click", close);
 
-let closeDrawerBtn = document.querySelector("#closeDrawerBtn");
-closeDrawerBtn.addEventListener("click", toggleDrawerState);
+queryAll("button[name=menuBtn]")
+  .forEach(btn => btn.addEventListener("click", toggle));
 
-let homeBtn = document.querySelector("button[name=homeBtn]");
-homeBtn.addEventListener("click", Routing.toTitleScreen);
+query("button[name=homeBtn]")
+  .addEventListener("click", Routing.toTitleScreen);
 
-let shown = window.innerWidth > 1000;
-// let shown = false;
+function isMobile() {
+  return window.innerWidth <= 1000;
+}
+
+let shown = isMobile();
+
 function init(programs) {
-  toggleDrawer();
+  toggleDrawerElement();
   ProgramsSection.init(programs);
 }
 
-function toggleDrawerState(event) {
-  shown = !shown;
-  toggleDrawer();
+function close() {
+  setDrawerShownState(false);
 }
-function toggleDrawer() {
-  if (shown) {
-    showDrawer();
-  } else {
-    hideDrawer();
+function toggle() {
+  setDrawerShownState(!shown);
+}
+function onItemSelect(event) {
+  if (isMobile()) {
+    toggle();
   }
 }
-function showDrawer() {
-  drawer.classList.remove(HIDDEN_DRAWER_CLASS);
-  drawerOverlay.classList.remove(HIDDEN_DRAWER_CLASS);
+
+function setDrawerShownState(newState) {
+  shown = newState;
+  toggleDrawerElement();
 }
-function hideDrawer() {
-  drawer.classList.add(HIDDEN_DRAWER_CLASS);
-  drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
+function toggleDrawerElement() {
+  if (shown) {
+    drawer.classList.remove(HIDDEN_DRAWER_CLASS);
+    drawerOverlay.classList.remove(HIDDEN_DRAWER_CLASS);
+  } else {
+    drawer.classList.add(HIDDEN_DRAWER_CLASS);
+    drawerOverlay.classList.add(HIDDEN_DRAWER_CLASS);
+  }
 }
 
-let newProgramBtn = document.querySelector("#newProgramBtn");
-newProgramBtn.addEventListener("click", () => {
+query("#newProgramBtn").addEventListener("click", () => {
   ProgramsSection.deselectAllItems();
-  toggleDrawerState();
+  onItemSelect();
   Routing.toNewProgramScreen();
 });
 
-export { init, toggleDrawerState };
+export { init, onItemSelect };

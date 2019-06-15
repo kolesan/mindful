@@ -31,12 +31,16 @@ function addButton(program) {
   let btn = createElement("button", "drawer_menu__item");
   btn.appendChild(createElement("i", ["drawer_menu__item__icon", ...program.icon.split(" ")]));
   btn.appendChild(document.createTextNode(program.title));
-  btn.addEventListener("click", () => {
-    Drawer.toggleDrawerState();
+  btn.addEventListener("click", onClick(btn, program));
+  drawerProgramsSection.appendChild(btn);
+}
+
+function onClick(btn, program) {
+  return function() {
+    Drawer.onItemSelect();
     deselectAllSelectOne(btn);
     Routing.toTimerScreen(program);
-  });
-  drawerProgramsSection.appendChild(btn);
+  }
 }
 
 export { init, addButton, deselectAllItems };

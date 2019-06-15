@@ -106,3 +106,10 @@ export function disable(elem) {
 export function enable(elem) {
   elem && elem.removeAttribute("disabled");
 }
+
+export function query(selector) {
+  return document.querySelector(selector);
+}
+export function queryAll(selector) {
+  return document.querySelectorAll(selector);
+}
