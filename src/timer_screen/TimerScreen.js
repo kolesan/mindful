@@ -10,6 +10,7 @@ import * as TimerModule from './TimerToDisplayBinder';
 import * as eventBus from '../utils/EventBus';
 import * as Controls from './TimerControls';
 import { query, replaceWithClone } from "../utils/HtmlUtils";
+import jsonReadyConverter from '../program_model_converters/json_ready/JSONReadyProgramConverter';
 
 let timerScreen = document.querySelector("#timerScreen");
 let editBtn = timerScreen.querySelector("button[name=editBtn]");
@@ -83,7 +84,10 @@ function enableEditButton(program) {
 }
 function enableShareButton(program) {
   replaceWithClone(query(`[name="shareBtn"]`))
-    .addEventListener("click", () => alert(`${window.location.origin}/load/${program.title}`));
+    .addEventListener("click", () => {
+      const encodedProgram = btoa(JSON.stringify(jsonReadyConverter.serialize(program)));
+      prompt("Your url", `${window.location.origin}/load/${encodedProgram}`);
+    });
 }
 
 export { screen, currentTimer };
