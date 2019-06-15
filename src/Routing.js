@@ -1,6 +1,7 @@
 import * as log from "./utils/Logging"
 import { screens } from "./Screens";
 import programsStorage from "./storage/programs_storage/ProgramsStorage";
+import jsonReadyConverter from './program_model_converters/json_ready/JSONReadyProgramConverter';
 
 window.addEventListener("load", event => {
   console.log("Load", event, history, history.state);
@@ -11,6 +12,7 @@ window.addEventListener("load", event => {
 let Routes = {
   "/": titleScreen,
   "/new": newProgram,
+  "/load/:encodedProgram": saveExternalProgram,
   "/programs/:id": loadProgram,
   "/programs/:id/edit": editProgram
 };
@@ -20,6 +22,10 @@ function titleScreen() {
 }
 function newProgram() {
   screens.edit.show();
+}
+function saveExternalProgram(encodedProgram) {
+  let program = jsonReadyConverter.deserialize(JSON.parse(atob(encodedProgram)));
+  screens.edit.show(program, true);
 }
 function loadProgram(id) {
   ifProgramExistsGoTo(id, screens.timer);

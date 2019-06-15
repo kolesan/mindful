@@ -34,11 +34,10 @@ let uniqueTitleValidation = InputValidator.validationWithStaticErrorMessage(
   uniqueTitle, "Program with such name already exists"
 );
 function uniqueTitle(title) {
-  let titleWithoutSpaces = noSpaces(title);
-  let didNotChange = title == currentProgram.title;
-  let sameTitleExists = !programTitles.find(it => noSpaces(it) == titleWithoutSpaces);
-
-  return didNotChange || sameTitleExists;
+  let noSpacesTitle = noSpaces(title);
+  const titleDidNotChange = noSpacesTitle === noSpaces(currentProgram.title);
+  const shouldNotValidateUniqueness = editingExistingProgram && titleDidNotChange;
+  return shouldNotValidateUniqueness || !programTitles.find(it => noSpaces(it) === noSpacesTitle);
 }
 
 let titleValidator = InputValidator.inst(programTitleInput)
@@ -47,7 +46,6 @@ let titleValidator = InputValidator.inst(programTitleInput)
   .onFail(markInvalid)
   .onSuccess(markValid)
   .triggerOn("input");
-
 
 function asTransparentDashed(style) {
   style.opacity = 0.7;
@@ -88,10 +86,10 @@ window.addEventListener("keyup", event => {
 
 let saveBtn = editScreen.querySelector("#saveBtn");
 saveBtn.addEventListener("click", event => {
-  if (!titleValidator.validate() || !programEventsEditor.validate()) {
-    return;
+  let isValidProgram = titleValidator.validate() && programEventsEditor.validate();
+  if (isValidProgram) {
+    save();
   }
-  save();
 });
 
 let programIconInput = editScreen.querySelector(".basic_program_data [name=selectIconBtn]");
@@ -149,9 +147,9 @@ function load(program) {
   currentProgram = program;
 }
 
-function onShow(program) {
+function onShow(program, isImported) {
   programTitles = loadProgramTitles();
-  editingExistingProgram = !!program;
+  editingExistingProgram = !!program && !isImported;
   load(program || generateFreshProgram());
   markValid(programTitleInput);
 }
